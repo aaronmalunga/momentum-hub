@@ -1,0 +1,28 @@
+# tests/conftest.py
+import pytest
+import sqlite3
+import subprocess
+from pathlib import Path
+
+@pytest.fixture(scope="session", autouse=True)
+def seed_demo_db():
+    """
+    Automatically seed the demo database before tests start.
+    Ensures reproducible test state.
+    """
+    db_path = Path("momentum.db")
+    seed_script = Path("scripts/seed_demo_db.py")
+
+    # Run the seed script before tests
+    print("\n[pytest setup] Seeding demo database...")
+    subprocess.run(["python", str(seed_script)], check=True)
+
+    # Ensure DB exists before running tests
+    assert db_path.exists(), "momentum.db not found after seeding."
+
+    # Provide a connection fixture if tests need it
+    conn = sqlite3.connect(db_path)
+    yield conn
+
+    # Cleanup (optional — keeps DB after tests)
+    conn.close()

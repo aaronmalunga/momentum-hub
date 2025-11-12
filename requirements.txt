@@ -1,0 +1,6 @@
+colorama
+pytest
+questionary
+pytest-mock
+freezegun
+tabulate

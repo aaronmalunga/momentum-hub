@@ -1,0 +1,52 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Database files
+momentum.db
+database.db
+test.db
+*.sqlite
+*.sqlite3
+
+# Database backups & demo files
+backups/
+*.db.bak
+*.db.backup
+*_demo.db
+momentum_demo.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp 

@@ -1,0 +1,170 @@
+import csv
+import datetime
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import pytest
+from unittest.mock import patch, MagicMock
+import momentum_db as db
+from habit import Habit
+from completion import export_completions_to_csv
+from cli_export import export_all_habits_to_csv, export_all_completions_to_csv, export_habit_completions_to_csv
+from colorama import Fore
+
+@pytest.fixture
+def tmp_db_path(tmp_path):
+    db_file = tmp_path / "test_export.db"
+    db_name = str(db_file)
+    db.init_db(db_name=db_name)
+    return db_name
+
+@pytest.fixture
+def sample_data(tmp_db_path):
+    # Add sample habits
+    h1 = Habit(name="Daily Habit", frequency="daily", notes="Test daily")
+    h2 = Habit(name="Weekly Habit", frequency="weekly", notes="Test weekly")
+    hid1 = db.add_habit(h1, db_name=tmp_db_path)
+    hid2 = db.add_habit(h2, db_name=tmp_db_path)
+
+    # Add completions
+    now = datetime.datetime.now()
+    db.add_completion(hid1, now, db_name=tmp_db_path)
+    db.add_completion(hid2, now, db_name=tmp_db_path)
+
+    return tmp_db_path, hid1, hid2
+
+def test_export_completions_to_csv_from_completion_module(sample_data, tmp_path):
+    db_name, hid1, hid2 = sample_data
+    output_file = tmp_path / "completions_fixed.csv"
+
+    export_completions_to_csv(str(output_file), db_name)
+    assert output_file.exists()
+    with open(output_file, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+        assert len(rows) == 2
+        assert 'completion_id' in rows[0]
+        assert 'habit_name' in rows[0]
+
+def test_export_completions_to_csv_from_momentum_db_module(sample_data, tmp_path):
+    db_name, hid1, hid2 = sample_data
+    output_file = tmp_path / "completions_db.csv"
+
+    # Use the duplicate function in momentum_db.py
+    db.export_completions_to_csv(str(output_file), db_name)
+    assert output_file.exists()
+    with open(output_file, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+        assert len(rows) == 2
+        assert 'completion_id' in rows[0]
+
+def test_export_all_habits_logic(sample_data):
+    db_name, hid1, hid2 = sample_data
+    habits = db.get_all_habits(active_only=False, db_name=db_name)
+    assert len(habits) == 2
+    assert habits[0].name == "Daily Habit"
+    assert habits[1].name == "Weekly Habit"
+
+def test_export_all_completions_logic(sample_data):
+    db_name, hid1, hid2 = sample_data
+    habits = db.get_all_habits(active_only=False, db_name=db_name)
+    total_completions = 0
+    for habit in habits:
+        completions = db.get_completions(habit.id, db_name)
+        total_completions += len(completions)
+    assert total_completions == 2
+
+def test_export_habit_completions_logic(sample_data):
+    db_name, hid1, hid2 = sample_data
+    habits = db.get_all_habits(active_only=False, db_name=db_name)
+    selected_habit = habits[0]
+    completions = db.get_completions(selected_habit.id, db_name)
+    assert len(completions) == 1
+    assert selected_habit.name == "Daily Habit"
+
+# New tests for cli_export.py functions to improve coverage
+
+def test_export_all_habits_to_csv_success(sample_data, tmp_path):
+    db_name, hid1, hid2 = sample_data
+    with patch('cli_export.press_enter_to_continue'):
+        export_all_habits_to_csv(db_name)
+    # Check if file was created in the CSV Export directory
+    import os
+    os.makedirs("CSV Export", exist_ok=True)
+    csv_files = [f for f in os.listdir("CSV Export") if f.startswith("habits_export_") and f.endswith(".csv")]
+    assert len(csv_files) >= 1
+
+def test_export_all_habits_to_csv_empty_db(tmp_db_path, tmp_path):
+    # Test with empty database
+    with patch('cli_export.press_enter_to_continue'):
+        export_all_habits_to_csv(tmp_db_path)
+    import os
+    os.makedirs("CSV Export", exist_ok=True)
+    csv_files = [f for f in os.listdir("CSV Export") if f.startswith("habits_export_") and f.endswith(".csv")]
+    assert len(csv_files) >= 1
+
+def test_export_all_completions_to_csv_success(sample_data, tmp_path):
+    db_name, hid1, hid2 = sample_data
+    with patch('cli_export.press_enter_to_continue'):
+        export_all_completions_to_csv(db_name)
+    import os
+    os.makedirs("CSV Export", exist_ok=True)
+    csv_files = [f for f in os.listdir("CSV Export") if f.startswith("all_completions_export_") and f.endswith(".csv")]
+    assert len(csv_files) >= 1
+
+def test_export_habit_completions_to_csv_success(sample_data, tmp_path):
+    db_name, hid1, hid2 = sample_data
+    habits = db.get_all_habits(active_only=False, db_name=db_name)
+    selected_habit = habits[1]  # Weekly habit
+    with patch('cli_export.press_enter_to_continue'), \
+         patch('cli_export._handle_habit_selection', return_value=selected_habit):
+        export_habit_completions_to_csv(db_name)
+    import os
+    os.makedirs("CSV Export", exist_ok=True)
+    csv_files = [f for f in os.listdir("CSV Export") if f.startswith("completions_Weekly_Habit_") and f.endswith(".csv")]
+    assert len(csv_files) >= 1
+    # Find the most recent file
+    csv_files.sort(reverse=True)
+    csv_file = os.path.join("CSV Export", csv_files[0])
+    with open(csv_file, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+        assert len(rows) == 1
+        assert 'Week Number' in rows[0]
+
+def test_export_habit_completions_to_csv_no_completions(tmp_db_path, tmp_path):
+    # Add habit with no completions
+    h = Habit(name="No Completions", frequency="daily")
+    hid = db.add_habit(h, db_name=tmp_db_path)
+    habit = db.get_habit(hid, db_name=tmp_db_path)
+    with patch('cli_export.press_enter_to_continue'), \
+         patch('cli_export._handle_habit_selection', return_value=habit):
+        export_habit_completions_to_csv(tmp_db_path)
+    # Should not create file or handle gracefully
+    import os
+    os.makedirs("CSV Export", exist_ok=True)
+    csv_files = [f for f in os.listdir("CSV Export") if f.startswith("completions_No_Completions_") and f.endswith(".csv")]
+    assert len(csv_files) == 0  # No file created
+
+def test_export_all_habits_to_csv_error_handling(tmp_db_path, tmp_path):
+    # Add a habit to trigger the error path
+    h = Habit(name="Test Habit", frequency="daily")
+    db.add_habit(h, db_name=tmp_db_path)
+    # Simulate file write error
+    with patch('builtins.open', side_effect=OSError("Permission denied")):
+        with patch('cli_export.show_colored_message') as mock_show:
+            with patch('cli_export.press_enter_to_continue'):
+                export_all_habits_to_csv(tmp_db_path)
+                mock_show.assert_called_with("Error exporting habits: Permission denied", color=Fore.RED)
+
+def test_export_all_completions_to_csv_error_handling(tmp_db_path, tmp_path):
+    # Add a habit to trigger the error path
+    h = Habit(name="Test Habit", frequency="daily")
+    db.add_habit(h, db_name=tmp_db_path)
+    # Simulate file write error
+    with patch('builtins.open', side_effect=OSError("Permission denied")):
+        with patch('cli_export.show_colored_message') as mock_show:
+            with patch('cli_export.press_enter_to_continue'):
+                export_all_completions_to_csv(tmp_db_path)
+                mock_show.assert_called_with("Error exporting completions: Permission denied", color=Fore.RED)
