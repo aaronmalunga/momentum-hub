@@ -167,6 +167,26 @@ We welcome contributions! Here's how to get started:
 - Use type hints where appropriate
 - Keep the CLI user-friendly and intuitive
 
+## ⚠️ Limitations and Future Improvements
+
+As a CLI-based habit tracker developed for a school assignment, Momentum Hub has some inherent limitations while providing a solid foundation for habit tracking:
+
+### Current Limitations
+- **CLI-Only Interface**: As required for the assignment, the app is command-line only, which may limit accessibility for users preferring graphical interfaces
+- **Local Data Storage**: Uses SQLite database stored locally, requiring manual backup and limiting multi-device synchronization
+- **Single-User Design**: Built for individual use without multi-user or social features
+- **Performance Considerations**: SQLite is suitable for personal use but may require optimizations for very large datasets
+
+### Potential Future Enhancements
+- **Web/Mobile Interfaces**: Browser-based or mobile app versions for broader accessibility
+- **Cloud Synchronization**: Multi-device data syncing with cloud storage
+- **Social Features**: Habit sharing, challenges, and community interactions
+- **Advanced Analytics**: AI-powered insights, predictive analytics, and personalized recommendations
+- **Gamification**: Achievement systems, streaks rewards, and motivational elements
+- **Integrations**: Calendar apps, fitness trackers, and productivity tools
+
+These limitations are acknowledged as part of the assignment constraints and design choices. The app successfully demonstrates comprehensive CLI application development while maintaining excellent code quality and user experience within its scope.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
