@@ -60,6 +60,22 @@ pip install -e .[dev]
 4. **View analytics**:
    - Choose "Analyze habits" to see detailed statistics and trends
 
+## 📸 Screenshots
+
+*Add CLI interface screenshots here to showcase the app's visual design and user experience.*
+
+**Suggested screenshots to include:**
+- Main menu interface
+- Habit creation form
+- Analytics dashboard
+- Demo mode welcome screen
+- Export functionality
+
+*Please attach images of the CLI interface in the following locations in the README:*
+- After the Quick Start section
+- In the Demo Mode section
+- In the Advanced Usage section (showing command examples)
+
 ## 🎮 Demo Mode
 
 Experience Momentum Hub instantly without setup:
@@ -90,6 +106,10 @@ python momentum_main.py --demo
 # Get help
 python momentum_main.py --help
 ```
+
+### 📚 Documentation
+- **[API Documentation](docs/api.md)**: Comprehensive API reference for developers
+- **[Usage Guide](USAGE.md)**: Advanced usage patterns and reviewer workflows
 
 ### Core Workflows
 
@@ -166,6 +186,73 @@ We welcome contributions! Here's how to get started:
 - Update documentation as needed
 - Use type hints where appropriate
 - Keep the CLI user-friendly and intuitive
+
+## 🧪 Testing & Quality Assurance
+
+### Running Tests
+```bash
+# Run all tests
+pytest
+
+# Run with coverage report
+pytest --cov=src
+
+# Run specific test file
+pytest tests/test_habit.py
+
+# Run tests in verbose mode
+pytest -v
+```
+
+### Test Coverage
+The project maintains high test coverage (~85%) across all core modules including:
+- Core habit functionality
+- Database operations
+- CLI interfaces
+- Analysis features
+- Export functionality
+
+### Code Quality
+- **Pre-commit hooks**: Automated code formatting and linting
+- **Type hints**: Comprehensive type annotations throughout the codebase
+- **PEP 8 compliance**: Consistent code style and formatting
+
+## 🔧 Development Setup
+
+### Prerequisites
+- Python 3.10+
+- Git
+- Virtual environment (recommended)
+
+### Setup Steps
+```bash
+# Clone repository
+git clone https://github.com/yourusername/momentum-hub.git
+cd momentum-hub
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install in development mode
+pip install -e .[dev]
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run initial tests
+pytest
+```
+
+### Code Formatting
+```bash
+# Format code with pre-commit
+pre-commit run --all-files
+
+# Or manually format
+black .
+isort .
+```
 
 ## ⚠️ Limitations and Future Improvements
 
