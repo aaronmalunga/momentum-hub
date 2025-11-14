@@ -40,20 +40,37 @@ def export_all_habits_to_csv(db_name: str):
 
     try:
         with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['ID', 'Name', 'Frequency', 'Notes', 'Morning Reminder', 'Evening Reminder',
+            fieldnames = ['ID', 'Name', 'Frequency', 'Category', 'Goal Progress', 'Notes', 'Morning Reminder', 'Evening Reminder',
                          'Streak', 'Created At', 'Last Completed', 'Is Active', 'Reactivated At']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
             writer.writeheader()
             for habit in habits:
+                # Get category name if habit has one
+                category_name = ''
+                if habit.category_id:
+                    category = db.get_category(habit.category_id, db_name)
+                    category_name = category.name if category else ''
+
+                # Get goal progress if habit has active goals
+                goal_progress = ''
+                goals = db.get_all_goals(active_only=True, db_name=db_name)
+                habit_goals = [g for g in goals if g.habit_id == habit.id]
+                if habit_goals:
+                    goal = max(habit_goals, key=lambda g: g.created_at)
+                    progress = goal.calculate_progress(db_name)
+                    goal_progress = f"{progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"
+
                 writer.writerow({
                     'ID': habit.id,
                     'Name': habit.name,
                     'Frequency': habit.frequency,
+                    'Category': category_name,
                     'Notes': habit.notes or '',
                     'Morning Reminder': habit.reminder_time or '',
                     'Evening Reminder': habit.evening_reminder_time or '',
                     'Streak': habit.streak,
+                    'Goal Progress': goal_progress,
                     'Created At': habit.created_at.strftime('%Y-%m-%d %H:%M') if habit.created_at else '',
                     'Last Completed': habit.last_completed.strftime('%Y-%m-%d %H:%M') if habit.last_completed else '',
                     'Is Active': 'Yes' if habit.is_active else 'No',

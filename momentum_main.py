@@ -3,7 +3,7 @@ import sys
 import argparse
 import momentum_db as db
 from momentum_cli import start_cli
-from seed_data import create_demo_habits, prompt_for_demo_habits
+from seed_data import create_demo_habits, prompt_for_demo_habits, create_default_categories
 
 def main():
     # Add the current directory to the Python path
@@ -43,6 +43,13 @@ def main():
     
     # Check if the database is empty (no habits)
     habits = db.get_all_habits(active_only=False, db_name=db_name)
+    # Check if categories exist
+    categories = db.get_all_categories(active_only=True, db_name=db_name)
+
+    # Seed default categories if none exist
+    if not categories:
+        create_default_categories(db_name)
+
     if not habits:
         # First-time user: in demo mode we auto-create demo habits without prompting.
         if args.demo:

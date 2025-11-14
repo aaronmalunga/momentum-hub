@@ -21,7 +21,7 @@ class Habit:
 
     def __init__(self, id=None, name=None, frequency=None, notes=None,
                  reminder_time=None, evening_reminder_time=None, streak=0,
-                 created_at=None, last_completed=None, is_active=True, reactivated_at=None):
+                 created_at=None, last_completed=None, is_active=True, reactivated_at=None, category_id=None):
         self.id = id
         self.name = name
         self.frequency = frequency
@@ -33,6 +33,7 @@ class Habit:
         self.last_completed = last_completed
         self.is_active = is_active
         self.reactivated_at = reactivated_at
+        self.category_id = category_id
 
     def edit_habit(self, name: Optional[str] = None, frequency: Optional[str] = None,
                     notes: Optional[str] = None, reminder_time: Optional[str] = None,
@@ -193,35 +194,10 @@ class Habit:
             created_at=created_at_dt,
             last_completed=last_completed_dt,
             is_active=data.get('is_active', True),
-            reactivated_at=reactivated_at_dt
+            reactivated_at=reactivated_at_dt,
+            category_id=data.get('category_id')
         )
 
-    def prompt_for_task(self):
-        """Method to prompt the user for the habit name."""
-        print("Enter the name of the habit and press enter: ")
-        name = input()
-        if len(name) == 0:
-            error_manager.display_error("empty_input")
-            return self.prompt_for_task()
-        return name
-
-    def prompt_for_periodicity(self):
-        """Method to prompt the user for the frequency of the habit."""
-        print("Choose a frequency for the habit:\n"
-              "Press 1 for daily\n"
-              "Press 2 for weekly\n"
-              "Press 3 for monthly\n"
-              "Then press enter: ")
-        periodicity = input()
-        if periodicity == '1':
-            return 'daily'
-        elif periodicity == '2':
-            return 'weekly'
-        elif periodicity == '3':
-            return 'monthly'
-        else:
-            error_manager.display_error("invalid_menu_option")
-            return self.prompt_for_periodicity()
     
         
         

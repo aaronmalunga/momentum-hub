@@ -50,6 +50,21 @@ def create_new_habit(db_name: str):
         show_colored_message("Habit creation cancelled.", color=Fore.YELLOW)
         press_enter_to_continue()
         return
+    # Select category (optional)
+    categories = db.get_all_categories(active_only=True, db_name=db_name)
+    category_id = None
+    if categories:
+        category_choices = ["No category"] + [f"{cat.id}. {cat.name}" for cat in categories]
+        category_choice = questionary.select(
+            "Select a category for this habit (optional):",
+            choices=category_choices
+        ).ask()
+        if category_choice and category_choice != "No category":
+            try:
+                category_id = int(category_choice.split(".")[0])
+            except ValueError:
+                pass
+
     new_habit = Habit(
         name=habit_name,
         frequency=frequency,
@@ -60,8 +75,16 @@ def create_new_habit(db_name: str):
         is_active=True
     )
     habit_id = db.add_habit(new_habit, db_name)
+
+    # Update habit with category if selected
+    if category_id:
+        new_habit.id = habit_id
+        new_habit.category_id = category_id
+        db.update_habit(new_habit, db_name)
+
+    category_msg = f" in category '{db.get_category(category_id, db_name).name}'" if category_id else ""
     show_colored_message(
-        f"'{habit_name}' ({frequency}) has been created successfully with ID: {habit_id}",
+        f"'{habit_name}' ({frequency}) has been created successfully with ID: {habit_id}{category_msg}",
         color=Fore.GREEN,
         style=Style.BRIGHT
     )
@@ -214,6 +237,30 @@ def update_habit(db_name: str):
     ).ask()
     if not new_evening_reminder_time:
         new_evening_reminder_time = None
+
+    # Update category
+    categories = db.get_all_categories(active_only=True, db_name=db_name)
+    current_category = None
+    if habit_to_update.category_id:
+        current_category = db.get_category(habit_to_update.category_id, db_name)
+
+    category_choices = ["No category"] + [f"{cat.id}. {cat.name}" for cat in categories]
+    if current_category:
+        category_choices.insert(1, f"Keep current ({current_category.name})")
+
+    category_choice = questionary.select(
+        f"Select new category for '{habit_to_update.name}' (current: {current_category.name if current_category else 'None'}):",
+        choices=category_choices
+    ).ask()
+    if category_choice == "Keep current" or (current_category and category_choice == f"Keep current ({current_category.name})"):
+        pass  # Keep current category
+    elif category_choice == "No category":
+        habit_to_update.category_id = None
+    else:
+        try:
+            habit_to_update.category_id = int(category_choice.split(".")[0])
+        except ValueError:
+            pass
 
     habit_to_update.edit_habit(
         name=new_name,

@@ -19,6 +19,8 @@ from cli_habit_management import create_new_habit, mark_habit_completed, delete_
 from cli_analysis import analyze_habits, analyze_list_all_habits, analyze_by_periodicity, analyze_longest_streak_all, analyze_longest_streak_one, analyze_streak_history_grid, analyze_best_worst_habit, analyze_goal_progress, analyze_completion_history
 from cli_export import analyze_export_csv, export_all_habits_to_csv
 from cli_utils import _validate_time_format, _handle_habit_selection, _to_date
+from cli_goal_management import manage_goals
+from cli_category_management import manage_categories
 
 
 
@@ -34,6 +36,8 @@ def main_menu(db_name: str):
             "View habits",
             "Update a habit",
             "Analyze habits",
+            "Manage Goals",
+            "Manage Categories",
             "Delete a habit",
             "Reactivate a habit",
             "Exit"
@@ -46,6 +50,8 @@ def main_menu(db_name: str):
         "View habits": lambda: view_habits(db_name),
         "Update a habit": lambda: update_habit(db_name),
         "Analyze habits": lambda: analyze_habits(db_name),
+        "Manage Goals": lambda: manage_goals(db_name),
+        "Manage Categories": lambda: manage_categories(db_name),
         "Delete a habit": lambda: delete_habit(db_name),
         "Reactivate a habit": lambda: reactivate_habit(db_name),
         "Exit": lambda: sys.exit()

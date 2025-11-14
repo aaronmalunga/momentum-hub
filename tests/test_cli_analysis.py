@@ -125,12 +125,16 @@ class TestAnalyzeBestWorstHabit:
 class TestAnalyzeGoalProgress:
     def test_analyze_goal_progress_success(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
+        # Create a goal for the habit
+        from goal import Goal
+        goal = Goal(habit_id=hid1, target_period_days=28, target_completions=10)
+        db.add_goal(goal, db_name)
         habits = db.get_all_habits(active_only=True, db_name=db_name)
         with patch('cli_analysis._handle_habit_selection', return_value=habits[0]):
             with patch('cli_analysis.press_enter_to_continue'):
                 analyze_goal_progress(db_name)
         captured = capsys.readouterr()
-        assert "Completions" in captured.out
+        assert "Progress" in captured.out
 
 class TestAnalyzeCompletionHistory:
     def test_analyze_completion_history_with_data(self, sample_habits, capsys):

@@ -67,7 +67,27 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["."]
+source = [
+    "momentum_main",
+    "momentum_cli",
+    "momentum_db",
+    "momentum_utils",
+    "habit",
+    "goal",
+    "category",
+    "cli_analysis",
+    "cli_habit_management",
+    "cli_goal_management",
+    "cli_category_management",
+    "cli_export",
+    "habit_analysis",
+    "seed_data",
+    "completion",
+    "cli_utils",
+    "cli_display",
+    "encouragements",
+    "error_manager"
+]
 omit = [
     "tests/*",
     ".venv/*",

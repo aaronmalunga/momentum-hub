@@ -3,6 +3,7 @@ import pytest
 import sqlite3
 import subprocess
 from pathlib import Path
+import momentum_db as db
 
 @pytest.fixture(scope="session", autouse=True)
 def seed_demo_db():
@@ -24,5 +25,6 @@ def seed_demo_db():
     conn = sqlite3.connect(db_path)
     yield conn
 
-    # Cleanup (optional — keeps DB after tests)
+    # Cleanup - close all connections
+    db.close_all_connections()
     conn.close()

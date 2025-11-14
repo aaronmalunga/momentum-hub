@@ -72,6 +72,40 @@ def init_db(db_name: str = DB_NAME):
             FOREIGN KEY (habit_id) REFERENCES habits(id) ON DELETE CASCADE
         );
         """)
+
+        # Create categories table
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS categories(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT,
+            color TEXT,
+            is_active INTEGER DEFAULT 1,
+            created_at TEXT
+        );
+        """)
+
+        # Create goals table
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS goals(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            habit_id INTEGER NOT NULL,
+            target_period_days INTEGER DEFAULT 28,
+            target_completions INTEGER,
+            start_date TEXT,
+            end_date TEXT,
+            is_active INTEGER DEFAULT 1,
+            created_at TEXT,
+            FOREIGN KEY (habit_id) REFERENCES habits(id) ON DELETE CASCADE
+        );
+        """)
+
+        # Add category_id column to habits table if it doesn't exist
+        cursor.execute("PRAGMA table_info(habits);")
+        columns = [row[1] for row in cursor.fetchall()]
+        if 'category_id' not in columns:
+            cursor.execute("ALTER TABLE habits ADD COLUMN category_id INTEGER REFERENCES categories(id);")
+
         conn.commit()
 
 def add_habit(habit: Habit, db_name: str = DB_NAME) -> int:
@@ -86,8 +120,8 @@ def add_habit(habit: Habit, db_name: str = DB_NAME) -> int:
         cursor.execute("""
             INSERT INTO habits(
                 name, frequency, notes, reminder_time, evening_reminder_time,
-                streak, created_at, last_completed, is_active, reactivated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                streak, created_at, last_completed, is_active, reactivated_at, category_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
         """, (        habit.name,
             habit.frequency,
@@ -98,7 +132,8 @@ def add_habit(habit: Habit, db_name: str = DB_NAME) -> int:
             habit.created_at.isoformat() if habit.created_at else None,
             habit.last_completed.isoformat() if habit.last_completed else None,
             int(habit.is_active),
-            habit.reactivated_at.isoformat() if habit.reactivated_at else None
+            habit.reactivated_at.isoformat() if habit.reactivated_at else None,
+            habit.category_id
         ))
         conn.commit()
         """
@@ -119,7 +154,7 @@ def get_habit(habit_id: int, db_name: str = DB_NAME) -> Optional[Habit]:
         cursor = conn.cursor()
         cursor.execute("""
             SELECT id, name, frequency, notes, reminder_time, evening_reminder_time,
-                   streak, created_at, last_completed, is_active, reactivated_at
+                   streak, created_at, last_completed, is_active, reactivated_at, category_id
             FROM habits
             WHERE id = ?
 
@@ -139,7 +174,8 @@ def get_habit(habit_id: int, db_name: str = DB_NAME) -> Optional[Habit]:
             'created_at': (row[7]) ,
             'last_completed': (row[8]) ,
             'is_active': bool(row[9]),
-            'reactivated_at': (row[10])
+            'reactivated_at': (row[10]),
+            'category_id': row[11]
         }
         return Habit.from_dict(habit_dict)
     else:
@@ -162,7 +198,7 @@ def update_habit(habit: Habit, db_name: str = DB_NAME) -> None:
             UPDATE habits
             SET name = ?, frequency = ?, notes = ?, reminder_time = ?,
                 evening_reminder_time = ?, streak = ?, created_at = ?,
-                last_completed = ?, is_active = ?, reactivated_at = ?
+                last_completed = ?, is_active = ?, reactivated_at = ?, category_id = ?
             WHERE id = ? """,
 
             (
@@ -176,6 +212,7 @@ def update_habit(habit: Habit, db_name: str = DB_NAME) -> None:
                 habit.last_completed.isoformat() if habit.last_completed else None,
                 int(habit.is_active),
                 habit.reactivated_at.isoformat() if habit.reactivated_at else None,
+                habit.category_id,
                 habit.id
         ))
         conn.commit()
@@ -220,14 +257,14 @@ def get_all_habits(active_only: bool = True, db_name: str = DB_NAME) -> list[Hab
         if active_only:
             cursor.execute("""
                 SELECT id, name, frequency, notes, reminder_time, evening_reminder_time,
-                       streak, created_at, last_completed, is_active, reactivated_at
+                       streak, created_at, last_completed, is_active, reactivated_at, category_id
                 FROM habits
                 WHERE is_active = 1
             """)
         else:
             cursor.execute("""
                 SELECT id, name, frequency, notes, reminder_time, evening_reminder_time,
-                       streak, created_at, last_completed, is_active, reactivated_at
+                       streak, created_at, last_completed, is_active, reactivated_at, category_id
                 FROM habits
             """)
 
@@ -245,7 +282,8 @@ def get_all_habits(active_only: bool = True, db_name: str = DB_NAME) -> list[Hab
             'created_at': row[7],
             'last_completed': row[8],
             'is_active': bool(row[9]),
-            'reactivated_at': row[10]
+            'reactivated_at': row[10],
+            'category_id': row[11]
         }
         habits.append(Habit.from_dict(habit_dict))
 
@@ -411,4 +449,299 @@ def export_completions_to_csv(output_path: str = "completions.csv", db_name: str
         writer.writerows(rows)
 
     print(f"Exported {len(rows)} rows to {output_path}")
+
+
+# Category functions
+def add_category(category, db_name: str = DB_NAME) -> int:
+    """
+    Adds a new category to the database and returns the created category id.
+    """
+    if category.created_at is None:
+        category.created_at = datetime.datetime.now()
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO categories (name, description, color, is_active, created_at)
+            VALUES (?, ?, ?, ?, ?)
+        """, (
+            category.name,
+            category.description,
+            category.color,
+            int(category.is_active),
+            category.created_at.isoformat() if category.created_at else None
+        ))
+        conn.commit()
+        return cursor.lastrowid
+
+
+def get_category(category_id: int, db_name: str = DB_NAME):
+    """
+    Gets a category from the database by id.
+    """
+    from category import Category
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, name, description, color, is_active, created_at
+            FROM categories
+            WHERE id = ?
+        """, (category_id,))
+        row = cursor.fetchone()
+
+    if row:
+        category_dict = {
+            'id': row[0],
+            'name': row[1],
+            'description': row[2],
+            'color': row[3],
+            'is_active': bool(row[4]),
+            'created_at': row[5]
+        }
+        return Category.from_dict(category_dict)
+    return None
+
+
+def update_category(category, db_name: str = DB_NAME) -> None:
+    """
+    Updates an existing category in the database.
+    """
+    if category.id is None:
+        raise ValueError("Category id must be set before updating.")
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE categories
+            SET name = ?, description = ?, color = ?, is_active = ?
+            WHERE id = ?
+        """, (
+            category.name,
+            category.description,
+            category.color,
+            int(category.is_active),
+            category.id
+        ))
+        conn.commit()
+
+
+def delete_category(category_id: int, db_name: str = DB_NAME) -> None:
+    """
+    Soft deletes a category from the database by setting is_active to 0.
+    """
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE categories
+            SET is_active = 0
+            WHERE id = ?
+        """, (category_id,))
+        conn.commit()
+
+
+def get_all_categories(active_only: bool = True, db_name: str = DB_NAME) -> List:
+    """
+    Gets all categories from the database.
+    """
+    from category import Category
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        if active_only:
+            cursor.execute("""
+                SELECT id, name, description, color, is_active, created_at
+                FROM categories
+                WHERE is_active = 1
+            """)
+        else:
+            cursor.execute("""
+                SELECT id, name, description, color, is_active, created_at
+                FROM categories
+            """)
+        rows = cursor.fetchall()
+
+    categories = []
+    for row in rows:
+        category_dict = {
+            'id': row[0],
+            'name': row[1],
+            'description': row[2],
+            'color': row[3],
+            'is_active': bool(row[4]),
+            'created_at': row[5]
+        }
+        categories.append(Category.from_dict(category_dict))
+    return categories
+
+
+def get_habits_by_category(category_id: int, active_only: bool = True, db_name: str = DB_NAME) -> List[Habit]:
+    """
+    Gets all habits for a specific category.
+    """
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        if active_only:
+            cursor.execute("""
+                SELECT id, name, frequency, notes, reminder_time, evening_reminder_time,
+                       streak, created_at, last_completed, is_active, reactivated_at, category_id
+                FROM habits
+                WHERE category_id = ? AND is_active = 1
+            """, (category_id,))
+        else:
+            cursor.execute("""
+                SELECT id, name, frequency, notes, reminder_time, evening_reminder_time,
+                       streak, created_at, last_completed, is_active, reactivated_at, category_id
+                FROM habits
+                WHERE category_id = ?
+            """, (category_id,))
+        rows = cursor.fetchall()
+
+    habits = []
+    for row in rows:
+        habit_dict = {
+            'id': row[0],
+            'name': row[1],
+            'frequency': row[2],
+            'notes': row[3],
+            'reminder_time': row[4],
+            'evening_reminder_time': row[5],
+            'streak': row[6],
+            'created_at': row[7],
+            'last_completed': row[8],
+            'is_active': bool(row[9]),
+            'reactivated_at': row[10],
+            'category_id': row[11]
+        }
+        habits.append(Habit.from_dict(habit_dict))
+    return habits
+
+
+# Goal functions
+def add_goal(goal, db_name: str = DB_NAME) -> int:
+    """
+    Adds a new goal to the database and returns the created goal id.
+    """
+    if goal.created_at is None:
+        goal.created_at = datetime.datetime.now()
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO goals (habit_id, target_period_days, target_completions,
+                              start_date, end_date, is_active, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            goal.habit_id,
+            goal.target_period_days,
+            goal.target_completions,
+            goal.start_date.isoformat() if goal.start_date else None,
+            goal.end_date.isoformat() if goal.end_date else None,
+            int(goal.is_active),
+            goal.created_at.isoformat() if goal.created_at else None
+        ))
+        conn.commit()
+        return cursor.lastrowid
+
+
+def get_goal(goal_id: int, db_name: str = DB_NAME):
+    """
+    Gets a goal from the database by id.
+    """
+    from goal import Goal
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, habit_id, target_period_days, target_completions,
+                   start_date, end_date, is_active, created_at
+            FROM goals
+            WHERE id = ?
+        """, (goal_id,))
+        row = cursor.fetchone()
+
+    if row:
+        goal_dict = {
+            'id': row[0],
+            'habit_id': row[1],
+            'target_period_days': row[2],
+            'target_completions': row[3],
+            'start_date': row[4],
+            'end_date': row[5],
+            'is_active': bool(row[6]),
+            'created_at': row[7]
+        }
+        return Goal.from_dict(goal_dict)
+    return None
+
+
+def update_goal(goal, db_name: str = DB_NAME) -> None:
+    """
+    Updates an existing goal in the database.
+    """
+    if goal.id is None:
+        raise ValueError("Goal id must be set before updating.")
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE goals
+            SET habit_id = ?, target_period_days = ?, target_completions = ?,
+                start_date = ?, end_date = ?, is_active = ?
+            WHERE id = ?
+        """, (
+            goal.habit_id,
+            goal.target_period_days,
+            goal.target_completions,
+            goal.start_date.isoformat() if goal.start_date else None,
+            goal.end_date.isoformat() if goal.end_date else None,
+            int(goal.is_active),
+            goal.id
+        ))
+        conn.commit()
+
+
+def delete_goal(goal_id: int, db_name: str = DB_NAME) -> None:
+    """
+    Soft deletes a goal from the database by setting is_active to 0.
+    """
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE goals
+            SET is_active = 0
+            WHERE id = ?
+        """, (goal_id,))
+        conn.commit()
+
+
+def get_all_goals(active_only: bool = True, db_name: str = DB_NAME) -> List:
+    """
+    Gets all goals from the database.
+    """
+    from goal import Goal
+    with get_connection(db_name) as conn:
+        cursor = conn.cursor()
+        if active_only:
+            cursor.execute("""
+                SELECT id, habit_id, target_period_days, target_completions,
+                       start_date, end_date, is_active, created_at
+                FROM goals
+                WHERE is_active = 1
+            """)
+        else:
+            cursor.execute("""
+                SELECT id, habit_id, target_period_days, target_completions,
+                       start_date, end_date, is_active, created_at
+                FROM goals
+            """)
+        rows = cursor.fetchall()
+
+    goals = []
+    for row in rows:
+        goal_dict = {
+            'id': row[0],
+            'habit_id': row[1],
+            'target_period_days': row[2],
+            'target_completions': row[3],
+            'start_date': row[4],
+            'end_date': row[5],
+            'is_active': bool(row[6]),
+            'created_at': row[7]
+        }
+        goals.append(Goal.from_dict(goal_dict))
+    return goals
 

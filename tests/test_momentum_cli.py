@@ -214,7 +214,8 @@ class TestUpdateHabit:
         mock_get_habits.return_value = [sample_habit]
         mock_select.side_effect = [
             MagicMock(ask=MagicMock(return_value="1. Test Habit (daily) - Streak: 5")),  # habit selection
-            MagicMock(ask=MagicMock(return_value="weekly"))  # frequency
+            MagicMock(ask=MagicMock(return_value="weekly")),  # frequency
+            MagicMock(ask=MagicMock(return_value="No category"))  # category selection
         ]
         mock_text.side_effect = [
             MagicMock(ask=MagicMock(return_value="Updated Name")),  # name

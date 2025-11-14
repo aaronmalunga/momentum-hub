@@ -248,21 +248,42 @@ def analyze_best_worst_habit(db_name: str):
     press_enter_to_continue()
 
 def analyze_goal_progress(db_name: str):
-    """Handles displaying goal progress."""
+    """Handles displaying goal progress for all goals."""
     show_colored_message("\n--- Goal Progress ---", color=Fore.YELLOW, style=Style.BRIGHT)
-    habits = db.get_all_habits(active_only=True, db_name=db_name)
-    selected_habit = _handle_habit_selection(habits, "Select a habit to view goal progress:", "No active habits found to analyze.")
-    if not selected_habit:
+
+    goals = db.get_all_goals(active_only=True, db_name=db_name)
+    if not goals:
+        show_colored_message("No active goals found.", color=Fore.RED)
+        press_enter_to_continue()
         return
-    try:
-        progress = analysis.calculate_goal_progress(selected_habit.id, db_name)
-        if selected_habit.reactivated_at:
-            show_colored_message(f"Reactivated At: {selected_habit.reactivated_at.strftime('%Y-%m-%d %H:%M')}", color=Fore.CYAN)
-        table = [["Completions", progress['count']], ["Total Possible", progress['total']], ["Percent", f"{progress['percent']:.1f}%"]]
-        headers = [f"{Fore.CYAN}Metric{Style.RESET_ALL}", f"{Fore.CYAN}Value{Style.RESET_ALL}"]
-        print(tabulate(table, headers=headers, tablefmt="grid", stralign="center"))
-    except Exception as e:
-        show_colored_message(f"An error occurred: {e}", color=Fore.RED)
+
+    table = []
+    for goal in goals:
+        habit = db.get_habit(goal.habit_id, db_name)
+        habit_name = habit.name if habit else "Unknown Habit"
+        progress = goal.calculate_progress(db_name)
+        progress_str = f"{progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"
+        status = "Achieved" if progress['achieved'] else "In Progress"
+        status_col = f"{Fore.GREEN}{status}{Style.RESET_ALL}" if progress['achieved'] else f"{Fore.YELLOW}{status}{Style.RESET_ALL}"
+
+        table.append([
+            goal.id,
+            habit_name,
+            goal.target_period_days,
+            goal.target_completions or "Auto",
+            progress_str,
+            status_col
+        ])
+
+    headers = [
+        f"{Fore.CYAN}Goal ID{Style.RESET_ALL}",
+        f"{Fore.CYAN}Habit{Style.RESET_ALL}",
+        f"{Fore.CYAN}Period (days){Style.RESET_ALL}",
+        f"{Fore.CYAN}Target{Style.RESET_ALL}",
+        f"{Fore.CYAN}Progress{Style.RESET_ALL}",
+        f"{Fore.CYAN}Status{Style.RESET_ALL}"
+    ]
+    print(tabulate(table, headers=headers, tablefmt="grid", stralign="center"))
     press_enter_to_continue()
 
 def analyze_completion_history(db_name: str):

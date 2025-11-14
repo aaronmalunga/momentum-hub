@@ -233,3 +233,102 @@ def calculate_goal_progress(habit_id: int, db_name: str):
         count = len([c for c in completions if (today - c.date()).days < total])
         percent = (count / total * 100) if total else 0.0
     return {'count': count, 'total': total, 'percent': percent}
+
+
+def calculate_goal_based_progress(habit_id: int, db_name: str):
+    """
+    Calculate progress for a habit using its active goals.
+    If no goals exist, falls back to default periods.
+    Returns: {'count': int, 'total': int, 'percent': float, 'goal_name': str or None}
+    """
+    goals = db.get_all_goals(active_only=True, db_name=db_name)
+    habit_goals = [g for g in goals if g.habit_id == habit_id]
+
+    if habit_goals:
+        # Use the most recent goal
+        goal = max(habit_goals, key=lambda g: g.created_at)
+        progress = goal.calculate_progress(db_name)
+        return {
+            'count': progress['count'],
+            'total': progress['total'],
+            'percent': progress['percent'],
+            'goal_name': f"Goal {goal.id}",
+            'achieved': progress['achieved']
+        }
+
+    # Fallback to default calculation
+    default_progress = calculate_goal_progress(habit_id, db_name)
+    return {
+        'count': default_progress['count'],
+        'total': default_progress['total'],
+        'percent': default_progress['percent'],
+        'goal_name': None,
+        'achieved': False
+    }
+
+
+def get_habit_analysis_with_goals(habit_id: int, db_name: str) -> dict:
+    """
+    Get comprehensive analysis for a habit including goal progress.
+    Returns: {
+        'completion_rate': float,
+        'longest_streak': int,
+        'current_streak': int,
+        'goal_progress': dict,
+        'total_completions': int
+    }
+    """
+    habit = db.get_habit(habit_id, db_name)
+    if not habit:
+        return {}
+
+    completions = db.get_completions(habit_id, db_name)
+
+    return {
+        'completion_rate': calculate_completion_rate_for_habit(habit_id, db_name),
+        'longest_streak': calculate_longest_streak_for_habit(habit_id, db_name),
+        'current_streak': habit.streak,
+        'goal_progress': calculate_goal_based_progress(habit_id, db_name),
+        'total_completions': len(completions)
+    }
+
+
+def analyze_habits_by_category(db_name: str) -> dict:
+    """
+    Analyze habits grouped by categories.
+    Returns: {category_name: [habit_analysis_dicts]}
+    """
+    categories = db.get_all_categories(active_only=True, db_name=db_name)
+    analysis = {}
+
+    for category in categories:
+        habits = category.get_habits(db_name)
+        habit_analyses = []
+        for habit in habits:
+            analysis_data = get_habit_analysis_with_goals(habit.id, db_name)
+            if analysis_data:
+                analysis_data['habit_name'] = habit.name
+                analysis_data['habit_frequency'] = habit.frequency
+                habit_analyses.append(analysis_data)
+        analysis[category.name] = habit_analyses
+
+    # Add uncategorized habits
+    all_habits = db.get_all_habits(active_only=True, db_name=db_name)
+    uncategorized = []
+    categorized_habit_ids = set()
+    for category in categories:
+        for habit in category.get_habits(db_name):
+            categorized_habit_ids.add(habit.id)
+
+    for habit in all_habits:
+        if habit.id not in categorized_habit_ids:
+            analysis_data = get_habit_analysis_with_goals(habit.id, db_name)
+            if analysis_data:
+                analysis_data['habit_name'] = habit.name
+                analysis_data['habit_frequency'] = habit.frequency
+                uncategorized.append(analysis_data)
+
+    if uncategorized:
+        analysis['Uncategorized'] = uncategorized
+
+    return analysis
