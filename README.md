@@ -4,6 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/momentum-hub/ci.yml)](https://github.com/yourusername/momentum-hub/actions)
 
+![Momentum Hub Banner](diagrams/Screenshots/ChatGPT%20Image%20Jul%2012,%202025,%2001_31_30%20PM.png)
+
 A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
 
 ## ✨ Key Features
@@ -62,19 +64,28 @@ pip install -e .[dev]
 
 ## 📸 Screenshots
 
-*Add CLI interface screenshots here to showcase the app's visual design and user experience.*
+### Main Menu Interface
+![Main Menu Interface](diagrams/Screenshots/Main%20menu%20interface.png)
+*The main menu showing all available options for habit management, analytics, and data operations.*
 
-**Suggested screenshots to include:**
-- Main menu interface
-- Habit creation form
-- Analytics dashboard
-- Demo mode welcome screen
-- Export functionality
+### Habit Creation Form
+![Habit Creation Form](diagrams/Screenshots/Habit%20creation%20form.png)
+*Interactive form for creating new habits with frequency selection, reminders, and category assignment.*
 
-*Please attach images of the CLI interface in the following locations in the README:*
-- After the Quick Start section
-- In the Demo Mode section
-- In the Advanced Usage section (showing command examples)
+### Analytics Dashboard
+![Analytics Dashboard 1](diagrams/Screenshots/Analytics%20dash1.png)
+*Comprehensive analytics view showing habit statistics, completion rates, and progress tracking.*
+
+![Analytics Dashboard 2](diagrams/Screenshots/Analytics%20dash2.png)
+*Detailed analytics including streak tracking and performance metrics.*
+
+### List All Habits View
+![List All Habits](diagrams/Screenshots/list%20all%20habits.png)
+*Overview of all habits with their current status, streaks, and completion information.*
+
+### CSV Export Functionality
+![CSV Export](diagrams/Screenshots/csv%20export.png)
+*Data export interface allowing users to download habits, completions, and analytics data.*
 
 ## 🎮 Demo Mode
 
@@ -84,6 +95,9 @@ Experience Momentum Hub instantly without setup:
 # Launch with demo data (isolated database)
 python momentum_main.py --demo
 ```
+
+![Demo Mode Welcome](diagrams/Screenshots/Main%20menu%20interface.png)
+*The demo mode welcome screen showing pre-populated data and available options.*
 
 Demo mode includes:
 - Pre-populated habits across different categories
@@ -110,6 +124,72 @@ python momentum_main.py --help
 ### 📚 Documentation
 - **[API Documentation](docs/api.md)**: Comprehensive API reference for developers
 - **[Usage Guide](USAGE.md)**: Advanced usage patterns and reviewer workflows
+
+### 🏗️ Architecture Overview
+
+Momentum Hub follows a clean, modular architecture designed for maintainability and extensibility:
+
+#### **Core Components:**
+- **`momentum_main.py`**: Application entry point and CLI argument parsing
+- **`momentum_cli.py`**: Main CLI interface and menu system
+- **`momentum_db.py`**: Database operations and data persistence layer
+- **`habit.py`**: Core habit model with business logic
+- **`goal.py`**: Goal management and progress tracking
+- **`category.py`**: Category system for habit organization
+
+#### **CLI Modules:**
+- **`cli_habit_management.py`**: Habit CRUD operations
+- **`cli_goal_management.py`**: Goal creation and management
+- **`cli_category_management.py`**: Category organization
+- **`cli_analysis.py`**: Analytics and reporting features
+- **`cli_export.py`**: Data export functionality
+
+#### **Supporting Modules:**
+- **`habit_analysis.py`**: Advanced analytics calculations
+- **`seed_data.py`**: Demo data generation
+- **`cli_utils.py`**: Shared CLI utilities and helpers
+- **`error_manager.py`**: Centralized error handling
+
+### 🔍 Key Design Patterns
+
+#### **Data Flow:**
+```
+CLI Input → Validation → Business Logic → Database → Response
+```
+
+#### **Error Handling:**
+- Centralized error management with user-friendly messages
+- Graceful degradation for edge cases
+- Comprehensive logging for debugging
+
+#### **Database Design:**
+- SQLite with proper indexing for performance
+- ACID compliance for data integrity
+- Migration-safe schema design
+
+### 📊 Performance Characteristics
+
+- **Startup Time**: < 2 seconds (typical)
+- **Database Operations**: Optimized queries with proper indexing
+- **Memory Usage**: Minimal footprint suitable for CLI applications
+- **Concurrent Access**: SQLite locking handles single-user scenarios
+
+### 🛠️ Customization & Extensibility
+
+#### **Adding New Habit Types:**
+1. Extend the `Habit` class in `habit.py`
+2. Update frequency validation in `cli_utils.py`
+3. Add corresponding CLI handlers
+
+#### **Custom Analytics:**
+1. Extend `habit_analysis.py` with new calculation methods
+2. Add CLI menu options in `cli_analysis.py`
+3. Update display formatting as needed
+
+#### **Database Schema Extensions:**
+1. Modify table definitions in `momentum_db.py`
+2. Add migration logic for existing databases
+3. Update model classes accordingly
 
 ### Core Workflows
 
@@ -144,6 +224,9 @@ What would you like to do?
   Create goal
   Exit
 ```
+
+![Command Line Options](diagrams/Screenshots/Main%20py%20menu.png)
+*Example of the main menu interface showing available command options.*
 
 ## 🤝 Contributing
 
@@ -186,6 +269,25 @@ We welcome contributions! Here's how to get started:
 - Update documentation as needed
 - Use type hints where appropriate
 - Keep the CLI user-friendly and intuitive
+
+### 📋 Pull Request Process
+1. Ensure all tests pass and coverage remains above 80%
+2. Update documentation for any new features
+3. Add appropriate type hints
+4. Follow commit message conventions
+5. Request review from maintainers
+
+### 🐛 Issue Reporting
+- Use the issue templates provided
+- Include steps to reproduce
+- Provide system information (OS, Python version)
+- Attach relevant screenshots if applicable
+
+### 💡 Feature Requests
+- Check existing issues first
+- Provide detailed use cases
+- Consider backward compatibility
+- Include mockups if proposing UI changes
 
 ## 🧪 Testing & Quality Assurance
 
