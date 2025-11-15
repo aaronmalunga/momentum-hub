@@ -42,4 +42,3 @@ gh run list --repo aaronmalunga/momentum-hub --limit 5
 gh run watch <run-id> --repo aaronmalunga/momentum-hub
 ```
 
-If you'd like, I can push these changes for you and watch the CI run — tell me to proceed and I'll do it.
