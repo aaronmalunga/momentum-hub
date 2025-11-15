@@ -67,26 +67,26 @@ pip install -e .[dev]
 ## 📸 Screenshots
 
 ### Main Menu Interface
-![Main Menu Interface](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Main%20menu%20interface.png)
+![Main Menu Interface](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20menu%20interface.png?raw=1)
 *The main menu showing all available options for habit management, analytics, and data operations.*
 
 ### Habit Creation Form
-![Habit Creation Form](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Habit%20creation%20form.png)
+![Habit Creation Form](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Habit%20creation%20form.png?raw=1)
 *Interactive form for creating new habits with frequency selection, reminders, and category assignment.*
 
 ### Analytics Dashboard
-![Analytics Dashboard 1](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Analytics%20dash1.png)
+![Analytics Dashboard 1](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Analytics%20dash1.png?raw=1)
 *Comprehensive analytics view showing habit statistics, completion rates, and progress tracking.*
 
-![Analytics Dashboard 2](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Analytics%20dash2.png)
+![Analytics Dashboard 2](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Analytics%20dash2.png?raw=1)
 *Detailed analytics including streak tracking and performance metrics.*
 
 ### List All Habits View
-![List All Habits](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/list%20all%20habits.png)
+![List All Habits](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/list%20all%20habits.png?raw=1)
 *Overview of all habits with their current status, streaks, and completion information.*
 
 ### CSV Export Functionality
-![CSV Export](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/csv%20export.png)
+![CSV Export](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/csv%20export.png?raw=1)
 *Data export interface allowing users to download habits, completions, and analytics data.*
 
 ## 🎮 Demo Mode
@@ -98,7 +98,7 @@ Experience Momentum Hub instantly without setup:
 python momentum_main.py --demo
 ```
 
-![Demo Mode Welcome](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Main%20menu%20interface.png)
+![Demo Mode Welcome](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20menu%20interface.png?raw=1)
 *The demo mode welcome screen showing pre-populated data and available options.*
 
 Demo mode includes:
