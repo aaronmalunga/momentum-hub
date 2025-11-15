@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/momentum-hub/ci.yml)](https://github.com/yourusername/momentum-hub/actions)
 
-![Momentum Hub Banner](diagrams/Screenshots/ChatGPT%20Image%20Jul%2012,%202025,%2001_31_30%20PM.png)
+![Momentum Hub Banner](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/ChatGPT%20Image%20Jul%2012,%202025,%2001_31_30%20PM.png)
 
 A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
 
@@ -65,26 +65,26 @@ pip install -e .[dev]
 ## 📸 Screenshots
 
 ### Main Menu Interface
-![Main Menu Interface](diagrams/Screenshots/Main%20menu%20interface.png)
+![Main Menu Interface](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Main%20menu%20interface.png)
 *The main menu showing all available options for habit management, analytics, and data operations.*
 
 ### Habit Creation Form
-![Habit Creation Form](diagrams/Screenshots/Habit%20creation%20form.png)
+![Habit Creation Form](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Habit%20creation%20form.png)
 *Interactive form for creating new habits with frequency selection, reminders, and category assignment.*
 
 ### Analytics Dashboard
-![Analytics Dashboard 1](diagrams/Screenshots/Analytics%20dash1.png)
+![Analytics Dashboard 1](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Analytics%20dash1.png)
 *Comprehensive analytics view showing habit statistics, completion rates, and progress tracking.*
 
-![Analytics Dashboard 2](diagrams/Screenshots/Analytics%20dash2.png)
+![Analytics Dashboard 2](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Analytics%20dash2.png)
 *Detailed analytics including streak tracking and performance metrics.*
 
 ### List All Habits View
-![List All Habits](diagrams/Screenshots/list%20all%20habits.png)
+![List All Habits](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/list%20all%20habits.png)
 *Overview of all habits with their current status, streaks, and completion information.*
 
 ### CSV Export Functionality
-![CSV Export](diagrams/Screenshots/csv%20export.png)
+![CSV Export](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/csv%20export.png)
 *Data export interface allowing users to download habits, completions, and analytics data.*
 
 ## 🎮 Demo Mode
@@ -96,7 +96,7 @@ Experience Momentum Hub instantly without setup:
 python momentum_main.py --demo
 ```
 
-![Demo Mode Welcome](diagrams/Screenshots/Main%20menu%20interface.png)
+![Demo Mode Welcome](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Main%20menu%20interface.png)
 *The demo mode welcome screen showing pre-populated data and available options.*
 
 Demo mode includes:
@@ -225,7 +225,7 @@ What would you like to do?
   Exit
 ```
 
-![Command Line Options](diagrams/Screenshots/Main%20py%20menu.png)
+![Command Line Options](https://github.com/aaronmalunga/momentum-hub/raw/main/diagrams/Screenshots/Main%20py%20menu.png)
 *Example of the main menu interface showing available command options.*
 
 ## 🤝 Contributing
