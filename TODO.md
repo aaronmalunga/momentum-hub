@@ -1,13 +1,15 @@
-- [x] Fix mocking in test_delete_goal_success
-- [x] Fix mocking in test_delete_goal_cancel
-- [x] Fix mocking in test_manage_goals_create
-- [x] Fix mocking in test_manage_goals_view
-- [x] Fix mocking in test_manage_goals_back
-- [x] Run tests to verify all fixes
-- [x] Create test_cli_habit_management.py to increase coverage for cli_habit_management.py (now 81%)
-- [x] Add tests for cli_category_management.py (now 91%)
-- [x] Add tests for cli_display.py (now 100%)
-- [ ] Add tests for cli_export.py (82%)
-- [ ] Add tests for habit_analysis.py (72% - existing tests are comprehensive)
-- [ ] Add tests for momentum_cli.py (75%)
-- [x] Fix AttributeError in test_delete_goal_success by correcting questionary.select and questionary.confirm mocking
+# TODO: Update Image Links in README.md
+
+## Steps to Complete
+- [x] Update all image links in README.md to use correct relative paths with underscores in filenames
+- [x] Replace GitHub URLs with relative paths for consistency
+- [x] Verify all image references match the actual filenames in diagrams/Screenshots/
+
+## Specific Changes
+- [x] Main menu interface.png -> Main_menu_interface.png
+- [x] Habit creation form.png -> Habit_creation_form.png
+- [x] Analytics dash1.png -> Analytics_dash_1.png
+- [x] Analytics dash2.png -> Analytics_dash_2.png
+- [x] list all habits.png -> list_all_habits.png
+- [x] csv export.png -> csv_export.png
+- [x] Main py menu.png -> Main_py_menu.png
