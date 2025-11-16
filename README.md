@@ -248,15 +248,7 @@ What would you like to do?
   Exit
 ```
 
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/raw/main/https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Main%20py%20menu.png)
 
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20py%20menu.png?raw=1)
-
-![Command Line Options](diagrams/Screenshots/Main_py_menu.png)
-
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20py%20menu.png?raw=1)
-
-*Example of the main menu interface showing available command options.*
 
 ## 🤝 Contributing
 
