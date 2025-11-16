@@ -76,7 +76,7 @@ pip install -e .[dev]
 
 
 ### Main Menu Interface
-![Main Menu Interface](diagrams/Screenshots/Main_py_menu_interface.png)
+![Main Menu Interface](diagrams/Screenshots/Main_py_menu.png)
 *The main menu showing all available options for habit management, analytics, and data operations.*
 
 ### Habit Creation Form
