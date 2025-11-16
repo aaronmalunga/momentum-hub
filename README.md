@@ -1,8 +1,8 @@
-
+# Momentum Hub
 
 A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
 
-# Momentum Hub
+
 
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -12,45 +12,6 @@ A powerful, modern CLI habit tracker designed to help you build and maintain dai
 ![Momentum Hub Banner](diagrams/Screenshots/ChatGPT_Image_Jul_12_2025_01_31_30_PM.png)
 
 
-# Momentum Hub
-
-[![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/momentum-hub/ci.yml)](https://github.com/yourusername/momentum-hub/actions)
-
-![Momentum Hub Banner](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/ChatGPT%20Image%20Jul%2012,%202025,%2001_31_30%20PM.png)
-
-A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
-
-
-=======
->>>>>>> 66eb3ab (Fix README.md image links to use raw GitHub URLs)
-
-A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
-=======
-# Momentum Hub
-
-[![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/momentum-hub/ci.yml)](https://github.com/yourusername/momentum-hub/actions)
-
-<<<<<<< HEAD
-![Momentum Hub Banner](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/ChatGPT%20Image%20Jul%2012,%202025,%2001_31_30%20PM.png)
-=======
-![Momentum Hub Banner](diagrams/Screenshots/ChatGPT_Image_Jul_12_2025_01_31_30_PM.png)
-
-A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
-=======
-![Momentum Hub Banner](diagrams/Screenshots/ChatGPT%20Image%20Jul%2012,%202025,%2001_31_30%20PM.png)
-
-A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
->>>>>>> e4083af (Fix README.md image links to use raw GitHub URLs)
-
-
-=======
->>>>>>> 66eb3ab (Fix README.md image links to use raw GitHub URLs)
-
-A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
 
 ## ✨ Key Features
 
