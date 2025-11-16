@@ -153,7 +153,7 @@ python momentum_main.py --help
 Momentum Hub follows a clean, modular architecture designed for maintainability and extensibility. The following diagrams provide visual representations of the system's structure, automatically generated from the actual codebase.
 
 #### **System Architecture Diagram**
-![System Architecture](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/uml/system_architecture_code.png)
+![System Architecture](diagrams/uml/system_architecture_code.png)
 
 *High-level overview showing the layered architecture with clear separation of concerns: CLI interface layer, core business logic, database persistence, and supporting utilities. This diagram illustrates how user interactions flow through the application layers.*
 
@@ -263,30 +263,7 @@ What would you like to do?
   Exit
 ```
 
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/raw/main/https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Main%20py%20menu.png)
 
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20py%20menu.png?raw=1)
-
-![Command Line Options](diagrams/Screenshots/Main_py_menu.png)
-
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20py%20menu.png?raw=1)
-
-*Example of the main menu interface showing available command options.*
->>>>>>> Stashed changes
-=======
-*Example of the main menu interface showing available command options.*
-
-=======
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/raw/main/https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Main%20py%20menu.png)
-
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20py%20menu.png?raw=1)
-
-![Command Line Options](diagrams/Screenshots/Main_py_menu.png)
-
-![Command Line Options](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20py%20menu.png?raw=1)
-
-*Example of the main menu interface showing available command options.*
->>>>>>> Stashed changes
 
 ## 🤝 Contributing
 
