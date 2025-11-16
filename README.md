@@ -158,14 +158,39 @@ Momentum Hub follows a clean, modular architecture designed for maintainability 
 *High-level overview showing the layered architecture with clear separation of concerns: CLI interface layer, core business logic, database persistence, and supporting utilities. This diagram illustrates how user interactions flow through the application layers.*
 
 #### **Component Diagram**
-![Component Diagram](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/uml/component_diagram_code.png)
+![Component Diagram](diagrams/uml/component_diagram_code.png)
 
 *Detailed component relationships and dependencies between modules. Shows how CLI modules interact with core classes and database operations, highlighting the modular design that enables easy feature additions and maintenance.*
 
 #### **Class Diagram**
-![Class Diagram](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/uml/class_diagram_code.png)
+![Class Diagram](diagrams/uml/class_diagram_code.png)
 
 *Object-oriented design showing the main classes (Habit, Category, Goal, Completion) with their attributes and methods. This diagram helps developers understand the data models and business logic encapsulation.*
+
+#### **Sequence Diagram**
+![Sequence Diagram](diagrams/uml/sequence_diagram.png)
+
+*Illustrates the flow of operations showing user interactions, database operations, and module communications for key features like habit creation, completion marking, analysis, and data export.*
+
+#### **Deployment Diagram**
+![Deployment Diagram](diagrams/uml/deployment_diagram.png)
+
+*Shows how the application is deployed with local SQLite database, Python runtime, and file system interactions. Illustrates the deployment architecture and dependencies.*
+
+#### **Module Mapping Diagram**
+![Module Mapping Diagram](diagrams/uml/module_mapping_diagram.png)
+
+*Visual representation of code organization showing modules grouped by programming paradigms (Object-Oriented, Functional/Procedural, Imperative/Controller, Adapter/Imperative) and their responsibilities.*
+
+#### **Data Flow Diagram**
+![Data Flow Diagram](diagrams/uml/data_flow_diagram.png)
+
+*Shows how data moves through the system from user input through validation, business logic, database operations, and output generation. Illustrates data processing and storage patterns.*
+
+#### **Package Diagram**
+![Package Diagram](diagrams/uml/package_diagram.png)
+
+*High-level package organization showing main packages (cli, core, db, analysis, utils, main, data) and their dependencies. Shows the overall package structure and imports.*
 
 #### **Core Components:**
 - **`momentum_main.py`**: Application entry point and CLI argument parsing

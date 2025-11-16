@@ -1,0 +1,39 @@
+@startuml
+node "User's Computer" {
+  [Python Environment]
+  [SQLite Database]
+  [Terminal / Command Line]
+}
+
+package "Momentum Hub Application" {
+  [momentum_cli.py] as CLI
+  [cli_*.py modules] as CLIModules
+  [habit.py] as Habit
+  [momentum_db.py] as DB
+  [habit_analysis.py] as Analysis
+}
+
+[Terminal / Command Line] --> CLI : run python momentum_cli.py
+CLI --> CLIModules : import CLI modules
+CLIModules --> Habit : create/update habits
+CLIModules --> DB : persist data
+CLIModules --> Analysis : analyze data
+
+Habit --> DB : business logic
+DB --> [SQLite Database] : store data
+
+[Python Environment] --> [momentum_cli.py] : execute
+[Python Environment] --> [SQLite Database] : access local DB
+
+note right of [SQLite Database]
+  Local file-based database
+  No external dependencies
+  Data stored in .db file
+end note
+
+note right of [Terminal / Command Line]
+  Command-line interface
+  Interactive menus using questionary
+  Colored output with colorama
+end note
+@enduml

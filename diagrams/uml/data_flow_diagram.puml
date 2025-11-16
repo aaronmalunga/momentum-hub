@@ -1,0 +1,78 @@
+@startuml
+skinparam componentStyle rectangle
+
+actor "User" as User
+
+package "Input Processing" {
+  [Terminal Input] as Input
+  [CLI Parser] as Parser
+  [Validation] as Validate
+}
+
+package "Business Logic" {
+  [Habit Management] as HabitLogic
+  [Analysis Engine] as Analysis
+  [Data Export] as Export
+}
+
+package "Data Storage" {
+  [Database Layer] as DBLayer
+  [SQLite Database] as SQLite
+}
+
+package "Output Generation" {
+  [Display Formatter] as Display
+  [File Writer] as Writer
+  [Console Output] as Console
+}
+
+User --> Input : User Input (commands, data)
+Input --> Parser : Parse commands
+Parser --> Validate : Validate input
+Validate --> HabitLogic : Validated data
+
+HabitLogic --> DBLayer : CRUD operations
+Analysis --> DBLayer : Query data
+Export --> DBLayer : Retrieve data
+
+DBLayer --> SQLite : Store/Retrieve data
+SQLite --> DBLayer : Data results
+
+DBLayer --> HabitLogic : Operation results
+DBLayer --> Analysis : Query results
+DBLayer --> Export : Export data
+
+HabitLogic --> Display : Format results
+Analysis --> Display : Format analysis
+Export --> Writer : Write to file
+
+Display --> Console : Display to user
+Writer --> Console : Confirmation message
+Console --> User : Output
+
+note right of Input
+  Keyboard input from terminal
+  Commands like create, complete, analyze
+end note
+
+note right of Validate
+  Time format validation
+  Habit selection validation
+  Data type checks
+end note
+
+note right of DBLayer
+  momentum_db.py
+  Handles connections, queries, transactions
+end note
+
+note right of Display
+  cli_display.py
+  Formats tables, colors, layouts
+end note
+
+note right of Writer
+  cli_export.py
+  CSV generation and file writing
+end note
+@enduml
