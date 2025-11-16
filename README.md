@@ -1,4 +1,9 @@
+<div align="center">
+
 # Momentum Hub
+
+</div>
+
 
 A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
 
@@ -71,28 +76,7 @@ pip install -e .[dev]
 
 
 ### Main Menu Interface
-![Main Menu Interface](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Main%20menu%20interface.png)
-*The main menu showing all available options for habit management, analytics, and data operations.*
-
-### Habit Creation Form
-![Habit Creation Form](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Habit%20creation%20form.png)
-*Interactive form for creating new habits with frequency selection, reminders, and category assignment.*
-
-### Analytics Dashboard
-![Analytics Dashboard 1](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Analytics%20dash1.png)
-*Comprehensive analytics view showing habit statistics, completion rates, and progress tracking.*
-
-![Analytics Dashboard 2](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Analytics%20dash2.png)
-*Detailed analytics including streak tracking and performance metrics.*
-
-### List All Habits View
-![List All Habits](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/list%20all%20habits.png)
-*Overview of all habits with their current status, streaks, and completion information.*
-
-### CSV Export Functionality
-![CSV Export](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/csv%20export.png)
-=======
-![Main Menu Interface](diagrams/Screenshots/Main_menu_interface.png)
+![Main Menu Interface](diagrams/Screenshots/Main_py_menu_interface.png)
 *The main menu showing all available options for habit management, analytics, and data operations.*
 
 ### Habit Creation Form
@@ -112,26 +96,19 @@ pip install -e .[dev]
 
 ### CSV Export Functionality
 ![CSV Export](diagrams/Screenshots/csv_export.png)
->>>>>>> 66eb3ab (Fix README.md image links to use raw GitHub URLs)
-=======
-### Main Menu Interface
-![Main Menu Interface](diagrams/Screenshots/Main%20menu%20interface.png)
+*Data export interface allowing users to download habits, completions, and analytics data.*
+
+![Main Menu Interface](diagrams/Screenshots/Main_menu_interface.png)
 *The main menu showing all available options for habit management, analytics, and data operations.*
 
 ### Habit Creation Form
-![Habit Creation Form](diagrams/Screenshots/Habit%20creation%20form.png)
+![Habit Creation Form](diagrams/Screenshots/Habit_creation_form.png)
 *Interactive form for creating new habits with frequency selection, reminders, and category assignment.*
 
 ### Analytics Dashboard
-![Analytics Dashboard 1](diagrams/Screenshots/Analytics%20dash1.png)
+![Analytics Dashboard 1](diagrams/Screenshots/Analytics_dash_1.png)
 *Comprehensive analytics view showing habit statistics, completion rates, and progress tracking.*
 
-![Analytics Dashboard 2](diagrams/Screenshots/Analytics%20dash2.png)
-*Detailed analytics including streak tracking and performance metrics.*
-
-### CSV Export Functionality
-![CSV Export](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/csv%20export.png?raw=1)
-*Data export interface allowing users to download habits, completions, and analytics data.*
 
 ## 🎮 Demo Mode
 
