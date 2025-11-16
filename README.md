@@ -69,7 +69,7 @@ pip install -e .[dev]
 
 ## 📸 Screenshots
 
-<<<<<<< HEAD
+
 ### Main Menu Interface
 ![Main Menu Interface](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Main%20menu%20interface.png)
 *The main menu showing all available options for habit management, analytics, and data operations.*
@@ -156,8 +156,6 @@ pip install -e .[dev]
 
 ### CSV Export Functionality
 ![CSV Export](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/csv%20export.png?raw=1)
->>>>>>> 66eb3ab (Fix README.md image links to use raw GitHub URLs)
->>>>>>> e4083af (Fix README.md image links to use raw GitHub URLs)
 *Data export interface allowing users to download habits, completions, and analytics data.*
 
 ## 🎮 Demo Mode
@@ -169,17 +167,7 @@ Experience Momentum Hub instantly without setup:
 python momentum_main.py --demo
 ```
 
-<<<<<<< HEAD
-![Demo Mode Welcome](https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Main%20menu%20interface.png)
-=======
-![Demo Mode Welcome](diagrams/Screenshots/Main%20menu%20interface.png)
->>>>>>> 66eb3ab (Fix README.md image links to use raw GitHub URLs)
-=======
 ![Demo Mode Welcome](diagrams/Screenshots/Main_menu_interface.png)
-=======
-![Demo Mode Welcome](diagrams/Screenshots/Main%20menu%20interface.png)
->>>>>>> 66eb3ab (Fix README.md image links to use raw GitHub URLs)
->>>>>>> e4083af (Fix README.md image links to use raw GitHub URLs)
 *The demo mode welcome screen showing pre-populated data and available options.*
 
 Demo mode includes:
@@ -308,17 +296,14 @@ What would you like to do?
   Exit
 ```
 
-<<<<<<< HEAD
 ![Command Line Options](https://github.com/aaronmalunga/momentum-hub/raw/main/https://raw.githubusercontent.com/aaronmalunga/momentum-hub/main/diagrams/Screenshots/Main%20py%20menu.png)
-=======
+
 ![Command Line Options](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20py%20menu.png?raw=1)
->>>>>>> 66eb3ab (Fix README.md image links to use raw GitHub URLs)
-=======
+
 ![Command Line Options](diagrams/Screenshots/Main_py_menu.png)
-=======
+
 ![Command Line Options](https://github.com/aaronmalunga/momentum-hub/blob/main/diagrams/Screenshots/Main%20py%20menu.png?raw=1)
->>>>>>> 66eb3ab (Fix README.md image links to use raw GitHub URLs)
->>>>>>> e4083af (Fix README.md image links to use raw GitHub URLs)
+
 *Example of the main menu interface showing available command options.*
 
 ## 🤝 Contributing
