@@ -4,24 +4,6 @@
 
 </div>
 
-> **Table of Contents**
->
-> - [✨ Key Features](#-key-features)
-> - [🚀 Installation](#-installation)
-> - [🎯 Quick Start](#-quick-start)
-> - [⚙️ Configuration & Environment Variables](#️-configuration--environment-variables)
-> - [🎮 Advanced Demo Mode](#-advanced-demo-mode)
-> - [📸 Screenshots](#-screenshots)
-> - [🎮 Demo Mode](#-demo-mode)
-> - [📖 Advanced Usage](#-advanced-usage)
-> - [🏗️ Architecture](#️-architecture)
-> - [🤝 Contributing](#-contributing)
-> - [🧪 Testing & Quality Assurance](#-testing--quality-assurance)
-> - [🔧 Development Setup](#-development-setup)
-> - [⚠️ Limitations and Future Improvements](#️-limitations-and-future-improvements)
-> - [📄 License](#-license)
-> - [🔗 Links](#-links)
-> - [🙏 Acknowledgments](#-acknowledgments)
 
 A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
 
@@ -47,6 +29,25 @@ A powerful, modern CLI habit tracker designed to help you build and maintain dai
 - **🔄 Habit Management**: Create, update, delete, and reactivate habits with ease
 - **📅 Completion Tracking**: Log completions with timestamps and maintain detailed history
 - **🎨 Modern CLI**: Beautiful, interactive interface with colors, tables, and ASCII art
+
+> **Table of Contents**
+>
+> - [✨ Key Features](#-key-features)
+> - [🚀 Installation](#-installation)
+> - [🎯 Quick Start](#-quick-start)
+> - [⚙️ Configuration & Environment Variables](#️-configuration--environment-variables)
+> - [🎮 Advanced Demo Mode](#-advanced-demo-mode)
+> - [📸 Screenshots](#-screenshots)
+> - [🎮 Demo Mode](#-demo-mode)
+> - [📖 Advanced Usage](#-advanced-usage)
+> - [🏗️ Architecture](#️-architecture)
+> - [🤝 Contributing](#-contributing)
+> - [🧪 Testing & Quality Assurance](#-testing--quality-assurance)
+> - [🔧 Development Setup](#-development-setup)
+> - [⚠️ Limitations and Future Improvements](#️-limitations-and-future-improvements)
+> - [📄 License](#-license)
+> - [🔗 Links](#-links)
+> - [🙏 Acknowledgments](#-acknowledgments)
 
 ## 🚀 Installation
 
