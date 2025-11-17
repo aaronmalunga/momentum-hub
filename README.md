@@ -4,6 +4,24 @@
 
 </div>
 
+> **Table of Contents**
+>
+> - [✨ Key Features](#-key-features)
+> - [🚀 Installation](#-installation)
+> - [🎯 Quick Start](#-quick-start)
+> - [⚙️ Configuration & Environment Variables](#️-configuration--environment-variables)
+> - [🎮 Advanced Demo Mode](#-advanced-demo-mode)
+> - [📸 Screenshots](#-screenshots)
+> - [🎮 Demo Mode](#-demo-mode)
+> - [📖 Advanced Usage](#-advanced-usage)
+> - [🏗️ Architecture](#️-architecture)
+> - [🤝 Contributing](#-contributing)
+> - [🧪 Testing & Quality Assurance](#-testing--quality-assurance)
+> - [🔧 Development Setup](#-development-setup)
+> - [⚠️ Limitations and Future Improvements](#️-limitations-and-future-improvements)
+> - [📄 License](#-license)
+> - [🔗 Links](#-links)
+> - [🙏 Acknowledgments](#-acknowledgments)
 
 A powerful, modern CLI habit tracker designed to help you build and maintain daily and weekly habits. Track your progress, analyze patterns, set goals, and stay motivated with rich analytics and an intuitive interface.
 
@@ -71,6 +89,53 @@ pip install -e .[dev]
 
 4. **View analytics**:
    - Choose "Analyze habits" to see detailed statistics and trends
+
+## ⚙️ Configuration & Environment Variables
+
+Momentum Hub supports several environment variables for customization:
+
+- **`MOMENTUM_DB`**: Override the default database filename (default: `momentum.db`)
+- **`MOMENTUM_DEMO_DB`**: Override the demo database filename (default: `momentum_demo.db`)
+
+**Examples:**
+```bash
+# Use custom database
+MOMENTUM_DB=my_habits.db python momentum_main.py
+
+# Use custom demo database
+MOMENTUM_DEMO_DB=demo.db python momentum_main.py --demo
+```
+
+## 🎮 Advanced Demo Mode
+
+### Demo Database Seeding Script
+
+For advanced demo database setup, use the dedicated seeding script:
+
+```bash
+# Seed demo database (safe default: momentum_demo.db)
+python scripts/seed_demo_db.py
+
+# Seed specific database file
+python scripts/seed_demo_db.py --db custom_demo.db
+
+# Overwrite existing database (use with caution)
+python scripts/seed_demo_db.py --db momentum.db --overwrite
+```
+
+The seeding script creates realistic demo data including:
+- 8 predefined categories (Health & Fitness, Personal Development, Productivity, etc.)
+- Sample habits with realistic completion patterns
+- Goal examples with various time periods
+- Historical completion data for meaningful analytics
+
+### Demo Mode Features
+
+Demo mode automatically:
+- Creates isolated `momentum_demo.db` database
+- Seeds with comprehensive demo data
+- Provides safe exploration without affecting real data
+- Includes goals, categories, and completion history
 
 ## 📸 Screenshots
 
@@ -148,7 +213,7 @@ python momentum_main.py --help
 - **[API Documentation](docs/api.md)**: Comprehensive API reference for developers
 - **[Usage Guide](USAGE.md)**: Advanced usage patterns and reviewer workflows
 
-### 🏗️ Architecture Overview
+## 🏗️ Architecture
 
 Momentum Hub follows a clean, modular architecture designed for maintainability and extensibility. The following diagrams provide visual representations of the system's structure, automatically generated from the actual codebase.
 
@@ -359,7 +424,7 @@ We welcome contributions! Here's how to get started:
 pytest
 
 # Run with coverage report
-pytest --cov=src
+pytest --cov --cov-report=term-missing
 
 # Run specific test file
 pytest tests/test_habit.py
@@ -369,17 +434,24 @@ pytest -v
 ```
 
 ### Test Coverage
-The project maintains high test coverage (~85%) across all core modules including:
+The project maintains high test coverage (90%+) across all core modules including:
 - Core habit functionality
 - Database operations
 - CLI interfaces
 - Analysis features
 - Export functionality
+- Goal management
+- Category organization
 
-### Code Quality
-- **Pre-commit hooks**: Automated code formatting and linting
+### Code Quality Tools
+- **Pre-commit hooks**: Automated code formatting and linting with:
+  - `black` (code formatting)
+  - `isort` (import sorting)
+  - `flake8` (linting)
+  - `mypy` (type checking)
 - **Type hints**: Comprehensive type annotations throughout the codebase
 - **PEP 8 compliance**: Consistent code style and formatting
+- **GitHub Actions CI/CD**: Automated testing and quality checks
 
 ## 🔧 Development Setup
 
@@ -417,6 +489,44 @@ pre-commit run --all-files
 black .
 isort .
 ```
+
+### Development Scripts
+
+The `scripts/` directory contains several development utilities:
+
+- **`scripts/seed_demo_db.py`**: Advanced demo database seeding with customizable options
+- **`scripts/generate_arch_diagrams.py`**: Generate architecture diagrams from code
+- **`scripts/generate_code_based_diagrams.py`**: Create UML diagrams automatically
+- **`scripts/seed_data.py`**: Production seed data management
+
+### Database Schema
+
+The application uses SQLite with the following core tables:
+
+- **`habits`**: Habit definitions with metadata and settings
+- **`completions`**: Completion records with timestamps
+- **`goals`**: Goal definitions with target periods and completions
+- **`categories`**: Category organization for habits
+- **`errors`**: Centralized error message storage
+
+All tables include proper foreign key relationships and indexing for performance.
+
+### Error Handling Architecture
+
+The application features a centralized error management system (`error_manager.py`) that provides:
+
+- User-friendly error messages with customizable formatting
+- Database-backed error message storage
+- Graceful error recovery and user guidance
+- Comprehensive error logging for debugging
+
+### Backup & Safety Features
+
+Before destructive operations, the application automatically creates backups:
+
+- Database backups are stored in the `backups/` directory
+- CSV exports are timestamped and stored in `CSV Export/`
+- Backup creation is handled transparently by maintenance scripts
 
 ## ⚠️ Limitations and Future Improvements
 
