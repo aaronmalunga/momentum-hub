@@ -1,0 +1,5 @@
+name,frequency,streak,completion_rate,category,total_completions
+Exercise,daily,12,0.85,Health,26
+Read,daily,8,0.92,Learning,27
+Meditate,weekly,5,0.78,Mindfulness,2
+Code,daily,15,0.88,Productivity,24

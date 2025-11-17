@@ -1,0 +1,50 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Habit {
+  - id
+  - name
+  - frequency
+  - notes
+  - streak
+  - created_at
+  - last_completed
+  - is_active
+  + edit_habit(...)
+  + delete_habit()
+  + mark_completed(dt)
+  + to_dict()
+}
+
+class "momentum_db\n(persistence)" as MomentumDB {
+  + init_db(db_name)
+  + add_habit(habit, db_name)
+  + get_habit(habit_id, db_name)
+  + update_habit(habit, db_name)
+  + delete_habit(habit_id, db_name)
+  + get_all_habits(active_only, db_name)
+}
+
+class "habit_analysis\n(analytics)" as HabitAnalysis {
+  + calculate_completion_rate_for_habit(habit_id, db_name)
+  + calculate_longest_streak_for_habit(habit_id, db_name)
+  + calculate_best_worst_habit(db_name)
+  + get_completion_history(habit_id, db_name)
+}
+
+class "momentum_cli\n(cli controller)" as CLI {
+  + start_cli(db_name)
+  + main_menu(db_name)
+  + view_habits(db_name)
+  + create_new_habit(db_name)
+  + mark_habit_completed(db_name)
+  + analyze_habits(db_name)
+  + export_all_habits_to_csv(db_name)
+}
+
+Habit "1" *-- "many" MomentumDB : stored via >
+MomentumDB --> Habit : returns Habit / accepts Habit
+HabitAnalysis ..> MomentumDB : queries DB
+CLI --> MomentumDB : uses
+CLI --> HabitAnalysis : calls
+@enduml
