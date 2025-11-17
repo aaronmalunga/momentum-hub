@@ -228,8 +228,11 @@ Momentum Hub follows a clean, modular architecture designed for maintainability 
 
 *Detailed component relationships and dependencies between modules. Shows how CLI modules interact with core classes and database operations, highlighting the modular design that enables easy feature additions and maintenance.*
 
+
 #### **Class Diagram**
+<div align="center">
 ![Class Diagram](diagrams/uml/class_diagram_code.png)
+</div>   
 
 *Object-oriented design showing the main classes (Habit, Category, Goal, Completion) with their attributes and methods. This diagram helps developers understand the data models and business logic encapsulation.*
 
