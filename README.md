@@ -573,3 +573,4 @@ Built with modern Python libraries including:
 ---
 
 **Start building better habits today with Momentum Hub!** 🚀
+habits today with Momentum Hub!** 🚀
