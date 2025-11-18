@@ -148,6 +148,110 @@ class TestCreateGoal:
             goals = db.get_all_goals(db_name=tmp_db_path)
             assert len(goals) == 0
 
+    def test_create_goal_invalid_target_period_days(self, tmp_db_path):
+        # Create a habit first
+        h = Habit(name="Test Habit", frequency="daily")
+        hid = db.add_habit(h, tmp_db_path)
+
+        with patch('cli_goal_management._handle_habit_selection') as mock_handle, \
+             patch('questionary.text') as mock_text, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            habit = db.get_habit(hid, tmp_db_path)
+            mock_handle.return_value = habit
+            # Create mock prompt objects that return the desired values
+            mock_prompts = [
+                MagicMock(ask=MagicMock(return_value="invalid")),
+                MagicMock(ask=MagicMock(return_value=None))
+            ]
+            mock_text.side_effect = mock_prompts
+
+            create_goal(tmp_db_path)
+
+            # Should not create goal due to invalid input
+            goals = db.get_all_goals(db_name=tmp_db_path)
+            assert len(goals) == 0
+
+    def test_create_goal_invalid_start_date(self, tmp_db_path):
+        # Create a habit first
+        h = Habit(name="Test Habit", frequency="daily")
+        hid = db.add_habit(h, tmp_db_path)
+
+        with patch('cli_goal_management._handle_habit_selection') as mock_handle, \
+             patch('questionary.text') as mock_text, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            habit = db.get_habit(hid, tmp_db_path)
+            mock_handle.return_value = habit
+            # Create mock prompt objects that return the desired values
+            mock_prompts = [
+                MagicMock(ask=MagicMock(return_value="28")),
+                MagicMock(ask=MagicMock(return_value="")),
+                MagicMock(ask=MagicMock(return_value="invalid-date")),
+                MagicMock(ask=MagicMock(return_value=None))
+            ]
+            mock_text.side_effect = mock_prompts
+
+            create_goal(tmp_db_path)
+
+            # Should not create goal due to invalid input
+            goals = db.get_all_goals(db_name=tmp_db_path)
+            assert len(goals) == 0
+
+    def test_create_goal_invalid_end_date(self, tmp_db_path):
+        # Create a habit first
+        h = Habit(name="Test Habit", frequency="daily")
+        hid = db.add_habit(h, tmp_db_path)
+
+        with patch('cli_goal_management._handle_habit_selection') as mock_handle, \
+             patch('questionary.text') as mock_text, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            habit = db.get_habit(hid, tmp_db_path)
+            mock_handle.return_value = habit
+            # Create mock prompt objects that return the desired values
+            mock_prompts = [
+                MagicMock(ask=MagicMock(return_value="28")),
+                MagicMock(ask=MagicMock(return_value="")),
+                MagicMock(ask=MagicMock(return_value="")),
+                MagicMock(ask=MagicMock(return_value="invalid-date")),
+                MagicMock(ask=MagicMock(return_value=None))
+            ]
+            mock_text.side_effect = mock_prompts
+
+            create_goal(tmp_db_path)
+
+            # Should not create goal due to invalid input
+            goals = db.get_all_goals(db_name=tmp_db_path)
+            assert len(goals) == 0
+
+    def test_create_goal_cancel_target_period(self, tmp_db_path):
+        # Create a habit first
+        h = Habit(name="Test Habit", frequency="daily")
+        hid = db.add_habit(h, tmp_db_path)
+
+        with patch('cli_goal_management._handle_habit_selection') as mock_handle, \
+             patch('questionary.text') as mock_text, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            habit = db.get_habit(hid, tmp_db_path)
+            mock_handle.return_value = habit
+            # Create mock prompt objects that return the desired values
+            mock_prompts = [
+                MagicMock(ask=MagicMock(return_value=None)),
+            ]
+            mock_text.side_effect = mock_prompts
+
+            create_goal(tmp_db_path)
+
+            # Should not create goal due to cancellation
+            goals = db.get_all_goals(db_name=tmp_db_path)
+            assert len(goals) == 0
+
 
 class TestViewGoals:
     def test_view_goals_with_data(self, sample_data):
@@ -273,6 +377,125 @@ class TestDeleteGoal:
 
             mock_show.assert_called_with("No active goals found to delete.", color='\x1b[31m')
 
+    def test_update_goal_cancel_target_period_days(self, sample_data):
+        tmp_db_path, hid, goal_id = sample_data
+
+        with patch('questionary.select') as mock_select, \
+             patch('questionary.text') as mock_text, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            goal = db.get_goal(goal_id, tmp_db_path)
+            habit = db.get_habit(hid, tmp_db_path)
+            progress = goal.calculate_progress(tmp_db_path)
+
+            mock_select_prompt = MagicMock(ask=MagicMock(return_value=f"{goal_id}. {habit.name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"))
+            mock_text_prompts = [
+                MagicMock(ask=MagicMock(return_value=None)),  # cancel target_period_days
+            ]
+            mock_select.return_value = mock_select_prompt
+            mock_text.side_effect = mock_text_prompts
+
+            update_goal(tmp_db_path)
+
+            mock_show.assert_called_with("Update cancelled.", color='\x1b[33m')
+
+    def test_update_goal_invalid_target_completions(self, sample_data):
+        tmp_db_path, hid, goal_id = sample_data
+
+        with patch('questionary.select') as mock_select, \
+             patch('questionary.text') as mock_text, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            goal = db.get_goal(goal_id, tmp_db_path)
+            habit = db.get_habit(hid, tmp_db_path)
+            progress = goal.calculate_progress(tmp_db_path)
+
+            mock_select_prompt = MagicMock(ask=MagicMock(return_value=f"{goal_id}. {habit.name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"))
+            mock_text_prompts = [
+                MagicMock(ask=MagicMock(return_value="30")),  # target_period_days
+                MagicMock(ask=MagicMock(return_value="invalid")),  # invalid target_completions
+            ]
+            mock_select.return_value = mock_select_prompt
+            mock_text.side_effect = mock_text_prompts
+
+            update_goal(tmp_db_path)
+
+            mock_show.assert_called_with("Invalid target completions. Must be a number.", color='\x1b[31m')
+
+    def test_update_goal_invalid_start_date(self, sample_data):
+        tmp_db_path, hid, goal_id = sample_data
+
+        with patch('questionary.select') as mock_select, \
+             patch('questionary.text') as mock_text, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            goal = db.get_goal(goal_id, tmp_db_path)
+            habit = db.get_habit(hid, tmp_db_path)
+            progress = goal.calculate_progress(tmp_db_path)
+
+            mock_select_prompt = MagicMock(ask=MagicMock(return_value=f"{goal_id}. {habit.name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"))
+            mock_text_prompts = [
+                MagicMock(ask=MagicMock(return_value="30")),  # target_period_days
+                MagicMock(ask=MagicMock(return_value="")),  # target_completions
+                MagicMock(ask=MagicMock(return_value="invalid-date")),  # invalid start_date
+            ]
+            mock_select.return_value = mock_select_prompt
+            mock_text.side_effect = mock_text_prompts
+
+            update_goal(tmp_db_path)
+
+            mock_show.assert_called_with("Invalid date format. Use YYYY-MM-DD.", color='\x1b[31m')
+
+    def test_update_goal_invalid_end_date(self, sample_data):
+        tmp_db_path, hid, goal_id = sample_data
+
+        with patch('questionary.select') as mock_select, \
+             patch('questionary.text') as mock_text, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            goal = db.get_goal(goal_id, tmp_db_path)
+            habit = db.get_habit(hid, tmp_db_path)
+            progress = goal.calculate_progress(tmp_db_path)
+
+            mock_select_prompt = MagicMock(ask=MagicMock(return_value=f"{goal_id}. {habit.name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"))
+            mock_text_prompts = [
+                MagicMock(ask=MagicMock(return_value="30")),  # target_period_days
+                MagicMock(ask=MagicMock(return_value="")),  # target_completions
+                MagicMock(ask=MagicMock(return_value="")),  # start_date
+                MagicMock(ask=MagicMock(return_value="invalid-date")),  # invalid end_date
+            ]
+            mock_select.return_value = mock_select_prompt
+            mock_text.side_effect = mock_text_prompts
+
+            update_goal(tmp_db_path)
+
+            mock_show.assert_called_with("Invalid date format. Use YYYY-MM-DD.", color='\x1b[31m')
+
+    def test_delete_goal_cancel_confirm(self, sample_data):
+        tmp_db_path, hid, goal_id = sample_data
+
+        with patch('questionary.select') as mock_select, \
+             patch('questionary.confirm') as mock_confirm, \
+             patch('cli_goal_management.show_colored_message') as mock_show, \
+             patch('cli_goal_management.press_enter_to_continue'):
+
+            goal = db.get_goal(goal_id, tmp_db_path)
+            habit = db.get_habit(hid, tmp_db_path)
+            progress = goal.calculate_progress(tmp_db_path)
+
+            mock_select_prompt = MagicMock(ask=MagicMock(return_value=f"{goal_id}. {habit.name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"))
+            mock_select.return_value = mock_select_prompt
+            mock_confirm_prompt = MagicMock(ask=MagicMock(return_value=False))  # cancel confirm
+            mock_confirm.return_value = mock_confirm_prompt
+
+            delete_goal(tmp_db_path)
+
+            mock_show.assert_called_with("Deletion cancelled.", color='\x1b[33m')
+
 
 class TestManageGoals:
     def test_manage_goals_create(self, tmp_db_path):
@@ -305,3 +528,25 @@ class TestManageGoals:
             manage_goals(tmp_db_path)
 
             # Should not raise any exceptions
+
+    def test_manage_goals_update(self, tmp_db_path):
+        with patch('cli_goal_management.questionary.select') as mock_select, \
+             patch('cli_goal_management.update_goal') as mock_update:
+
+            mock_select_prompt = MagicMock(ask=MagicMock(return_value="Update a goal"))
+            mock_select.return_value = mock_select_prompt
+
+            manage_goals(tmp_db_path)
+
+            mock_update.assert_called_once_with(tmp_db_path)
+
+    def test_manage_goals_delete(self, tmp_db_path):
+        with patch('cli_goal_management.questionary.select') as mock_select, \
+             patch('cli_goal_management.delete_goal') as mock_delete:
+
+            mock_select_prompt = MagicMock(ask=MagicMock(return_value="Delete a goal"))
+            mock_select.return_value = mock_select_prompt
+
+            manage_goals(tmp_db_path)
+
+            mock_delete.assert_called_once_with(tmp_db_path)

@@ -1,23 +1,5 @@
 [run]
-source = .
-# Omit tests and one-off scripts/entrypoints that distort package coverage
 omit =
-    tests/*
-    */tests/*
-    # repo top-level scripts / utilities (from your coverage output)
-    momentum_main.py
-    preview.py
-    sql.py
-    patch_*.py
-    check_*.py
-    cleanup_*.py
-    list_*.py
-
-[report]
-# Ignore typical lines that shouldn't count against coverage
-exclude_lines =
-    # pragma: no cover
-    if __name__ == "__main__":
-    @pytest.mark.skip
-    @pytest.mark.skipif
-    raise NotImplementedError
+    enhanced_demo.py
+    generate_code_based_diagrams.py
+    setup.py

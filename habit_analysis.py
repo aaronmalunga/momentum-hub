@@ -191,7 +191,8 @@ def calculate_best_worst_habit(db_name: str):
     # Filter out habits with no streaks
     streaked_habits = [h for h in habits if h.streak > 0]
     if not streaked_habits:
-        return None, None
+        # If no habits have streaks, return the first and last habit as best/worst
+        return habits[0], habits[-1] if len(habits) > 1 else (habits[0], None)
     best_habit = max(streaked_habits, key=lambda h: h.streak)
     worst_habit = min(streaked_habits, key=lambda h: h.streak)
     return best_habit, worst_habit

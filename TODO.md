@@ -1,15 +1,10 @@
-# TODO: Update Image Links in README.md
+# TODO: Increase Test Coverage to 90%
 
-## Steps to Complete
-- [x] Update all image links in README.md to use correct relative paths with underscores in filenames
-- [x] Replace GitHub URLs with relative paths for consistency
-- [x] Verify all image references match the actual filenames in diagrams/Screenshots/
-
-## Specific Changes
-- [x] Main menu interface.png -> Main_menu_interface.png
-- [x] Habit creation form.png -> Habit_creation_form.png
-- [x] Analytics dash1.png -> Analytics_dash_1.png
-- [x] Analytics dash2.png -> Analytics_dash_2.png
-- [x] list all habits.png -> list_all_habits.png
-- [x] csv export.png -> csv_export.png
-- [x] Main py menu.png -> Main_py_menu.png
+## Pending Tasks
+- [ ] Add tests for cli_goal_management.py to cover missing lines (49, 58-60, 79-82, 91-94, 182-188, 197-199, 206-208, 215-220, 228-233, 262-264, 270-276)
+- [ ] Add tests for cli_habit_management.py to cover missing lines (34-36, 42-44, 50-52, 65-66, 109-112, 116-123, 141, 176-179, 194-196, 210, 223, 231, 239, 245, 249, 256, 260-263)
+- [ ] Add tests for cli_export.py to cover missing lines (23-28, 52-53, 60-62, 94-96, 135-137, 141, 181-182)
+- [ ] Add tests for habit_analysis.py to cover missing lines (68, 82, 94, 109, 129, 194, 215, 244-261, 281-287, 301-334)
+- [ ] Add tests for momentum_cli.py to cover missing lines (74-84)
+- [ ] Run coverage analysis to verify 90%+ coverage achieved
+- [ ] Ensure all new tests pass

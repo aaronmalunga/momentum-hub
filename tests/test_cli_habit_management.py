@@ -46,6 +46,35 @@ class TestCreateNewHabit:
         mock_update.assert_called_once()
 
     @patch('cli_habit_management.questionary.text')
+    @patch('cli_habit_management.questionary.select')
+    @patch('cli_habit_management.db.add_habit')
+    @patch('cli_habit_management.db.get_all_categories')
+    @patch('cli_habit_management.show_colored_message')
+    @patch('cli_habit_management.press_enter_to_continue')
+    def test_create_new_habit_no_category(self, mock_press, mock_show, mock_get_cats, mock_add, mock_select, mock_text):
+        # Mock inputs
+        mock_text.side_effect = [
+            MagicMock(ask=MagicMock(return_value='Test Habit')),
+            MagicMock(ask=MagicMock(return_value='Some notes')),
+            MagicMock(ask=MagicMock(return_value='08:00')),
+            MagicMock(ask=MagicMock(return_value='20:00'))
+        ]
+        mock_select.side_effect = [
+            MagicMock(ask=MagicMock(return_value='daily')),
+            MagicMock(ask=MagicMock(return_value='No category'))
+        ]
+        mock_get_cats.return_value = [MagicMock(id=1, name='Test Category')]
+        mock_add.return_value = 1
+
+        create_new_habit('test.db')
+
+        # Verify habit creation without category
+        mock_add.assert_called_once()
+        habit_arg = mock_add.call_args[0][0]
+        assert habit_arg.name == 'Test Habit'
+        assert habit_arg.frequency == 'daily'
+
+    @patch('cli_habit_management.questionary.text')
     @patch('cli_habit_management.show_colored_message')
     @patch('cli_habit_management.press_enter_to_continue')
     def test_create_new_habit_cancel_name(self, mock_press, mock_show, mock_text):

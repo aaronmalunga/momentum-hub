@@ -14,6 +14,11 @@ def tmp_db_path(tmp_path):
     # initialize schema
     db.init_db(db_name=db_name)
     return db_name
+
+@pytest.fixture
+def test_db_path():
+    """Fixture for using the persistent test database."""
+    return "tests/test_dbs/test_momentum.db"
 def test_sanity_probe():
     assert True
 

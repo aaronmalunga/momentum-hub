@@ -54,10 +54,7 @@ def main():
         # First-time user: in demo mode we auto-create demo habits without prompting.
         if args.demo:
             create_demo_habits(db_name)
-        else:
-            # Offer demo habits to regular users on empty DBs
-            if prompt_for_demo_habits():
-                create_demo_habits(db_name)
+        # Regular mode starts with empty database - users create their own habits
     
     # Start the CLI with the database name
     start_cli(db_name)

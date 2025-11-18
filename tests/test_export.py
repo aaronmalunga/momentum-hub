@@ -8,7 +8,7 @@ from unittest.mock import patch, MagicMock
 import momentum_db as db
 from habit import Habit
 from completion import export_completions_to_csv
-from cli_export import export_all_habits_to_csv, export_all_completions_to_csv, export_habit_completions_to_csv
+from cli_export import analyze_export_csv, export_all_habits_to_csv, export_all_completions_to_csv, export_habit_completions_to_csv
 from colorama import Fore
 
 @pytest.fixture
@@ -168,3 +168,37 @@ def test_export_all_completions_to_csv_error_handling(tmp_db_path, tmp_path):
             with patch('cli_export.press_enter_to_continue'):
                 export_all_completions_to_csv(tmp_db_path)
                 mock_show.assert_called_with("Error exporting completions: Permission denied", color=Fore.RED)
+
+def test_analyze_export_csv_all_habits(sample_data):
+    db_name, hid1, hid2 = sample_data
+    with patch('cli_export.questionary.select') as mock_select, \
+         patch('cli_export.export_all_habits_to_csv') as mock_export, \
+         patch('cli_export.press_enter_to_continue'):
+        mock_select.return_value.ask.return_value = "Export all habits and their details"
+        analyze_export_csv(db_name)
+        mock_export.assert_called_once_with(db_name)
+
+def test_analyze_export_csv_all_completions(sample_data):
+    db_name, hid1, hid2 = sample_data
+    with patch('cli_export.questionary.select') as mock_select, \
+         patch('cli_export.export_all_completions_to_csv') as mock_export, \
+         patch('cli_export.press_enter_to_continue'):
+        mock_select.return_value.ask.return_value = "Export completions for all habits"
+        analyze_export_csv(db_name)
+        mock_export.assert_called_once_with(db_name)
+
+def test_analyze_export_csv_specific_habit(sample_data):
+    db_name, hid1, hid2 = sample_data
+    with patch('cli_export.questionary.select') as mock_select, \
+         patch('cli_export.export_habit_completions_to_csv') as mock_export, \
+         patch('cli_export.press_enter_to_continue'):
+        mock_select.return_value.ask.return_value = "Export completions for a specific habit"
+        analyze_export_csv(db_name)
+        mock_export.assert_called_once_with(db_name)
+
+def test_analyze_export_csv_back_to_menu(sample_data):
+    db_name, hid1, hid2 = sample_data
+    with patch('cli_export.questionary.select') as mock_select:
+        mock_select.return_value.ask.return_value = "Back to Main Menu"
+        analyze_export_csv(db_name)
+        # Should not raise any exceptions

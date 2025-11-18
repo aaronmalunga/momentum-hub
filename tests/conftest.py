@@ -21,6 +21,9 @@ def seed_demo_db():
     # Ensure DB exists before running tests
     assert db_path.exists(), "momentum.db not found after seeding."
 
+    # Also initialize test.db for tests that use it
+    db.init_db("test.db")
+
     # Provide a connection fixture if tests need it
     conn = sqlite3.connect(db_path)
     yield conn

@@ -8,7 +8,7 @@ import momentum_db as db
 class TestGoal:
     def setup_method(self):
         """Set up test database."""
-        self.test_db_name = "test_goal.db"
+        self.test_db_name = "tests/test_dbs/test_goal.db"
         db.init_db(self.test_db_name)
         # Create a test habit
         test_habit = Habit(name="Test Habit", frequency="daily")

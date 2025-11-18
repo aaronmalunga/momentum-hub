@@ -58,7 +58,12 @@ def create_goal(db_name: str):
         show_colored_message("Goal creation cancelled.", color=Fore.YELLOW)
         press_enter_to_continue()
         return
-    target_period_days = int(target_period_days)
+    try:
+        target_period_days = int(target_period_days)
+    except ValueError:
+        show_colored_message("Invalid target period days. Must be a number.", color=Fore.RED)
+        press_enter_to_continue()
+        return
 
     target_completions = questionary.text(
         "Enter specific target completions (optional, leave blank for auto-calculation):"

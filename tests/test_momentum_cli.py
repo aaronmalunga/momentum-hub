@@ -358,3 +358,29 @@ class TestHandleHabitSelection:
     def test_handle_habit_selection_no_habits(self, mock_continue):
         result = momentum_cli._handle_habit_selection([], "Select habit:", "No habits")
         assert result is None
+
+class TestStartCli:
+    @patch('momentum_cli.db.init_db')
+    @patch('momentum_cli.startup_message')
+    @patch('momentum_cli.main_menu')
+    @patch('builtins.print')
+    def test_start_cli_success(self, mock_print, mock_main_menu, mock_startup, mock_init_db):
+        # Mock main_menu to raise SystemExit to exit the loop
+        mock_main_menu.side_effect = SystemExit()
+        momentum_cli.start_cli('test.db')
+        mock_init_db.assert_called_once_with('test.db')
+        mock_startup.assert_called_once()
+        mock_main_menu.assert_called_once_with('test.db')
+
+    @patch('momentum_cli.db.init_db')
+    @patch('momentum_cli.startup_message')
+    @patch('momentum_cli.main_menu')
+    @patch('momentum_cli.show_colored_message')
+    @patch('builtins.input')
+    def test_start_cli_exception_handling(self, mock_input, mock_show, mock_main_menu, mock_startup, mock_init_db):
+        # Mock input to avoid stdin issues
+        mock_input.return_value = ""
+        # Mock main_menu to raise an exception
+        mock_main_menu.side_effect = [Exception("Test error"), SystemExit()]
+        momentum_cli.start_cli('test.db')
+        mock_show.assert_called_with("An error occurred: Test error", color='\x1b[31m')

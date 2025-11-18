@@ -5,3 +5,4 @@ pytest-mock
 freezegun
 tabulate
 pyfiglet>=0.8.0
+setuptools

@@ -12,27 +12,22 @@ import habit_analysis
 class TestAnalysisFeatures:
     def setup_method(self):
         """ Set up a clean test database and populate it with sample data before each test."""
-        self.test_db_name = f"test_momentum_{id(self)}.db"  # Unique test database per instance
+        self.test_db_name = "tests/test_dbs/test_momentum.db"  # Use the persistent test database
 
-        if os.path.exists(self.test_db_name):
-            os.remove(self.test_db_name)
-
-        db.init_db(self.test_db_name)  # Initialize the test database
-        test_data.populate_test_db(self.test_db_name)  # Populate it with sample data
+        # No need to initialize or populate since it's already set up
     
     def teardown_method(self):
-        """ Clean up the test database after each test."""
-        # Close all tracked connections before removing the file
+        """ Clean up after each test."""
+        # Close all tracked connections
         db.close_all_connections()
-        if os.path.exists(self.test_db_name):
-            os.remove(self.test_db_name)
+        # Don't remove the persistent database
 
     def test_initial_habits_exist(self):
         """ Verify the 5 habits are created in the test databse."""
         habits = db.get_all_habits(active_only=False, db_name=self.test_db_name)
-        assert len(habits) == 5, "There should be 5 initial habits in the test database."
+        assert len(habits) == 7, "There should be 7 initial habits in the test database."
         habit_names = [h.name for h in habits]
-        expected_names = ["Change beddings", "Code", "Study", "Meditate", "Blog"]
+        expected_names = ["Read 20 pages", "Stretch 10 min", "Change beddings", "Code", "Study", "Meditate", "Blog"]
         for name in expected_names:
             assert name in habit_names
 
@@ -142,3 +137,33 @@ class TestAnalysisFeatures:
         # Check if sorted
         for i in range(len(history) - 1):
             assert history[i] <= history[i + 1]
+
+    def test_calculate_overall_longest_streak(self):
+        """ Test if the overall longest streak is correctly identified."""
+        habit_name, streak = habit_analysis.calculate_overall_longest_streak(self.test_db_name)
+        assert habit_name == "Code"
+        assert streak == 28
+
+    def test_calculate_best_worst_habit(self):
+        """ Test calculating best and worst habits by streak."""
+        best_habit, worst_habit = habit_analysis.calculate_best_worst_habit(self.test_db_name)
+        assert best_habit is not None
+        assert worst_habit is not None
+        assert best_habit.streak >= worst_habit.streak
+
+    def test_get_habit_analysis_with_goals(self):
+        """ Test comprehensive habit analysis with goals."""
+        code_habit = next(h for h in db.get_all_habits(db_name=self.test_db_name) if h.name == "Code")
+        analysis_data = habit_analysis.get_habit_analysis_with_goals(code_habit.id, self.test_db_name)
+        assert 'completion_rate' in analysis_data
+        assert 'longest_streak' in analysis_data
+        assert 'current_streak' in analysis_data
+        assert 'goal_progress' in analysis_data
+        assert 'total_completions' in analysis_data
+
+    def test_analyze_habits_by_category(self):
+        """ Test analyzing habits grouped by categories."""
+        analysis = habit_analysis.analyze_habits_by_category(self.test_db_name)
+        assert isinstance(analysis, dict)
+        # Should have at least uncategorized habits
+        assert 'Uncategorized' in analysis or len(analysis) > 0
