@@ -75,8 +75,6 @@ pip install -e .[dev]
 
 1. **Launch the app**:
    ```bash
-   momentum
-   # or
    python momentum_main.py
    ```
 
@@ -124,7 +122,7 @@ This command:
 - **Non-destructive** — only seeds when the DB is empty; safe to run repeatedly
 - Provides the **same experience** as a real user exploring the app
 
-**Recommended for:** reviewers, demos, local exploration, presentations.
+**Recommended for:** reviewers, demos, local exploration.
 
 ### Option 2: Scripted Seeding (Advanced / CI)
 
@@ -141,7 +139,7 @@ This command:
 - Seeded data includes: 2 demo habits, 2 completions (useful for showcasing analytics)
 - Supports custom DB targets via `--db <filename>`
 
-**WARNING:** Do NOT run `python scripts/seed_demo_db.py --db momentum.db --overwrite` unless you intentionally want to **replace your main database**. This is destructive and irreversible (backup is created if the helper script exists, but proceed with caution).
+**WARNING:** Please do NOT run `python scripts/seed_demo_db.py --db momentum.db --overwrite` unless you intentionally want to **replace your main database**. This is destructive and irreversible (backup is created if the helper script exists, but proceed with caution).
 
 **Recommended for:** CI pipelines, reproducible test data, scripted setups.
 
@@ -223,11 +221,9 @@ python momentum_main.py --help
 ```
 
 ### Documentation
-- **[API Documentation](docs/api.md)**: Comprehensive API reference for developers
-- **[Usage Guide](USAGE.md)**: Advanced usage patterns and reviewer workflows
-- **[Presentation Guide](PRESENTATION_GUIDE_20_5.md)**: Complete rubric-aligned presentation breakdown
-- **[Submission Guide](QUICK_START_SUBMISSION.md)**: Quick steps for evaluation submission
-- **[Final Submission Package](FINAL_SUBMISSION_PACKAGE.md)**: Complete deliverables summary
+- **[API Documentation](docs/api.md)**: Comprehensive API reference
+- **[Usage Guide](USAGE.md)**: Advanced usage patterns and workflows
+
 
 ## 9. Architecture
 
@@ -416,7 +412,7 @@ We welcome contributions! Here's how to get started:
 - Keep the CLI user-friendly and intuitive
 
 ### Pull Request Process
-1. Ensure all tests pass and coverage remains above 80%
+1. Ensure all tests pass and coverage remains above 80% (this is paramount)
 2. Update documentation for any new features
 3. Add appropriate type hints
 4. Follow commit message conventions
@@ -481,7 +477,7 @@ The project maintains high test coverage (90%+) across all core modules includin
 ### Setup Steps
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/momentum-hub.git
+git clone https://github.com/aaronmalunga/momentum-hub.git
 cd momentum-hub
 
 # Create virtual environment
@@ -513,8 +509,6 @@ isort .
 The `scripts/` directory contains several development utilities:
 
 - **`scripts/seed_demo_db.py`**: Advanced demo database seeding with customizable options
-- **`scripts/generate_arch_diagrams.py`**: Generate architecture diagrams from code
-- **`scripts/generate_code_based_diagrams.py`**: Create UML diagrams automatically
 - **`scripts/seed_data.py`**: Production seed data management
 
 ### Database Schema
@@ -573,9 +567,9 @@ These limitations are acknowledged as part of the assignment constraints and des
 - [Documentation](https://github.com/aaronmalunga/momentum-hub#readme)
 - [Issues](https://github.com/aaronmalunga/momentum-hub/issues)
 - [Repository](https://github.com/aaronmalunga/momentum-hub.git)
-- [Documentation](https://github.com/yourusername/momentum-hub#readme)
-- [Issues](https://github.com/yourusername/momentum-hub/issues)
-- [Repository](https://github.com/yourusername/momentum-hub.git)
+- [Documentation](https://github.com/aaronmalunga/momentum-hub#readme)
+- [Issues](https://github.com/aaronmalunga/momentum-hub/issues)
+- [Repository](https://github.com/aaronmalunga/momentum-hub.git)
 Built with modern Python libraries including:
 - [Questionary](https://github.com/tmbo/questionary) - Interactive prompts
 - [Colorama](https://github.com/tartley/colorama) - Cross-platform colors
@@ -583,8 +577,6 @@ Built with modern Python libraries including:
 - [PyFiglet](https://github.com/pwaller/pyfiglet) - ASCII art
 - [Typer](https://typer.tiangolo.com/) - Modern CLI framework
 - [Rich](https://rich.readthedocs.io/) - Rich text and beautiful formatting
-- [ReportLab](https://www.reportlab.com/) - PDF generation
-- [python-pptx](https://python-pptx.readthedocs.io/) - PowerPoint generationctive prompts
 - [Colorama](https://github.com/tartley/colorama) - Cross-platform colors
 - [Tabulate](https://github.com/astanin/python-tabulate) - Beautiful tables
 - [PyFiglet](https://github.com/pwaller/pyfiglet) - ASCII art
