@@ -380,7 +380,7 @@ We welcome contributions! Here's how to get started:
 1. **Fork the repository**
 2. **Clone your fork**:
    ```bash
-   git clone https://github.com/yourusername/momentum-hub.git
+   git clone https://github.com/aaronmalunga/momentum-hub.git
    cd momentum-hub
    ```
 
