@@ -14,7 +14,7 @@ A powerful, modern CLI habit tracker designed to help you build and maintain dai
 [![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/momentum-hub/ci.yml)](https://github.com/yourusername/momentum-hub/actions)
 
 
-![Momentum Hub Banner](diagrams/Screenshots/Momentum_Hub_cover.png)
+![Momentum Hub Banner](diagrams/Screenshots/Momentum_hub_cover.png)
 
 
 
