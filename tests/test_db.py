@@ -1,11 +1,15 @@
 # tests/test_db.py
 import datetime
+import os
 import sqlite3
+import sys
+
 import pytest
-import sys, os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import momentum_db as db
 from habit import Habit
+
 
 @pytest.fixture
 def tmp_db_path(tmp_path):
@@ -15,10 +19,13 @@ def tmp_db_path(tmp_path):
     db.init_db(db_name=db_name)
     return db_name
 
+
 @pytest.fixture
 def test_db_path():
     """Fixture for using the persistent test database."""
     return "tests/test_dbs/test_momentum.db"
+
+
 def test_sanity_probe():
     assert True
 
@@ -35,6 +42,7 @@ def test_add_and_get_habit(tmp_db_path):
     assert fetched.name == "Habit A"
     assert fetched.frequency == "daily"
 
+
 def test_add_and_get_completions_and_duplicates(tmp_db_path):
     # add habit
     h = Habit(name="DupTest", frequency="daily")
@@ -49,6 +57,7 @@ def test_add_and_get_completions_and_duplicates(tmp_db_path):
     # adding same-day completion should raise ValueError
     with pytest.raises(ValueError):
         db.add_completion(hid, now, db_name=tmp_db_path)
+
 
 def test_weekly_completion_duplicate_rule(tmp_db_path):
     # add weekly habit
@@ -76,19 +85,35 @@ def test_weekly_completion_duplicate_rule(tmp_db_path):
     comps = db.get_completions(hid, db_name=tmp_db_path)
     assert len(comps) == 2
 
+
 def test_update_streak_daily(tmp_db_path):
     h = Habit(name="StreakDaily", frequency="daily")
     hid = db.add_habit(h, db_name=tmp_db_path)
 
     base = datetime.datetime.now().date() - datetime.timedelta(days=3)
     # add 3 consecutive days
-    db.add_completion(hid, datetime.datetime.combine(base, datetime.time(9,0)), db_name=tmp_db_path)
-    db.add_completion(hid, datetime.datetime.combine(base + datetime.timedelta(days=1), datetime.time(9,0)), db_name=tmp_db_path)
-    db.add_completion(hid, datetime.datetime.combine(base + datetime.timedelta(days=2), datetime.time(9,0)), db_name=tmp_db_path)
+    db.add_completion(
+        hid, datetime.datetime.combine(base, datetime.time(9, 0)), db_name=tmp_db_path
+    )
+    db.add_completion(
+        hid,
+        datetime.datetime.combine(
+            base + datetime.timedelta(days=1), datetime.time(9, 0)
+        ),
+        db_name=tmp_db_path,
+    )
+    db.add_completion(
+        hid,
+        datetime.datetime.combine(
+            base + datetime.timedelta(days=2), datetime.time(9, 0)
+        ),
+        db_name=tmp_db_path,
+    )
 
     db.update_streak(hid, db_name=tmp_db_path)
     h2 = db.get_habit(hid, db_name=tmp_db_path)
     assert h2.streak == 3
+
 
 def test_soft_delete_and_reactivate(tmp_db_path):
     h = Habit(name="SoftDelete", frequency="daily")

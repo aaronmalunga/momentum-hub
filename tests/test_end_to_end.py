@@ -1,13 +1,16 @@
-import pytest
-import os
 import csv
 import datetime
+import os
 import sys
+
+import pytest
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import momentum_db as db
-from habit import Habit
 import habit_analysis as analysis
+import momentum_db as db
 from completion import export_completions_to_csv
+from habit import Habit
+
 
 @pytest.fixture
 def tmp_e2e_db_path(tmp_path):
@@ -15,6 +18,7 @@ def tmp_e2e_db_path(tmp_path):
     db_name = str(db_file)
     db.init_db(db_name=db_name)
     return db_name
+
 
 def test_full_workflow_create_complete_analyze_export(tmp_e2e_db_path, tmp_path):
     """End-to-end test: create habit -> complete -> analyze -> export."""
@@ -61,18 +65,21 @@ def test_full_workflow_create_complete_analyze_export(tmp_e2e_db_path, tmp_path)
 
     # Verify export
     assert output_file.exists()
-    with open(output_file, 'r', encoding='utf-8') as f:
+    with open(output_file, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         rows = list(reader)
         assert len(rows) == 2
-        assert rows[0]['habit_name'] == "E2E Test Habit"
+        assert rows[0]["habit_name"] == "E2E Test Habit"
+
 
 def test_weekly_habit_workflow(tmp_e2e_db_path, tmp_path):
     """End-to-end test for weekly habit: create -> complete -> analyze -> export."""
     db_name = tmp_e2e_db_path
 
     # Create weekly habit
-    habit = Habit(name="Weekly E2E Habit", frequency="weekly", notes="Weekly integration test")
+    habit = Habit(
+        name="Weekly E2E Habit", frequency="weekly", notes="Weekly integration test"
+    )
     habit_id = db.add_habit(habit, db_name=db_name)
 
     # Mark completed for two weeks

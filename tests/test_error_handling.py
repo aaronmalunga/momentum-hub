@@ -1,13 +1,16 @@
-import pytest
-import sqlite3
-import os
-import tempfile
 import datetime
+import os
+import sqlite3
 import sys
+import tempfile
+
+import pytest
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import momentum_db as db
-from habit import Habit
 from completion import export_completions_to_csv
+from habit import Habit
+
 
 @pytest.fixture
 def tmp_db_path(tmp_path):
@@ -16,6 +19,7 @@ def tmp_db_path(tmp_path):
     db_name = str(db_file)
     db.init_db(db_name=db_name)
     return db_name
+
 
 class TestInvalidInputs:
     """Test cases for invalid inputs to functions."""
@@ -37,7 +41,9 @@ class TestInvalidInputs:
 
     def test_add_habit_with_invalid_frequency(self, tmp_db_path):
         """Test adding habit with invalid frequency."""
-        h = Habit(name="Invalid Freq", frequency="monthly")  # Assuming only daily/weekly allowed
+        h = Habit(
+            name="Invalid Freq", frequency="monthly"
+        )  # Assuming only daily/weekly allowed
         # This might succeed if not validated, but should be handled
         hid = db.add_habit(h, db_name=tmp_db_path)
         fetched = db.get_habit(hid, db_name=tmp_db_path)
@@ -79,6 +85,7 @@ class TestInvalidInputs:
         with pytest.raises(ValueError, match="Habit id must be set"):
             db.update_habit(h, db_name=tmp_db_path)
 
+
 class TestDBConnectionFailures:
     """Test cases for database connection failures."""
 
@@ -110,6 +117,7 @@ class TestDBConnectionFailures:
         # For now, just ensure operations work normally
         habits = db.get_all_habits(db_name=tmp_db_path)
         assert isinstance(habits, list)
+
 
 class TestFileWriteErrors:
     """Test cases for file write errors during exports."""
@@ -170,10 +178,10 @@ class TestFileWriteErrors:
         export_completions_to_csv(str(output_file), db_name=tmp_db_path)
         # Should succeed and create empty or header-only file
         assert output_file.exists()
-        with open(output_file, 'r') as f:
+        with open(output_file, "r") as f:
             content = f.read()
             # Should have headers even if no data
-            assert 'completion_id' in content
+            assert "completion_id" in content
 
     def test_export_with_data(self, tmp_db_path, tmp_path):
         """Test successful export with data."""
@@ -186,9 +194,10 @@ class TestFileWriteErrors:
         output_file = tmp_path / "data_export.csv"
         export_completions_to_csv(str(output_file), db_name=tmp_db_path)
         assert output_file.exists()
-        with open(output_file, 'r') as f:
+        with open(output_file, "r") as f:
             lines = f.readlines()
             assert len(lines) >= 2  # Header + at least one data row
+
 
 class TestHabitObjectErrors:
     """Test cases for Habit object creation and manipulation errors."""
@@ -197,12 +206,12 @@ class TestHabitObjectErrors:
         """Test creating Habit from invalid dictionary."""
         # Invalid date strings
         invalid_dict = {
-            'id': 1,
-            'name': 'Test',
-            'frequency': 'daily',
-            'created_at': 'not-a-date',
-            'last_completed': 'also-not-a-date',
-            'is_active': True
+            "id": 1,
+            "name": "Test",
+            "frequency": "daily",
+            "created_at": "not-a-date",
+            "last_completed": "also-not-a-date",
+            "is_active": True,
         }
         habit = Habit.from_dict(invalid_dict)
         assert habit.created_at is None
@@ -211,7 +220,9 @@ class TestHabitObjectErrors:
     def test_habit_mark_completed_invalid_datetime(self):
         """Test marking completed with invalid datetime."""
         h = Habit(name="Test", frequency="daily")
-        h.last_completed = datetime.datetime(2023, 1, 1)  # Set last_completed to trigger date calculation
+        h.last_completed = datetime.datetime(
+            2023, 1, 1
+        )  # Set last_completed to trigger date calculation
         with pytest.raises(AttributeError):  # datetime has no attribute error
             h.mark_completed("not a datetime")
 

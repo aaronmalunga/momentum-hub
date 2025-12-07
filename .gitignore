@@ -68,19 +68,15 @@ habits_export.csv
 test_export.csv
 CSV Export/
 
-# Temporary output file
-output.txt
 
 # Downloaded JAR for diagram generation
 plantuml.jar
 
-# Generated diagrams (created by generate_arch_diagrams.py and generate_code_based_diagrams.py)
+# Generated diagrams
 diagrams/
 
 # Generated documentation (e.g., API docs)
 docs/
 
-# Potentially generated summary files (if created by scripts)
-CLEANUP_SUMMARY.md
-REFACTORING_SUMMARY.md
+# summary files
 USAGE.md

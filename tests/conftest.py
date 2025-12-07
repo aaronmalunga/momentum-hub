@@ -1,14 +1,16 @@
 # tests/conftest.py
-import pytest
-import sqlite3
 import subprocess
 from pathlib import Path
+
+import pytest
+
 import momentum_db as db
 
-@pytest.fixture(scope="session", autouse=True)
+
+@pytest.fixture(scope="session")
 def seed_demo_db():
     """
-    Automatically seed the demo database before tests start.
+    Seed the demo database before tests start.
     Ensures reproducible test state.
     """
     db_path = Path("momentum.db")
@@ -24,10 +26,6 @@ def seed_demo_db():
     # Also initialize test.db for tests that use it
     db.init_db("test.db")
 
-    # Provide a connection fixture if tests need it
-    conn = sqlite3.connect(db_path)
+    conn = db.get_connection(str(db_path))
     yield conn
-
-    # Cleanup - close all connections
-    db.close_all_connections()
     conn.close()

@@ -1,5 +1,7 @@
 import datetime
-from momentum_utils import show_colored_message, press_enter_to_continue
+
+from momentum_utils import press_enter_to_continue, show_colored_message
+
 
 def _validate_time_format(time_str: str) -> bool:
     """Validates the time format (HH:MM) and allows empty string for optional times."""
@@ -11,22 +13,27 @@ def _validate_time_format(time_str: str) -> bool:
     except ValueError:
         return "Invalid time format. Please use HH:MM (24-hour format)."
 
+
 def press_enter_to_continue():
     """
     Waits for the user to press Enter before continuing.
     """
     input("Press Enter to continue...")
 
+
 def _handle_habit_selection(habits, title, error_msg="No active habits found"):
     import questionary
-    from momentum_utils import show_colored_message
     from colorama import Fore
+
+    from momentum_utils import show_colored_message
+
     if not habits:
         show_colored_message(error_msg, color=Fore.RED)
         press_enter_to_continue()
         return None
     choices = [
-        f"{habit.id}. {habit.name} ({habit.frequency}) - Streak: {habit.streak}" for habit in habits
+        f"{habit.id}. {habit.name} ({habit.frequency}) - Streak: {habit.streak}"
+        for habit in habits
     ]
     choices.append("Cancel")
     answer = questionary.select(title, choices=choices).ask()
@@ -44,5 +51,6 @@ def _handle_habit_selection(habits, title, error_msg="No active habits found"):
         press_enter_to_continue()
         return None
 
+
 def _to_date(dt):
-    return dt.date() if hasattr(dt, 'date') else dt
+    return dt.date() if hasattr(dt, "date") else dt

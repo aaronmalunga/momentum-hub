@@ -1,9 +1,12 @@
 import datetime
 import os
 import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pytest
+
 from habit import Habit
+
 
 @pytest.fixture
 def sample_habit():
@@ -18,8 +21,9 @@ def sample_habit():
         streak=0,
         created_at=datetime.datetime(2023, 1, 1),
         last_completed=None,
-        is_active=True
+        is_active=True,
     )
+
 
 class TestHabitEdit:
     def test_edit_habit_name(self, sample_habit):
@@ -43,6 +47,7 @@ class TestHabitEdit:
         original_name = sample_habit.name
         sample_habit.edit_habit()
         assert sample_habit.name == original_name
+
 
 class TestHabitMarkCompleted:
     def test_mark_completed_first_time(self, sample_habit):
@@ -104,6 +109,7 @@ class TestHabitMarkCompleted:
         assert before <= sample_habit.last_completed <= after
         assert sample_habit.streak == 1
 
+
 class TestHabitCalculateLongestStreak:
     def test_calculate_longest_streak_empty(self, sample_habit):
         assert sample_habit.calculate_longest_streak([]) == 0
@@ -118,7 +124,7 @@ class TestHabitCalculateLongestStreak:
             datetime.datetime(2023, 1, 2, 10, 0),
             datetime.datetime(2023, 1, 3, 10, 0),
             datetime.datetime(2023, 1, 5, 10, 0),  # Break
-            datetime.datetime(2023, 1, 6, 10, 0)
+            datetime.datetime(2023, 1, 6, 10, 0),
         ]
         assert sample_habit.calculate_longest_streak(completions) == 3
 
@@ -129,7 +135,7 @@ class TestHabitCalculateLongestStreak:
             datetime.datetime(2023, 1, 8, 10, 0),  # Week 2
             datetime.datetime(2023, 1, 15, 10, 0),  # Week 3
             datetime.datetime(2023, 1, 22, 10, 0),  # Week 4
-            datetime.datetime(2023, 1, 30, 10, 0)   # Break >7 days
+            datetime.datetime(2023, 1, 30, 10, 0),  # Break >7 days
         ]
         assert sample_habit.calculate_longest_streak(completions) == 4
 
@@ -137,7 +143,7 @@ class TestHabitCalculateLongestStreak:
         completions = [
             datetime.datetime(2023, 1, 1, 10, 0),
             datetime.datetime(2023, 1, 1, 12, 0),  # Same day
-            datetime.datetime(2023, 1, 2, 10, 0)
+            datetime.datetime(2023, 1, 2, 10, 0),
         ]
         assert sample_habit.calculate_longest_streak(completions) == 2
 
@@ -148,31 +154,33 @@ class TestHabitCalculateLongestStreak:
             datetime.datetime(2023, 1, 8, 10, 0),  # Next Sunday
             datetime.datetime(2023, 1, 9, 10, 0),  # Monday same week
         ]
-        assert sample_habit.calculate_longest_streak(completions) == 3  # All in same week or consecutive
+        assert (
+            sample_habit.calculate_longest_streak(completions) == 3
+        )  # All in same week or consecutive
 
     def test_from_dict_invalid_date(self):
         data = {
-            'id': 1,
-            'name': 'Test',
-            'frequency': 'daily',
-            'created_at': 'invalid-date',
-            'last_completed': '2023-01-01',
-            'is_active': True
+            "id": 1,
+            "name": "Test",
+            "frequency": "daily",
+            "created_at": "invalid-date",
+            "last_completed": "2023-01-01",
+            "is_active": True,
         }
         habit = Habit.from_dict(data)
         assert habit.created_at is None  # Invalid date should result in None
         assert habit.last_completed is not None
 
     def test_from_dict_missing_keys(self):
-        data = {'name': 'Test', 'frequency': 'daily'}
+        data = {"name": "Test", "frequency": "daily"}
         habit = Habit.from_dict(data)
         assert habit.id is None
-        assert habit.name == 'Test'
+        assert habit.name == "Test"
         assert habit.streak == 0
 
     def test_to_dict_complete(self, sample_habit):
         data = sample_habit.to_dict()
-        assert 'id' in data
-        assert 'name' in data
-        assert data['name'] == 'Test Habit'
-        assert data['is_active'] is True
+        assert "id" in data
+        assert "name" in data
+        assert data["name"] == "Test Habit"
+        assert data["is_active"] is True

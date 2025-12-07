@@ -1,0 +1,6 @@
+id,name,frequency,notes,reminder_time,category
+1,Code,daily,Code for at least 1 hour,10:00,Personal Development
+2,Study,daily,Review course materials,11:00,Personal Development
+3,Meditate,daily,Meditate for at least 10 minutes,07:00,Health & Fitness
+4,Change beddings,weekly,Wash and change beddings,09:00,Health & Fitness
+5,Blog,weekly,Write a Data Science blog post,11:00,Productivity

@@ -1,5 +1,6 @@
-import sqlite3
 import os
+import sqlite3
+
 
 def inspect_db(db_path):
     if not os.path.exists(db_path):
@@ -19,6 +20,7 @@ def inspect_db(db_path):
         conn.close()
     except Exception as e:
         print(f"Error inspecting {db_path}: {e}")
+
 
 inspect_db("tests/test_dbs/test_integration.db")
 inspect_db("tests/test_dbs/test_momentum.db")

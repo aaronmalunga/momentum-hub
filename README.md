@@ -14,42 +14,42 @@ A powerful, modern CLI habit tracker designed to help you build and maintain dai
 [![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/momentum-hub/ci.yml)](https://github.com/yourusername/momentum-hub/actions)
 
 
-![Momentum Hub Banner](diagrams/Screenshots/ChatGPT_Image_Jul_12_2025_01_31_30_PM.png)
+![Momentum Hub Banner](diagrams/Screenshots/Momentum_Hub_cover.png)
 
 
 
-## ✨ Key Features
+## 1. Key Features
 
-- **📊 Advanced Analytics**: Track streaks, completion rates, and visualize progress with calendar views and detailed statistics
-- **🎯 Goal Setting**: Set specific targets for your habits (e.g., complete 30 times in 30 days)
-- **🏷️ Smart Categorization**: Organize habits into colored categories for better organization
-- **📈 Rich Visualizations**: Interactive charts and progress indicators (with enhanced UI options)
-- **💾 Data Export**: Export your data to CSV for external analysis
-- **🎮 Demo Mode**: Try the app instantly with pre-populated demo data (isolated from your real data)
-- **🔄 Habit Management**: Create, update, delete, and reactivate habits with ease
-- **📅 Completion Tracking**: Log completions with timestamps and maintain detailed history
-- **🎨 Modern CLI**: Beautiful, interactive interface with colors, tables, and ASCII art
+- **Advanced Analytics**: Track streaks, completion rates, and visualize progress with calendar views and detailed statistics
+- **Goal Setting**: Set specific targets for your habits (e.g., complete 30 times in 30 days)
+- **Smart Categorization**: Organize habits into colored categories for better organization
+- **Rich Visualizations**: Interactive charts and progress indicators (with enhanced UI options)
+- **Data Export**: Export your data to CSV for external analysis
+- **Demo Mode**: Try the app instantly with pre-populated demo data (isolated from your real data)
+- **Habit Management**: Create, update, delete, and reactivate habits with ease
+- **Completion Tracking**: Log completions with timestamps and maintain detailed history
+- **Modern CLI**: Beautiful, interactive interface with colors, tables, and ASCII art
 
 > **Table of Contents**
 >
-> - [✨ Key Features](#-key-features)
-> - [🚀 Installation](#-installation)
-> - [🎯 Quick Start](#-quick-start)
-> - [⚙️ Configuration & Environment Variables](#️-configuration--environment-variables)
-> - [🎮 Advanced Demo Mode](#-advanced-demo-mode)
-> - [📸 Screenshots](#-screenshots)
-> - [🎮 Demo Mode](#-demo-mode)
-> - [📖 Advanced Usage](#-advanced-usage)
-> - [🏗️ Architecture](#️-architecture)
-> - [🤝 Contributing](#-contributing)
-> - [🧪 Testing & Quality Assurance](#-testing--quality-assurance)
-> - [🔧 Development Setup](#-development-setup)
-> - [⚠️ Limitations and Future Improvements](#️-limitations-and-future-improvements)
-> - [📄 License](#-license)
-> - [🔗 Links](#-links)
-> - [🙏 Acknowledgments](#-acknowledgments)
+> 1. [Key Features](#1-key-features)
+> 2. [Installation](#2-installation)
+> 3. [Quick Start](#3-quick-start)
+> 4. [Configuration & Environment Variables](#4-configuration--environment-variables)
+> 5. [Advanced Demo Mode](#5-advanced-demo-mode)
+> 6. [Screenshots](#6-screenshots)
+> 7. [Quick Demo Mode](#7-quick-demo-mode)
+> 8. [Advanced Usage](#8-advanced-usage)
+> 9. [Architecture](#9-architecture)
+> 10. [Contributing](#10-contributing)
+> 11. [Testing & Quality Assurance](#11-testing--quality-assurance)
+> 12. [Development Setup](#12-development-setup)
+> 13. [Limitations and Future Improvements](#13-limitations-and-future-improvements)
+> 14. [License](#14-license)
+> 15. [Links](#15-links)
+> 16. [Acknowledgments](#16-acknowledgments)
 
-## 🚀 Installation
+## 2. Installation
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -58,7 +58,7 @@ A powerful, modern CLI habit tracker designed to help you build and maintain dai
 ### Install from Source
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/momentum-hub.git
+git clone https://github.com/aaronmalunga/momentum-hub.git
 cd momentum-hub
 
 # Install the package
@@ -71,7 +71,7 @@ pip install .
 pip install -e .[dev]
 ```
 
-## 🎯 Quick Start
+## 3. Quick Start
 
 1. **Launch the app**:
    ```bash
@@ -91,7 +91,7 @@ pip install -e .[dev]
 4. **View analytics**:
    - Choose "Analyze habits" to see detailed statistics and trends
 
-## ⚙️ Configuration & Environment Variables
+## 4. Configuration & Environment Variables
 
 Momentum Hub supports several environment variables for customization:
 
@@ -107,38 +107,53 @@ MOMENTUM_DB=my_habits.db python momentum_main.py
 MOMENTUM_DEMO_DB=demo.db python momentum_main.py --demo
 ```
 
-## 🎮 Advanced Demo Mode
+## 5. Advanced Demo Mode
 
-### Demo Database Seeding Script
+### Option 1: Safe Demo Mode (Recommended)
 
-For advanced demo database setup, use the dedicated seeding script:
+The **safest and easiest** way to explore Momentum Hub with demo data:
 
 ```bash
-# Seed demo database (safe default: momentum_demo.db)
-python scripts/seed_demo_db.py
-
-# Seed specific database file
-python scripts/seed_demo_db.py --db custom_demo.db
-
-# Overwrite existing database (use with caution)
-python scripts/seed_demo_db.py --db momentum.db --overwrite
+# Start the app in demo mode (auto-seeds on first run, isolated DB)
+python momentum_main.py --demo
 ```
 
-The seeding script creates realistic demo data including:
-- 8 predefined categories (Health & Fitness, Personal Development, Productivity, etc.)
-- Sample habits with realistic completion patterns
-- Goal examples with various time periods
-- Historical completion data for meaningful analytics
+This command:
+- Uses an **isolated demo database** (`momentum_demo.db` — never touches your real `momentum.db`)
+- **Auto-seeds** with realistic demo data on first run (5 demo habits, 3 goals, categories, and sample completions)
+- **Non-destructive** — only seeds when the DB is empty; safe to run repeatedly
+- Provides the **same experience** as a real user exploring the app
+
+**Recommended for:** reviewers, demos, local exploration, presentations.
+
+### Option 2: Scripted Seeding (Advanced / CI)
+
+For reproducible seeding or CI environments, use the dedicated script:
+
+```bash
+# Seed demo database with one command (backs up existing file first)
+python scripts/seed_demo_db.py --overwrite
+```
+
+This command:
+- Uses `momentum_demo.db` by default (safe, same as `--demo`)
+- **Creates a backup** of any existing demo DB before overwriting (under `backups/`)
+- Seeded data includes: 2 demo habits, 2 completions (useful for showcasing analytics)
+- Supports custom DB targets via `--db <filename>`
+
+**WARNING:** Do NOT run `python scripts/seed_demo_db.py --db momentum.db --overwrite` unless you intentionally want to **replace your main database**. This is destructive and irreversible (backup is created if the helper script exists, but proceed with caution).
+
+**Recommended for:** CI pipelines, reproducible test data, scripted setups.
 
 ### Demo Mode Features
 
-Demo mode automatically:
-- Creates isolated `momentum_demo.db` database
-- Seeds with comprehensive demo data
-- Provides safe exploration without affecting real data
-- Includes goals, categories, and completion history
+Both demo paths provide:
+- **Isolated demo database** (`momentum_demo.db` — separate from `momentum.db`)
+- **Pre-populated demo data** with realistic habits, categories, and goals
+- **Sample completions** to show analytics in action
+- **Safe exploration** without affecting real data
 
-## 📸 Screenshots
+## 6. Screenshots
 
 
 ### Main Menu Interface
@@ -176,27 +191,24 @@ Demo mode automatically:
 *Comprehensive analytics view showing habit statistics, completion rates, and progress tracking.*
 
 
-## 🎮 Demo Mode
+## 7. Advanced Usage
 
-Experience Momentum Hub instantly without setup:
+For advanced use cases and customization:
 
 ```bash
-# Launch with demo data (isolated database)
-python momentum_main.py --demo
+# Use a custom database file
+python momentum_main.py --db my_habits.db
+
+# Use a custom demo database via environment variable
+MOMENTUM_DEMO_DB=my_demo.db python momentum_main.py --demo
+
+# Run the app with a specific database and debug output
+MOMENTUM_DB=work_habits.db python momentum_main.py
 ```
-
-![Demo Mode Welcome](diagrams/Screenshots/Main_menu_interface.png)
-*The demo mode welcome screen showing pre-populated data and available options.*
-
-Demo mode includes:
-- Pre-populated habits across different categories
-- Sample completion data
-- Goal examples
-- Safe exploration without affecting your real data
 
 The demo database (`momentum_demo.db`) is completely separate from your main data.
 
-## 📖 Advanced Usage
+## 8. Advanced Usage
 
 ### Command Line Options
 ```bash
@@ -213,8 +225,11 @@ python momentum_main.py --help
 ### 📚 Documentation
 - **[API Documentation](docs/api.md)**: Comprehensive API reference for developers
 - **[Usage Guide](USAGE.md)**: Advanced usage patterns and reviewer workflows
+- **[Presentation Guide](PRESENTATION_GUIDE_20_5.md)**: Complete rubric-aligned presentation breakdown
+- **[Submission Guide](QUICK_START_SUBMISSION.md)**: Quick steps for evaluation submission
+- **[Final Submission Package](FINAL_SUBMISSION_PACKAGE.md)**: Complete deliverables summary
 
-## 🏗️ Architecture
+## 9. Architecture
 
 Momentum Hub follows a clean, modular architecture designed for maintainability and extensibility. The following diagrams provide visual representations of the system's structure, automatically generated from the actual codebase.
 
@@ -419,7 +434,7 @@ We welcome contributions! Here's how to get started:
 - Consider backward compatibility
 - Include mockups if proposing UI changes
 
-## 🧪 Testing & Quality Assurance
+## 11. Testing & Quality Assurance
 
 ### Running Tests
 ```bash
@@ -456,7 +471,7 @@ The project maintains high test coverage (90%+) across all core modules includin
 - **PEP 8 compliance**: Consistent code style and formatting
 - **GitHub Actions CI/CD**: Automated testing and quality checks
 
-## 🔧 Development Setup
+## 12. Development Setup
 
 ### Prerequisites
 - Python 3.10+
@@ -531,7 +546,7 @@ Before destructive operations, the application automatically creates backups:
 - CSV exports are timestamped and stored in `CSV Export/`
 - Backup creation is handled transparently by maintenance scripts
 
-## ⚠️ Limitations and Future Improvements
+## 13. Limitations and Future Improvements
 
 As a CLI-based habit tracker developed for a school assignment, Momentum Hub has some inherent limitations while providing a solid foundation for habit tracking:
 
@@ -551,21 +566,25 @@ As a CLI-based habit tracker developed for a school assignment, Momentum Hub has
 
 These limitations are acknowledged as part of the assignment constraints and design choices. The app successfully demonstrates comprehensive CLI application development while maintaining excellent code quality and user experience within its scope.
 
-## 📄 License
+## 14. License
+## 15. Links
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🔗 Links
-
-- [Homepage](https://github.com/yourusername/momentum-hub)
+- [Homepage](https://github.com/aaronmalunga/momentum-hub)
+- [Documentation](https://github.com/aaronmalunga/momentum-hub#readme)
+- [Issues](https://github.com/aaronmalunga/momentum-hub/issues)
+- [Repository](https://github.com/aaronmalunga/momentum-hub.git)
 - [Documentation](https://github.com/yourusername/momentum-hub#readme)
 - [Issues](https://github.com/yourusername/momentum-hub/issues)
 - [Repository](https://github.com/yourusername/momentum-hub.git)
-
-## 🙏 Acknowledgments
-
 Built with modern Python libraries including:
 - [Questionary](https://github.com/tmbo/questionary) - Interactive prompts
+- [Colorama](https://github.com/tartley/colorama) - Cross-platform colors
+- [Tabulate](https://github.com/astanin/python-tabulate) - Beautiful tables
+- [PyFiglet](https://github.com/pwaller/pyfiglet) - ASCII art
+- [Typer](https://typer.tiangolo.com/) - Modern CLI framework
+- [Rich](https://rich.readthedocs.io/) - Rich text and beautiful formatting
+- [ReportLab](https://www.reportlab.com/) - PDF generation
+- [python-pptx](https://python-pptx.readthedocs.io/) - PowerPoint generationctive prompts
 - [Colorama](https://github.com/tartley/colorama) - Cross-platform colors
 - [Tabulate](https://github.com/astanin/python-tabulate) - Beautiful tables
 - [PyFiglet](https://github.com/pwaller/pyfiglet) - ASCII art

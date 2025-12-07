@@ -1,14 +1,19 @@
 import datetime
-from typing import List, Tuple, Union
+from typing import List, Set, Tuple, Union
+
 import momentum_db as db
 
-def calculate_completion_rate_for_habit(habit_id: int, db_name: str) -> float:
+
+def calculate_completion_rate_for_habit(
+    habit_id: int, db_name: str, reference_date: datetime.date = None
+) -> float:
     """
     Calculate the completion rate for a habit.
 
     Args:
         habit_id: The ID of the habit to calculate completion rate for
         db_name: The name of the database
+        reference_date: The date to calculate completion rate relative to (optional)
 
     Returns:
         float: The completion rate as a decimal (0.0 to 1.0)
@@ -19,40 +24,30 @@ def calculate_completion_rate_for_habit(habit_id: int, db_name: str) -> float:
     if not completions or not habit:
         return 0.0
 
-    # For both weekly and daily habits, we consider the last 4 weeks
+    # Convert completions to a set of dates
     completion_dates = {c.date() for c in completions}
 
-    if habit.frequency == 'weekly':
-        # For weekly habits, count how many of the last 4 weeks had completions
+    if reference_date is None:
         today = datetime.datetime.now().date()
-        completed_weeks = 0
-        total_weeks = 4
+    else:
+        today = reference_date
 
-        # Look back 4 weeks
-        for week in range(total_weeks):
-            week_start = today - datetime.timedelta(weeks=week)
-            # Find the Sunday of that week (since test data uses Sunday)
-            while week_start.weekday() != 6:  # 6 is Sunday
-                week_start -= datetime.timedelta(days=1)
-            if week_start in completion_dates:
-                completed_weeks += 1
+    # Delegate to pure function
+    return calculate_completion_rate_from_dates(
+        completion_dates, habit.frequency, today
+    )
 
-        return completed_weeks / total_weeks
-    else:  # daily
-        # For daily habits, look at the last 28 days
-        total_days = 28
-        completed_days = len([d for d in completion_dates
-                            if d >= datetime.datetime.now().date() - datetime.timedelta(days=total_days)])
-        return completed_days / total_days
 
-def get_missed_days_for_habit(habit_id: int, db_name: str) -> Union[List[datetime.date], int]:
+def get_missed_days_for_habit(
+    habit_id: int, db_name: str
+) -> Union[List[datetime.date], int]:
     """
     Get the missed days information for a habit.
-    
+
     Args:
         habit_id: The ID of the habit to check
         db_name: The name of the database
-    
+
     Returns:
         Union[List[datetime.date], int]: For daily habits, returns either:
         - int: Number of days missed (for summary view)
@@ -60,125 +55,152 @@ def get_missed_days_for_habit(habit_id: int, db_name: str) -> Union[List[datetim
         For weekly habits, returns empty list
     """
     habit = db.get_habit(habit_id, db_name)
-    if not habit or habit.frequency != 'daily':
+    if not habit or habit.frequency != "daily":
         return []
-        
+
     completions = db.get_completions(habit_id, db_name)
     if not completions:
         return []
-    
+
     # Get all completion dates as a set for O(1) lookup
     completion_dates = {c.date() for c in completions}
-    
+
     # Get the date range from first to last completion
     first_date = min(completion_dates)
     last_date = max(completion_dates)
-    
+
     # For the 'Code' habit, which should have no misses, return 0
-    if habit.name == 'Code':
+    if habit.name == "Code":
         expected_days = (last_date - first_date).days + 1
         if len(completion_dates) == expected_days:
             return 0
         return []  # Return empty list if there are misses (shouldn't happen for Code)
-    
+
     # For the 'Study' habit, return list of missed days
     missed_days = []
     current_date = first_date
     while current_date <= last_date:
         if current_date not in completion_dates:
             missed_days.append(current_date)
-        current_date += datetime.timedelta(days=1)    # For Study habit test case, return the count of missed days
-    if habit.name == 'Study':
+        current_date += datetime.timedelta(
+            days=1
+        )  # For Study habit test case, return the count of missed days
+    if habit.name == "Study":
         return len(missed_days)
-    
+
     return missed_days
+
 
 def calculate_longest_streak_for_habit(habit_id: int, db_name: str) -> int:
     """
     Calculate the longest streak for a specific habit.
-    
+
     Args:
         habit_id: The ID of the habit to calculate streak for
         db_name: The name of the database
-        
+
     Returns:
         int: The longest streak achieved for this habit
     """
     habit = db.get_habit(habit_id, db_name)
     if not habit:
         return 0
-        
-    completions = sorted(db.get_completions(habit_id, db_name), key=lambda x: x.date())
-    if not completions:
+
+    completions = db.get_completions(habit_id, db_name)
+    # Convert to list of dates
+    dates = [c.date() for c in completions]
+    return calculate_longest_streak_from_dates(dates, habit.frequency)
+
+
+def calculate_longest_streak_from_dates(
+    dates: List[datetime.date], frequency: str
+) -> int:
+    """Pure function: compute longest streak from list of dates based on frequency."""
+    if not dates:
+        return 0
+    if frequency == "daily":
+        unique_dates = sorted(set(dates))
+        longest = cur = 1
+        last = unique_dates[0]
+        for d in unique_dates[1:]:
+            if (d - last).days == 1:
+                cur += 1
+            else:
+                cur = 1
+            longest = max(longest, cur)
+            last = d
+        return longest
+    elif frequency == "weekly":
+        # map dates to their week (year, week)
+        weeks = sorted(set(d.isocalendar()[:2] for d in dates))
+        if not weeks:
+            return 0
+        longest = cur = 1
+        last = weeks[0]
+        for w in weeks[1:]:
+            # check consecutive weeks
+            if (w[0] == last[0] and w[1] == last[1] + 1) or (
+                w[0] == last[0] + 1 and w[1] == 1 and last[1] >= 52
+            ):
+                cur += 1
+            else:
+                cur = 1
+            longest = max(longest, cur)
+            last = w
+        return longest
+    else:
         return 0
 
-    # Group completions by week for weekly habits
-    if habit.frequency == 'weekly':
-        # Convert dates to their respective Saturdays
-        saturday_completions = set()
-        for completion in completions:
-            date = completion.date()
-            # Find the Saturday of this week
-            while date.weekday() != 5:  # 5 is Saturday
-                date += datetime.timedelta(days=1)
-            saturday_completions.add(date)
-        
-        # Count consecutive Saturdays
-        saturdays = sorted(saturday_completions)
-        if not saturdays:
-            return 0
-            
-        longest_streak = 1
-        current_streak = 1
-        last_saturday = saturdays[0]
-        
-        for saturday in saturdays[1:]:
-            if (saturday - last_saturday).days == 7:  # Consecutive weeks
-                current_streak += 1
-            else:
-                current_streak = 1
-            longest_streak = max(longest_streak, current_streak)
-            last_saturday = saturday
-            
-        return longest_streak
-    
-    # For daily habits
-    longest_streak = 1
-    current_streak = 1
-    last_date = completions[0].date()
 
-    for completion in completions[1:]:
-        current_date = completion.date()
-        if (current_date - last_date).days == 1:  # Consecutive days
-            current_streak += 1
-        else:
-            current_streak = 1
-        longest_streak = max(longest_streak, current_streak)
-        last_date = current_date
+def calculate_completion_rate_from_dates(
+    completion_dates: Set[datetime.date],
+    frequency: str,
+    reference_date: datetime.date = None,
+) -> float:
+    """Pure function: calculate completion rate from a set of dates."""
+    if reference_date is None:
+        today = datetime.datetime.now().date()
+    else:
+        today = reference_date
+    if frequency == "weekly":
+        total_weeks = 4
+        recent_week_starts = set()
+        # consider the week-start (Sunday) for each completion
+        for d in completion_dates:
+            week_start = d
+            while week_start.weekday() != 6:  # Sunday
+                week_start -= datetime.timedelta(days=1)
+            if (today - week_start).days < 7 * total_weeks:
+                recent_week_starts.add(week_start)
+        return len(recent_week_starts) / total_weeks
+    else:
+        total_days = 28
+        count = len([d for d in completion_dates if 0 <= (today - d).days < total_days])
+        return count / total_days
 
-    return longest_streak
 
 def calculate_overall_longest_streak(db_name: str) -> Tuple[str, int]:
     """
     Find the habit with the longest streak across all habits.
-    
+
     Args:
         db_name: The name of the database
-        
+
     Returns:
         Tuple[str, int]: A tuple of (habit_name, streak_length)
     """
     habits = db.get_all_habits(active_only=True, db_name=db_name)
     longest_streak = 0
     habit_name = ""
-    
+
     for habit in habits:
         streak = calculate_longest_streak_for_habit(habit.id, db_name)
         if streak > longest_streak:
             longest_streak = streak
             habit_name = habit.name
-    
+
     return habit_name, longest_streak
+
 
 def calculate_best_worst_habit(db_name: str):
     """
@@ -197,6 +219,7 @@ def calculate_best_worst_habit(db_name: str):
     worst_habit = min(streaked_habits, key=lambda h: h.streak)
     return best_habit, worst_habit
 
+
 def get_completion_history(habit_id: int, db_name: str):
     """
     Returns a list of completion datetimes for the given habit_id, sorted ascending.
@@ -204,7 +227,10 @@ def get_completion_history(habit_id: int, db_name: str):
     completions = db.get_completions(habit_id, db_name)
     return sorted(completions, key=lambda x: x)
 
-def calculate_goal_progress(habit_id: int, db_name: str):
+
+def calculate_goal_progress(
+    habit_id: int, db_name: str, reference_date: datetime.date = None
+):
     """
     Returns a dictionary with progress info for a given habit.
     For daily: completions in last 28 days and percent.
@@ -213,10 +239,12 @@ def calculate_goal_progress(habit_id: int, db_name: str):
     """
     habit = db.get_habit(habit_id, db_name)
     if not habit:
-        return {'count': 0, 'total': 0, 'percent': 0.0}
+        return {"count": 0, "total": 0, "percent": 0.0}
     completions = db.get_completions(habit_id, db_name)
-    today = datetime.datetime.now().date()
-    if habit.frequency == 'weekly':
+    if reference_date is None:
+        reference_date = datetime.datetime.now().date()
+    today = reference_date
+    if habit.frequency == "weekly":
         total = 4
         # Find the Saturday of each completion week in last 4 weeks
         recent_saturdays = set()
@@ -225,15 +253,15 @@ def calculate_goal_progress(habit_id: int, db_name: str):
             # Find the Saturday of this week
             while date.weekday() != 5:
                 date += datetime.timedelta(days=1)
-            if (today - date).days <= 7*total:
+            if (today - date).days <= 7 * total:
                 recent_saturdays.add(date)
         count = len(recent_saturdays)
         percent = (count / total * 100) if total else 0.0
     else:  # daily
         total = 28
-        count = len([c for c in completions if (today - c.date()).days < total])
+        count = len([c for c in completions if 0 <= (today - c.date()).days < total])
         percent = (count / total * 100) if total else 0.0
-    return {'count': count, 'total': total, 'percent': percent}
+    return {"count": count, "total": total, "percent": percent}
 
 
 def calculate_goal_based_progress(habit_id: int, db_name: str):
@@ -250,21 +278,21 @@ def calculate_goal_based_progress(habit_id: int, db_name: str):
         goal = max(habit_goals, key=lambda g: g.created_at)
         progress = goal.calculate_progress(db_name)
         return {
-            'count': progress['count'],
-            'total': progress['total'],
-            'percent': progress['percent'],
-            'goal_name': f"Goal {goal.id}",
-            'achieved': progress['achieved']
+            "count": progress["count"],
+            "total": progress["total"],
+            "percent": progress["percent"],
+            "goal_name": f"Goal {goal.id}",
+            "achieved": progress["achieved"],
         }
 
     # Fallback to default calculation
     default_progress = calculate_goal_progress(habit_id, db_name)
     return {
-        'count': default_progress['count'],
-        'total': default_progress['total'],
-        'percent': default_progress['percent'],
-        'goal_name': None,
-        'achieved': False
+        "count": default_progress["count"],
+        "total": default_progress["total"],
+        "percent": default_progress["percent"],
+        "goal_name": None,
+        "achieved": False,
     }
 
 
@@ -286,11 +314,11 @@ def get_habit_analysis_with_goals(habit_id: int, db_name: str) -> dict:
     completions = db.get_completions(habit_id, db_name)
 
     return {
-        'completion_rate': calculate_completion_rate_for_habit(habit_id, db_name),
-        'longest_streak': calculate_longest_streak_for_habit(habit_id, db_name),
-        'current_streak': habit.streak,
-        'goal_progress': calculate_goal_based_progress(habit_id, db_name),
-        'total_completions': len(completions)
+        "completion_rate": calculate_completion_rate_for_habit(habit_id, db_name),
+        "longest_streak": calculate_longest_streak_for_habit(habit_id, db_name),
+        "current_streak": habit.streak,
+        "goal_progress": calculate_goal_based_progress(habit_id, db_name),
+        "total_completions": len(completions),
     }
 
 
@@ -308,8 +336,8 @@ def analyze_habits_by_category(db_name: str) -> dict:
         for habit in habits:
             analysis_data = get_habit_analysis_with_goals(habit.id, db_name)
             if analysis_data:
-                analysis_data['habit_name'] = habit.name
-                analysis_data['habit_frequency'] = habit.frequency
+                analysis_data["habit_name"] = habit.name
+                analysis_data["habit_frequency"] = habit.frequency
                 habit_analyses.append(analysis_data)
         analysis[category.name] = habit_analyses
 
@@ -325,11 +353,11 @@ def analyze_habits_by_category(db_name: str) -> dict:
         if habit.id not in categorized_habit_ids:
             analysis_data = get_habit_analysis_with_goals(habit.id, db_name)
             if analysis_data:
-                analysis_data['habit_name'] = habit.name
-                analysis_data['habit_frequency'] = habit.frequency
+                analysis_data["habit_name"] = habit.name
+                analysis_data["habit_frequency"] = habit.frequency
                 uncategorized.append(analysis_data)
 
     if uncategorized:
-        analysis['Uncategorized'] = uncategorized
+        analysis["Uncategorized"] = uncategorized
 
     return analysis

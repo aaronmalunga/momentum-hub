@@ -62,7 +62,15 @@ def compress_file(path: Path) -> Path:
 
 def prune_backups(backups_dir: Path, pattern: str, keep: int) -> List[Path]:
     # Find files matching pattern (simple prefix search)
-    files = sorted([p for p in backups_dir.iterdir() if p.is_file() and p.name.startswith(pattern)], key=lambda p: p.stat().st_mtime, reverse=True)
+    files = sorted(
+        [
+            p
+            for p in backups_dir.iterdir()
+            if p.is_file() and p.name.startswith(pattern)
+        ],
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
     removed: List[Path] = []
     for old in files[keep:]:
         try:
@@ -75,12 +83,32 @@ def prune_backups(backups_dir: Path, pattern: str, keep: int) -> List[Path]:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Backup a SQLite database into backups/ with timestamped filename")
-    parser.add_argument("--src", "-s", default="momentum.db", help="Source SQLite DB file (default: momentum.db)")
-    parser.add_argument("--dest", "-d", help="Destination file path (default: backups/<timestamped>)")
-    parser.add_argument("--compress", action="store_true", help="Compress the backup with gzip (.gz)")
-    parser.add_argument("--keep", type=int, default=0, help="Keep only the most recent N backups (0 = keep all)")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be done without writing files")
+    parser = argparse.ArgumentParser(
+        description="Backup a SQLite database into backups/ with timestamped filename"
+    )
+    parser.add_argument(
+        "--src",
+        "-s",
+        default="momentum.db",
+        help="Source SQLite DB file (default: momentum.db)",
+    )
+    parser.add_argument(
+        "--dest", "-d", help="Destination file path (default: backups/<timestamped>)"
+    )
+    parser.add_argument(
+        "--compress", action="store_true", help="Compress the backup with gzip (.gz)"
+    )
+    parser.add_argument(
+        "--keep",
+        type=int,
+        default=0,
+        help="Keep only the most recent N backups (0 = keep all)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be done without writing files",
+    )
     return parser.parse_args()
 
 
@@ -108,7 +136,9 @@ def main() -> int:
         if args.compress:
             print(f"DRY RUN: would compress {dest} to {dest}.gz")
         if args.keep and args.keep > 0:
-            print(f"DRY RUN: would keep the most recent {args.keep} backups and prune others")
+            print(
+                f"DRY RUN: would keep the most recent {args.keep} backups and prune others"
+            )
         return 0
 
     try:

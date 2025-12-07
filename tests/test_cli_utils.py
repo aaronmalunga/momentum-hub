@@ -1,16 +1,21 @@
 import datetime
 import os
 import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
-from cli_utils import _validate_time_format, _handle_habit_selection, _to_date
-from habit import Habit
 from colorama import Fore
+
+from cli_utils import _handle_habit_selection, _to_date, _validate_time_format
+from habit import Habit
+
 
 @pytest.fixture
 def sample_habit():
     return Habit(id=1, name="Test Habit", frequency="daily")
+
 
 class TestValidateTimeFormat:
     def test_valid_time_format_24_hour(self):
@@ -31,25 +36,28 @@ class TestValidateTimeFormat:
         result = _validate_time_format("25:00")
         assert result == "Invalid time format. Please use HH:MM (24-hour format)."
 
+
 class TestHandleHabitSelection:
     def test_handle_habit_selection_success(self, sample_habit):
         habits = [sample_habit]
-        with patch('questionary.select') as mock_select:
-            mock_select.return_value.ask.return_value = "1. Test Habit (daily) - Streak: 0"
+        with patch("questionary.select") as mock_select:
+            mock_select.return_value.ask.return_value = (
+                "1. Test Habit (daily) - Streak: 0"
+            )
             result = _handle_habit_selection(habits, "Select habit:")
             assert result == sample_habit
 
     def test_handle_habit_selection_cancel(self, sample_habit):
         habits = [sample_habit]
-        with patch('questionary.select') as mock_select:
+        with patch("questionary.select") as mock_select:
             mock_select.return_value.ask.return_value = "Cancel"
-            with patch('cli_utils.press_enter_to_continue'):
+            with patch("cli_utils.press_enter_to_continue"):
                 result = _handle_habit_selection(habits, "Select habit:")
                 assert result is None
 
     def test_handle_habit_selection_no_habits(self):
-        with patch('cli_utils.show_colored_message') as mock_show:
-            with patch('cli_utils.press_enter_to_continue'):
+        with patch("cli_utils.show_colored_message") as mock_show:
+            with patch("cli_utils.press_enter_to_continue"):
                 result = _handle_habit_selection([], "Select habit:", "No habits")
                 assert result is None
                 # The function prints directly, so mock_show is not called
@@ -57,11 +65,12 @@ class TestHandleHabitSelection:
 
     def test_handle_habit_selection_invalid_selection(self, sample_habit):
         habits = [sample_habit]
-        with patch('questionary.select') as mock_select:
+        with patch("questionary.select") as mock_select:
             mock_select.return_value.ask.return_value = "invalid"
-            with patch('cli_utils.press_enter_to_continue'):
+            with patch("cli_utils.press_enter_to_continue"):
                 result = _handle_habit_selection(habits, "Select habit:")
                 assert result is None
+
 
 class TestToDate:
     def test_to_date_with_datetime(self):

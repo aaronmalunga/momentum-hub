@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [
-    {name = "Aaron", email = "aaron@example.com"}
+    {name = "Aaron Malunga", email = "malungaron@gmail.com"}
 ]
 keywords = ["habit", "tracker", "cli", "productivity", "routine"]
 classifiers = [
@@ -44,10 +44,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/momentum-hub"
-Documentation = "https://github.com/yourusername/momentum-hub#readme"
-Repository = "https://github.com/yourusername/momentum-hub.git"
-Issues = "https://github.com/yourusername/momentum-hub/issues"
+Homepage = "https://github.com/aaronmalunga/momentum-hub"
+Documentation = "https://github.com/aaronmalunga/momentum-hub#readme"
+Repository = "https://github.com/aaronmalunga/momentum-hub.git"
+Issues = "https://github.com/aaronmalunga/momentum-hub/issues"
 
 [project.scripts]
 momentum = "momentum_main:main"
@@ -60,7 +60,7 @@ momentum = "momentum_main:main"
 minversion = "8.0"
 testpaths = ["tests"]
 python_files = "test_*.py"
-addopts = "-v --strict-markers"
+addopts = "-v --strict-markers --cov=. --cov-report=term"
 markers = [
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
@@ -89,9 +89,20 @@ source = [
     "error_manager"
 ]
 omit = [
-    "tests/*",
+    "tests/test_data.py",
+    "tests/__pycache__/*",
     ".venv/*",
     "check_db.py",
+    "inspect_test_dbs.py",
+    "data_model_cli.py",
+    "momentum_main.py",
+    "PRESENTATION_SLIDES_EXPLAINED.py",
+    "SQL_SCHEMA_DIAGRAM_README.py",
+    "generate_arch_diagrams.py",
+    "generate_kpi_explanation_slide.py",
+    "setup.py",
+    "enhanced_demo.py",
+    "generate_code_based_diagrams.py",
 ]
 
 [tool.coverage.report]

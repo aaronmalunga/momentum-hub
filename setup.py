@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Setup script for Momentum Hub.
 
@@ -6,7 +5,7 @@ This file is kept for compatibility with older tools and direct pip install from
 Modern installations should use pyproject.toml (PEP 517/518).
 """
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -14,12 +13,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="momentum-hub",
     version="1.0.0",
-    author="Aaron",
-    author_email="aaron@example.com",
+    author="Aaron Malunga",
+    author_email="malungaron@gmail.com",
     description="A CLI habit tracker for building and maintaining daily/weekly habits.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/momentum-hub",
+    url="https://github.com/aaronmalunga/momentum-hub",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",

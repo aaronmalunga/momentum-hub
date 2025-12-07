@@ -30,7 +30,7 @@
 3. Launch the app in demo mode: ``python momentum_main.py --demo``
 4. Explore the UI/CLI; create, modify, and complete habits — demo DB stays isolated.
 
-**Commands to commit & push changes (if you want me to watch CI, run these):**
+**Commands to commit & push changes (if you want to watch CI, run these):**
 
 ```powershell
 git add momentum_main.py USAGE.md scripts/seed_demo_db.py
@@ -41,4 +41,3 @@ git push origin main
 gh run list --repo aaronmalunga/momentum-hub --limit 5
 gh run watch <run-id> --repo aaronmalunga/momentum-hub
 ```
-

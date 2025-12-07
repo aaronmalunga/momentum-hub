@@ -1,5 +1,30 @@
 [run]
 omit =
+    tests/test_data.py
     enhanced_demo.py
     generate_code_based_diagrams.py
     setup.py
+    tests/__pycache__/*
+    .venv/*
+    check_db.py
+    inspect_test_dbs.py
+    data_model_cli.py
+    momentum_main.py
+    *_PRESENTATION*.py
+    *_SLIDES*.py
+    generate_arch_diagrams.py
+    generate_kpi_explanation_slide.py
+    SQL_SCHEMA_DIAGRAM_README.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    if typing.TYPE_CHECKING:
+    @abstractmethod
+    @abc.abstractmethod
+precision = 2

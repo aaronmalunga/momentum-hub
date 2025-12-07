@@ -1,16 +1,21 @@
-import questionary
 import datetime
+
+import questionary
 from colorama import Fore, Style
 from tabulate import tabulate
-from momentum_utils import show_colored_message, press_enter_to_continue
-from error_manager import error_manager
-from goal import Goal
+
 import momentum_db as db
 from cli_utils import _handle_habit_selection
+from error_manager import error_manager
+from goal import Goal
+from momentum_utils import press_enter_to_continue, show_colored_message
+
 
 def manage_goals(db_name: str):
     """Handles the goal management menu."""
-    show_colored_message("\n--- Manage Goals ---", color=Fore.YELLOW, style=Style.BRIGHT)
+    show_colored_message(
+        "\n--- Manage Goals ---", color=Fore.YELLOW, style=Style.BRIGHT
+    )
     choice = questionary.select(
         "What would you like to do with goals?",
         choices=[
@@ -18,8 +23,8 @@ def manage_goals(db_name: str):
             "View all goals",
             "Update a goal",
             "Delete a goal",
-            "Back to Main Menu"
-        ]
+            "Back to Main Menu",
+        ],
     ).ask()
 
     goal_actions = {
@@ -27,24 +32,31 @@ def manage_goals(db_name: str):
         "View all goals": lambda: view_goals(db_name),
         "Update a goal": lambda: update_goal(db_name),
         "Delete a goal": lambda: delete_goal(db_name),
-        "Back to Main Menu": lambda: None
+        "Back to Main Menu": lambda: None,
     }
 
     if choice in goal_actions:
         goal_actions[choice]()
 
+
 def create_goal(db_name: str):
     """Handles creating a new goal."""
-    show_colored_message("\n--- Create New Goal ---", color=Fore.YELLOW, style=Style.BRIGHT)
+    show_colored_message(
+        "\n--- Create New Goal ---", color=Fore.YELLOW, style=Style.BRIGHT
+    )
 
     # Select habit
     habits = db.get_all_habits(active_only=True, db_name=db_name)
     if not habits:
-        show_colored_message("No active habits found. Create a habit first!", color=Fore.RED)
+        show_colored_message(
+            "No active habits found. Create a habit first!", color=Fore.RED
+        )
         press_enter_to_continue()
         return
 
-    selected_habit = _handle_habit_selection(habits, "Select a habit for the goal:", "No active habits found.")
+    selected_habit = _handle_habit_selection(
+        habits, "Select a habit for the goal:", "No active habits found."
+    )
     if not selected_habit:
         return
 
@@ -52,7 +64,7 @@ def create_goal(db_name: str):
     target_period_days = questionary.text(
         "Enter target period in days (default: 28):",
         default="28",
-        validate=lambda x: x.isdigit() and int(x) > 0
+        validate=lambda x: x.isdigit() and int(x) > 0,
     ).ask()
     if target_period_days is None:
         show_colored_message("Goal creation cancelled.", color=Fore.YELLOW)
@@ -61,7 +73,9 @@ def create_goal(db_name: str):
     try:
         target_period_days = int(target_period_days)
     except ValueError:
-        show_colored_message("Invalid target period days. Must be a number.", color=Fore.RED)
+        show_colored_message(
+            "Invalid target period days. Must be a number.", color=Fore.RED
+        )
         press_enter_to_continue()
         return
 
@@ -69,7 +83,9 @@ def create_goal(db_name: str):
         "Enter specific target completions (optional, leave blank for auto-calculation):"
     ).ask()
     if target_completions and not target_completions.isdigit():
-        show_colored_message("Invalid target completions. Must be a number.", color=Fore.RED)
+        show_colored_message(
+            "Invalid target completions. Must be a number.", color=Fore.RED
+        )
         press_enter_to_continue()
         return
     target_completions = int(target_completions) if target_completions else None
@@ -86,9 +102,7 @@ def create_goal(db_name: str):
             press_enter_to_continue()
             return
 
-    end_date_str = questionary.text(
-        "Enter end date (YYYY-MM-DD, optional):"
-    ).ask()
+    end_date_str = questionary.text("Enter end date (YYYY-MM-DD, optional):").ask()
     end_date = None
     if end_date_str:
         try:
@@ -105,16 +119,17 @@ def create_goal(db_name: str):
         target_completions=target_completions,
         start_date=start_date,
         end_date=end_date,
-        is_active=True
+        is_active=True,
     )
 
     goal_id = db.add_goal(goal, db_name)
     show_colored_message(
         f"Goal created successfully for '{selected_habit.name}' with ID: {goal_id}",
         color=Fore.GREEN,
-        style=Style.BRIGHT
+        style=Style.BRIGHT,
     )
     press_enter_to_continue()
+
 
 def view_goals(db_name: str):
     """Handles viewing all goals."""
@@ -131,18 +146,26 @@ def view_goals(db_name: str):
         habit = db.get_habit(goal.habit_id, db_name)
         habit_name = habit.name if habit else "Unknown Habit"
         progress = goal.calculate_progress(db_name)
-        progress_str = f"{progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"
-        status = "Achieved" if progress['achieved'] else "In Progress"
-        status_col = f"{Fore.GREEN}{status}{Style.RESET_ALL}" if progress['achieved'] else f"{Fore.YELLOW}{status}{Style.RESET_ALL}"
+        progress_str = (
+            f"{progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"
+        )
+        status = "Achieved" if progress["achieved"] else "In Progress"
+        status_col = (
+            f"{Fore.GREEN}{status}{Style.RESET_ALL}"
+            if progress["achieved"]
+            else f"{Fore.YELLOW}{status}{Style.RESET_ALL}"
+        )
 
-        table.append([
-            goal.id,
-            habit_name,
-            goal.target_period_days,
-            goal.target_completions or "Auto",
-            progress_str,
-            status_col
-        ])
+        table.append(
+            [
+                goal.id,
+                habit_name,
+                goal.target_period_days,
+                goal.target_completions or "Auto",
+                progress_str,
+                status_col,
+            ]
+        )
 
     headers = [
         f"{Fore.CYAN}ID{Style.RESET_ALL}",
@@ -150,10 +173,11 @@ def view_goals(db_name: str):
         f"{Fore.CYAN}Period (days){Style.RESET_ALL}",
         f"{Fore.CYAN}Target{Style.RESET_ALL}",
         f"{Fore.CYAN}Progress{Style.RESET_ALL}",
-        f"{Fore.CYAN}Status{Style.RESET_ALL}"
+        f"{Fore.CYAN}Status{Style.RESET_ALL}",
     ]
     print(tabulate(table, headers=headers, tablefmt="grid", stralign="center"))
     press_enter_to_continue()
+
 
 def update_goal(db_name: str):
     """Handles updating an existing goal."""
@@ -171,7 +195,9 @@ def update_goal(db_name: str):
         habit = db.get_habit(goal.habit_id, db_name)
         habit_name = habit.name if habit else "Unknown Habit"
         progress = goal.calculate_progress(db_name)
-        choices.append(f"{goal.id}. {habit_name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)")
+        choices.append(
+            f"{goal.id}. {habit_name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"
+        )
     choices.append("Cancel")
 
     answer = questionary.select("Select a goal to update:", choices=choices).ask()
@@ -196,7 +222,7 @@ def update_goal(db_name: str):
     target_period_days = questionary.text(
         f"Enter new target period in days (current: {goal.target_period_days}):",
         default=str(goal.target_period_days),
-        validate=lambda x: x.isdigit() and int(x) > 0
+        validate=lambda x: x.isdigit() and int(x) > 0,
     ).ask()
     if target_period_days is None:
         show_colored_message("Update cancelled.", color=Fore.YELLOW)
@@ -208,7 +234,9 @@ def update_goal(db_name: str):
         f"Enter new target completions (current: {goal.target_completions or 'Auto'}, leave blank for auto):"
     ).ask()
     if target_completions and not target_completions.isdigit():
-        show_colored_message("Invalid target completions. Must be a number.", color=Fore.RED)
+        show_colored_message(
+            "Invalid target completions. Must be a number.", color=Fore.RED
+        )
         press_enter_to_continue()
         return
     goal.target_completions = int(target_completions) if target_completions else None
@@ -240,8 +268,11 @@ def update_goal(db_name: str):
         goal.end_date = None
 
     db.update_goal(goal, db_name)
-    show_colored_message(f"Goal ID {goal.id} updated successfully!", color=Fore.GREEN, style=Style.BRIGHT)
+    show_colored_message(
+        f"Goal ID {goal.id} updated successfully!", color=Fore.GREEN, style=Style.BRIGHT
+    )
     press_enter_to_continue()
+
 
 def delete_goal(db_name: str):
     """Handles deleting a goal."""
@@ -259,7 +290,9 @@ def delete_goal(db_name: str):
         habit = db.get_habit(goal.habit_id, db_name)
         habit_name = habit.name if habit else "Unknown Habit"
         progress = goal.calculate_progress(db_name)
-        choices.append(f"{goal.id}. {habit_name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)")
+        choices.append(
+            f"{goal.id}. {habit_name} - {progress['count']}/{progress['total']} ({progress['percent']:.1f}%)"
+        )
     choices.append("Cancel")
 
     answer = questionary.select("Select a goal to delete:", choices=choices).ask()

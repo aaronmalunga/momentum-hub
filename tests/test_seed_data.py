@@ -1,8 +1,14 @@
-import pytest
 import os
 from unittest.mock import patch
+
+import pytest
+
 import momentum_db as db
-from seed_data import create_demo_habits, prompt_for_demo_habits, create_default_categories
+from seed_data import (
+    create_default_categories,
+    create_demo_habits,
+    prompt_for_demo_habits,
+)
 
 
 @pytest.fixture
@@ -48,8 +54,8 @@ class TestCreateDemoHabits:
         """Test that create_demo_habits works even with existing data."""
         # Add some existing data
         from category import Category
-        from habit import Habit
         from goal import Goal
+        from habit import Habit
 
         existing_cat = Category(name="Existing", description="Existing category")
         cat_id = db.add_category(existing_cat, tmp_db_path)
@@ -71,36 +77,34 @@ class TestCreateDemoHabits:
 class TestPromptForDemoHabits:
     def test_prompt_for_demo_habits_accepts_yes(self):
         """Test that prompt_for_demo_habits returns True when user says yes."""
-        with patch('builtins.input', return_value='yes'), \
-             patch('seed_data.print'):
+        with patch("builtins.input", return_value="yes"), patch("seed_data.print"):
             result = prompt_for_demo_habits()
             assert result is True
 
     def test_prompt_for_demo_habits_accepts_y(self):
         """Test that prompt_for_demo_habits returns True when user says y."""
-        with patch('builtins.input', return_value='y'), \
-             patch('seed_data.print'):
+        with patch("builtins.input", return_value="y"), patch("seed_data.print"):
             result = prompt_for_demo_habits()
             assert result is True
 
     def test_prompt_for_demo_habits_accepts_no(self):
         """Test that prompt_for_demo_habits returns False when user says no."""
-        with patch('builtins.input', return_value='no'), \
-             patch('seed_data.print'):
+        with patch("builtins.input", return_value="no"), patch("seed_data.print"):
             result = prompt_for_demo_habits()
             assert result is False
 
     def test_prompt_for_demo_habits_accepts_n(self):
         """Test that prompt_for_demo_habits returns False when user says n."""
-        with patch('builtins.input', return_value='n'), \
-             patch('seed_data.print'):
+        with patch("builtins.input", return_value="n"), patch("seed_data.print"):
             result = prompt_for_demo_habits()
             assert result is False
 
     def test_prompt_for_demo_habits_handles_invalid_input(self):
         """Test that prompt_for_demo_habits handles invalid input and retries."""
-        with patch('builtins.input', side_effect=['invalid', 'yes']), \
-             patch('seed_data.print'):
+        with (
+            patch("builtins.input", side_effect=["invalid", "yes"]),
+            patch("seed_data.print"),
+        ):
             result = prompt_for_demo_habits()
             assert result is True
 
@@ -123,7 +127,7 @@ class TestCreateDefaultCategories:
             "Social & Relationships",
             "Finance & Money",
             "Creativity & Hobbies",
-            "Home & Environment"
+            "Home & Environment",
         ]
         for name in expected_names:
             assert name in category_names
@@ -133,28 +137,41 @@ class TestCreateDefaultCategories:
             assert cat.is_active is True
             assert cat.created_at is not None
             if cat.name == "Health & Fitness":
-                assert cat.description == "Habits related to physical health and exercise"
+                assert (
+                    cat.description == "Habits related to physical health and exercise"
+                )
                 assert cat.color == "#FF6B6B"
             elif cat.name == "Personal Development":
                 assert cat.description == "Habits for learning and self-improvement"
                 assert cat.color == "#4ECDC4"
             elif cat.name == "Productivity":
-                assert cat.description == "Habits to improve efficiency and organization"
+                assert (
+                    cat.description == "Habits to improve efficiency and organization"
+                )
                 assert cat.color == "#45B7D1"
             elif cat.name == "Mindfulness & Wellness":
                 assert cat.description == "Habits for mental health and relaxation"
                 assert cat.color == "#96CEB4"
             elif cat.name == "Social & Relationships":
-                assert cat.description == "Habits for building and maintaining relationships"
+                assert (
+                    cat.description
+                    == "Habits for building and maintaining relationships"
+                )
                 assert cat.color == "#FFEAA7"
             elif cat.name == "Finance & Money":
                 assert cat.description == "Habits for financial planning and management"
                 assert cat.color == "#DDA0DD"
             elif cat.name == "Creativity & Hobbies":
-                assert cat.description == "Habits for creative expression and leisure activities"
+                assert (
+                    cat.description
+                    == "Habits for creative expression and leisure activities"
+                )
                 assert cat.color == "#98D8C8"
             elif cat.name == "Home & Environment":
-                assert cat.description == "Habits for maintaining home and environmental care"
+                assert (
+                    cat.description
+                    == "Habits for maintaining home and environmental care"
+                )
                 assert cat.color == "#F7DC6F"
 
     def test_create_default_categories_with_existing_data(self, tmp_db_path):

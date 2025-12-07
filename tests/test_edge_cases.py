@@ -1,11 +1,14 @@
 import datetime
-import sqlite3
-import pytest
-import sys
 import os
+import sqlite3
+import sys
+
+import pytest
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import momentum_db as db
 from habit import Habit
+
 
 @pytest.fixture
 def tmp_db_path(tmp_path):
@@ -14,6 +17,7 @@ def tmp_db_path(tmp_path):
     db_name = str(db_file)
     db.init_db(db_name=db_name)
     return db_name
+
 
 class TestEmptyDB:
     """Test cases for empty database scenarios."""
@@ -43,6 +47,7 @@ class TestEmptyDB:
         habit = db.get_habit(hid, db_name=tmp_db_path)
         assert habit.streak == 0
 
+
 class TestInvalidData:
     """Test cases for invalid data handling."""
 
@@ -55,12 +60,12 @@ class TestInvalidData:
     def test_bad_date_parsing_from_dict(self):
         """Test parsing invalid dates from dictionary."""
         data = {
-            'id': 1,
-            'name': 'Test',
-            'frequency': 'daily',
-            'created_at': 'invalid-date',
-            'last_completed': '2023-01-01',
-            'is_active': True
+            "id": 1,
+            "name": "Test",
+            "frequency": "daily",
+            "created_at": "invalid-date",
+            "last_completed": "2023-01-01",
+            "is_active": True,
         }
         # Should handle invalid date gracefully
         habit = Habit.from_dict(data)
@@ -69,12 +74,12 @@ class TestInvalidData:
     def test_bad_date_parsing_last_completed(self):
         """Test parsing invalid last_completed date."""
         data = {
-            'id': 1,
-            'name': 'Test',
-            'frequency': 'daily',
-            'created_at': '2023-01-01',
-            'last_completed': 'not-a-date',
-            'is_active': True
+            "id": 1,
+            "name": "Test",
+            "frequency": "daily",
+            "created_at": "2023-01-01",
+            "last_completed": "not-a-date",
+            "is_active": True,
         }
         habit = Habit.from_dict(data)
         assert habit.last_completed is None
@@ -95,6 +100,7 @@ class TestInvalidData:
         # Should default to some behavior, likely treating as daily
         result = h.calculate_longest_streak(completions)
         assert isinstance(result, int)
+
 
 class TestReactivationsWithExistingCompletions:
     """Test cases for reactivations with existing completions."""
@@ -155,7 +161,9 @@ class TestReactivationsWithExistingCompletions:
         # But the update_streak logic might not be setting it correctly
         # Let's check what completions are considered
         completions = db.get_completions(hid, db_name=tmp_db_path)
-        post_reactivation_completions = [c for c in completions if c >= habit.reactivated_at]
+        post_reactivation_completions = [
+            c for c in completions if c >= habit.reactivated_at
+        ]
         assert len(post_reactivation_completions) == 1
         # The streak should be 1 for a single completion
         assert habit.streak == 1
@@ -179,6 +187,7 @@ class TestReactivationsWithExistingCompletions:
         db.add_completion(hid, dt_same, db_name=tmp_db_path)
         completions = db.get_completions(hid, db_name=tmp_db_path)
         assert len(completions) == 2
+
 
 class TestStreakCalculationsWithGaps:
     """Test cases for streak calculations with gaps in completions."""
@@ -213,8 +222,8 @@ class TestStreakCalculationsWithGaps:
         dates = [
             datetime.datetime(2023, 1, 1),  # Week 1
             datetime.datetime(2023, 1, 8),  # Week 2
-            datetime.datetime(2023, 1, 15), # Week 3
-            datetime.datetime(2023, 1, 29), # Gap (skips week 4), Week 5
+            datetime.datetime(2023, 1, 15),  # Week 3
+            datetime.datetime(2023, 1, 29),  # Gap (skips week 4), Week 5
         ]
 
         for dt in dates:

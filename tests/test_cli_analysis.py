@@ -1,13 +1,26 @@
 import datetime
 import os
 import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
-from cli_analysis import analyze_list_all_habits, analyze_by_periodicity, analyze_longest_streak_all, analyze_longest_streak_one, analyze_streak_history_grid, analyze_best_worst_habit, analyze_goal_progress, analyze_completion_history
-import momentum_db as db
-from habit import Habit
 from colorama import Fore
+
+import momentum_db as db
+from cli_analysis import (
+    analyze_best_worst_habit,
+    analyze_by_periodicity,
+    analyze_completion_history,
+    analyze_goal_progress,
+    analyze_list_all_habits,
+    analyze_longest_streak_all,
+    analyze_longest_streak_one,
+    analyze_streak_history_grid,
+)
+from habit import Habit
+
 
 @pytest.fixture
 def tmp_db_path(tmp_path):
@@ -15,6 +28,7 @@ def tmp_db_path(tmp_path):
     db_name = str(db_file)
     db.init_db(db_name=db_name)
     return db_name
+
 
 @pytest.fixture
 def sample_habits(tmp_db_path):
@@ -24,27 +38,32 @@ def sample_habits(tmp_db_path):
     hid2 = db.add_habit(h2, db_name=tmp_db_path)
     return tmp_db_path, hid1, hid2
 
+
 class TestAnalyzeListAllHabits:
     def test_analyze_list_all_habits_with_data(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
-        with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis.press_enter_to_continue"):
             analyze_list_all_habits(db_name)
         captured = capsys.readouterr()
         assert "Daily Habit" in captured.out
         assert "Weekly Habit" in captured.out
 
     def test_analyze_list_all_habits_empty(self, tmp_db_path, capsys):
-        with patch('cli_analysis.show_colored_message') as mock_show:
-            with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis.show_colored_message") as mock_show:
+            with patch("cli_analysis.press_enter_to_continue"):
                 analyze_list_all_habits(tmp_db_path)
         mock_show.assert_called_with("No active habits found.", color=Fore.RED)
+
 
 class TestAnalyzeByPeriodicity:
     def test_analyze_by_periodicity_daily(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
-        with patch('questionary.select') as mock_select:
-            mock_select.return_value.ask.side_effect = ["daily", None]  # Select daily, then back
-            with patch('cli_analysis.press_enter_to_continue'):
+        with patch("questionary.select") as mock_select:
+            mock_select.return_value.ask.side_effect = [
+                "daily",
+                None,
+            ]  # Select daily, then back
+            with patch("cli_analysis.press_enter_to_continue"):
                 analyze_by_periodicity(db_name)
         captured = capsys.readouterr()
         assert "Daily Habit" in captured.out
@@ -52,31 +71,36 @@ class TestAnalyzeByPeriodicity:
 
     def test_analyze_by_periodicity_cancel(self, sample_habits):
         db_name, hid1, hid2 = sample_habits
-        with patch('questionary.select') as mock_select:
+        with patch("questionary.select") as mock_select:
             mock_select.return_value.ask.return_value = "Cancel"
-            with patch('cli_analysis.show_colored_message') as mock_show:
-                with patch('cli_analysis.press_enter_to_continue'):
+            with patch("cli_analysis.show_colored_message") as mock_show:
+                with patch("cli_analysis.press_enter_to_continue"):
                     analyze_by_periodicity(db_name)
-            mock_show.assert_called_with("Operation cancelled. No periodicity selected.", color=Fore.RED)
+            mock_show.assert_called_with(
+                "Operation cancelled. No periodicity selected.", color=Fore.RED
+            )
+
 
 class TestAnalyzeLongestStreakAll:
     def test_analyze_longest_streak_all(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
-        with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis.press_enter_to_continue"):
             analyze_longest_streak_all(db_name)
         captured = capsys.readouterr()
         assert "Daily Habit" in captured.out
         assert "Weekly Habit" in captured.out
 
+
 class TestAnalyzeLongestStreakOne:
     def test_analyze_longest_streak_one_success(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         habits = db.get_all_habits(active_only=True, db_name=db_name)
-        with patch('cli_analysis._handle_habit_selection', return_value=habits[0]):
-            with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis._handle_habit_selection", return_value=habits[0]):
+            with patch("cli_analysis.press_enter_to_continue"):
                 analyze_longest_streak_one(db_name)
         captured = capsys.readouterr()
         assert "Daily Habit" in captured.out
+
 
 class TestAnalyzeStreakHistoryGrid:
     def test_analyze_streak_history_grid_daily(self, sample_habits, capsys):
@@ -85,8 +109,8 @@ class TestAnalyzeStreakHistoryGrid:
         # Add a completion to the habit
         now = datetime.datetime.now()
         db.add_completion(hid1, now, db_name)
-        with patch('cli_analysis._handle_habit_selection', return_value=habits[0]):
-            with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis._handle_habit_selection", return_value=habits[0]):
+            with patch("cli_analysis.press_enter_to_continue"):
                 analyze_streak_history_grid(db_name)
         captured = capsys.readouterr()
         assert "Streak History (Calendar View)" in captured.out
@@ -94,11 +118,12 @@ class TestAnalyzeStreakHistoryGrid:
     def test_analyze_streak_history_grid_weekly(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         habits = db.get_all_habits(active_only=True, db_name=db_name)
-        with patch('cli_analysis._handle_habit_selection', return_value=habits[1]):
-            with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis._handle_habit_selection", return_value=habits[1]):
+            with patch("cli_analysis.press_enter_to_continue"):
                 analyze_streak_history_grid(db_name)
         captured = capsys.readouterr()
         assert "Week completed" in captured.out
+
 
 class TestAnalyzeBestWorstHabit:
     def test_analyze_best_worst_habit_success(self, sample_habits, capsys):
@@ -110,31 +135,36 @@ class TestAnalyzeBestWorstHabit:
         habit2 = db.get_habit(hid2, db_name)
         habit2.streak = 3
         db.update_habit(habit2, db_name)
-        with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis.press_enter_to_continue"):
             analyze_best_worst_habit(db_name)
         captured = capsys.readouterr()
         assert "Best" in captured.out
         assert "Worst" in captured.out
 
     def test_analyze_best_worst_habit_no_streaks(self, tmp_db_path):
-        with patch('cli_analysis.show_colored_message') as mock_show:
-            with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis.show_colored_message") as mock_show:
+            with patch("cli_analysis.press_enter_to_continue"):
                 analyze_best_worst_habit(tmp_db_path)
-        mock_show.assert_called_with("No streaks found for any active habits yet. Keep tracking!", color=Fore.RED)
+        mock_show.assert_called_with(
+            "No streaks found for any active habits yet. Keep tracking!", color=Fore.RED
+        )
+
 
 class TestAnalyzeGoalProgress:
     def test_analyze_goal_progress_success(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         # Create a goal for the habit
         from goal import Goal
+
         goal = Goal(habit_id=hid1, target_period_days=28, target_completions=10)
         db.add_goal(goal, db_name)
         habits = db.get_all_habits(active_only=True, db_name=db_name)
-        with patch('cli_analysis._handle_habit_selection', return_value=habits[0]):
-            with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis._handle_habit_selection", return_value=habits[0]):
+            with patch("cli_analysis.press_enter_to_continue"):
                 analyze_goal_progress(db_name)
         captured = capsys.readouterr()
         assert "Progress" in captured.out
+
 
 class TestAnalyzeCompletionHistory:
     def test_analyze_completion_history_with_data(self, sample_habits, capsys):
@@ -143,8 +173,8 @@ class TestAnalyzeCompletionHistory:
         now = datetime.datetime.now()
         db.add_completion(hid1, now, db_name)
         habits = db.get_all_habits(active_only=True, db_name=db_name)
-        with patch('cli_analysis._handle_habit_selection', return_value=habits[0]):
-            with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis._handle_habit_selection", return_value=habits[0]):
+            with patch("cli_analysis.press_enter_to_continue"):
                 analyze_completion_history(db_name)
         captured = capsys.readouterr()
         assert "Completion Date/Time" in captured.out
@@ -152,8 +182,10 @@ class TestAnalyzeCompletionHistory:
     def test_analyze_completion_history_no_data(self, sample_habits):
         db_name, hid1, hid2 = sample_habits
         habits = db.get_all_habits(active_only=True, db_name=db_name)
-        with patch('cli_analysis._handle_habit_selection', return_value=habits[0]):
-            with patch('cli_analysis.show_colored_message') as mock_show:
-                with patch('cli_analysis.press_enter_to_continue'):
+        with patch("cli_analysis._handle_habit_selection", return_value=habits[0]):
+            with patch("cli_analysis.show_colored_message") as mock_show:
+                with patch("cli_analysis.press_enter_to_continue"):
                     analyze_completion_history(db_name)
-        mock_show.assert_called_with("No completions recorded yet for this habit.", color=Fore.YELLOW)
+        mock_show.assert_called_with(
+            "No completions recorded yet for this habit.", color=Fore.YELLOW
+        )

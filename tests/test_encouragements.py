@@ -1,9 +1,12 @@
-import pytest
-import sys
 import os
 import random
+import sys
+
+import pytest
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import encouragements
+
 
 class TestGetCompletionEncouragement:
     """Test cases for get_completion_encouragement function."""
@@ -21,6 +24,7 @@ class TestGetCompletionEncouragement:
             results.add(encouragements.get_completion_encouragement())
         # Should get at least a few different messages
         assert len(results) > 1
+
 
 class TestGetStreakEncouragement:
     """Test cases for get_streak_encouragement function."""
@@ -77,6 +81,7 @@ class TestGetStreakEncouragement:
         assert isinstance(result, str)
         # The message might not contain the number, check for content instead
         assert len(result) > 0
+
 
 class TestGetCompletionRateEncouragement:
     """Test cases for get_completion_rate_encouragement function."""

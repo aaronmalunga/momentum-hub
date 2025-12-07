@@ -1,6 +1,8 @@
 import datetime
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
+
 from error_manager import error_manager
+
 
 class Habit:
     """
@@ -19,9 +21,21 @@ class Habit:
         - reactivated_at: When the habit was last reactivated (optional)
     """
 
-    def __init__(self, id=None, name=None, frequency=None, notes=None,
-                 reminder_time=None, evening_reminder_time=None, streak=0,
-                 created_at=None, last_completed=None, is_active=True, reactivated_at=None, category_id=None):
+    def __init__(
+        self,
+        id=None,
+        name=None,
+        frequency=None,
+        notes=None,
+        reminder_time=None,
+        evening_reminder_time=None,
+        streak=0,
+        created_at=None,
+        last_completed=None,
+        is_active=True,
+        reactivated_at=None,
+        category_id=None,
+    ):
         self.id = id
         self.name = name
         self.frequency = frequency
@@ -35,9 +49,14 @@ class Habit:
         self.reactivated_at = reactivated_at
         self.category_id = category_id
 
-    def edit_habit(self, name: Optional[str] = None, frequency: Optional[str] = None,
-                    notes: Optional[str] = None, reminder_time: Optional[str] = None,
-                    evening_reminder_time: Optional[str] = None):
+    def edit_habit(
+        self,
+        name: Optional[str] = None,
+        frequency: Optional[str] = None,
+        notes: Optional[str] = None,
+        reminder_time: Optional[str] = None,
+        evening_reminder_time: Optional[str] = None,
+    ):
         """
         Edit the habit's attributes.
         """
@@ -51,7 +70,7 @@ class Habit:
             self.reminder_time = reminder_time
         if evening_reminder_time is not None:
             self.evening_reminder_time = evening_reminder_time
-    
+
     def delete_habit(self):
         """
         Mark the habit as inactive (soft deletion).
@@ -66,14 +85,14 @@ class Habit:
         now = dt or datetime.datetime.now()
         if self.last_completed is not None:
             delta_days = (now.date() - self.last_completed.date()).days
-            if self.frequency == 'daily' and delta_days == 1:
+            if self.frequency == "daily" and delta_days == 1:
                 self.streak += 1
-            elif self.frequency == 'weekly' and delta_days > 0:
+            elif self.frequency == "weekly" and delta_days > 0:
                 self.streak += 1
             else:
-                self.streak = 1 # where streak is reset if missed
+                self.streak = 1  # where streak is reset if missed
         else:
-            self.streak = 1 # first completion        
+            self.streak = 1  # first completion
         self.last_completed = now
 
     def calculate_longest_streak(self, completions: List[datetime.datetime]) -> int:
@@ -88,7 +107,7 @@ class Habit:
         if not completions:
             return 0
 
-        if self.frequency == 'daily':
+        if self.frequency == "daily":
             unique_dates = sorted(list(set(c.date() for c in completions)))
             if not unique_dates:
                 return 0
@@ -106,7 +125,7 @@ class Habit:
                 last_completed_date = current_date
 
             return longest_streak
-        elif self.frequency == 'weekly':
+        elif self.frequency == "weekly":
             unique_weeks = sorted(set(c.date().isocalendar()[:2] for c in completions))
             if not unique_weeks:
                 return 0
@@ -117,8 +136,14 @@ class Habit:
 
             for current_week in unique_weeks[1:]:
                 # Check if consecutive weeks
-                if (current_week[0] == last_week[0] and current_week[1] == last_week[1] + 1) or \
-                   (current_week[0] == last_week[0] + 1 and current_week[1] == 1 and last_week[1] == 52):
+                if (
+                    current_week[0] == last_week[0]
+                    and current_week[1] == last_week[1] + 1
+                ) or (
+                    current_week[0] == last_week[0] + 1
+                    and current_week[1] == 1
+                    and last_week[1] == 52
+                ):
                     current_streak += 1
                 else:
                     current_streak = 1
@@ -135,71 +160,79 @@ class Habit:
         Converts the habit to a dictionary for database storage (db)
         """
         return {
-            'id': self.id,
-            'name': self.name,
-            'frequency': self.frequency,
-            'notes': self.notes,
-            'reminder_time': self.reminder_time,
-            'evening_reminder_time': self.evening_reminder_time,
-            'streak': self.streak,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'last_completed': self.last_completed.isoformat() if self.last_completed else None,
-            'is_active': self.is_active,
-            'reactivated_at': self.reactivated_at.isoformat() if self.reactivated_at else None
+            "id": self.id,
+            "name": self.name,
+            "frequency": self.frequency,
+            "notes": self.notes,
+            "reminder_time": self.reminder_time,
+            "evening_reminder_time": self.evening_reminder_time,
+            "streak": self.streak,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "last_completed": (
+                self.last_completed.isoformat() if self.last_completed else None
+            ),
+            "is_active": self.is_active,
+            "reactivated_at": (
+                self.reactivated_at.isoformat() if self.reactivated_at else None
+            ),
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str,Any]) -> 'Habit':
+    def from_dict(cls, data: Dict[str, Any]) -> "Habit":
         """
         Create a Habit instance from a dictionary (e.g from db).
         """
         created_at_dt = None
-        if data.get('created_at'):
+        if data.get("created_at"):
             try:
-                created_at_dt = datetime.datetime.fromisoformat(data['created_at'])
+                created_at_dt = datetime.datetime.fromisoformat(data["created_at"])
             except ValueError:
                 try:
-                    created_at_dt = datetime.datetime.strptime(data['created_at'], '%Y-%m-%d')
+                    created_at_dt = datetime.datetime.strptime(
+                        data["created_at"], "%Y-%m-%d"
+                    )
                 except ValueError:
                     created_at_dt = None
 
         last_completed_dt = None
-        if data.get('last_completed'):
+        if data.get("last_completed"):
             try:
-                last_completed_dt = datetime.datetime.fromisoformat(data['last_completed'])
+                last_completed_dt = datetime.datetime.fromisoformat(
+                    data["last_completed"]
+                )
             except ValueError:
                 try:
-                    last_completed_dt = datetime.datetime.strptime(data['last_completed'], '%Y-%m-%d')
+                    last_completed_dt = datetime.datetime.strptime(
+                        data["last_completed"], "%Y-%m-%d"
+                    )
                 except ValueError:
                     last_completed_dt = None
 
         reactivated_at_dt = None
-        if data.get('reactivated_at'):
+        if data.get("reactivated_at"):
             try:
-                reactivated_at_dt = datetime.datetime.fromisoformat(data['reactivated_at'])
+                reactivated_at_dt = datetime.datetime.fromisoformat(
+                    data["reactivated_at"]
+                )
             except ValueError:
                 try:
-                    reactivated_at_dt = datetime.datetime.strptime(data['reactivated_at'], '%Y-%m-%d')
+                    reactivated_at_dt = datetime.datetime.strptime(
+                        data["reactivated_at"], "%Y-%m-%d"
+                    )
                 except ValueError:
                     reactivated_at_dt = None
 
         return cls(
-            id=data.get('id'),
-            name=data.get('name', ''),
-            frequency=data.get('frequency', ''),
-            notes=data.get('notes'),
-            reminder_time=data.get('reminder_time'),
-            evening_reminder_time=data.get('evening_reminder_time'),
-            streak=data.get('streak', 0),
+            id=data.get("id"),
+            name=data.get("name", ""),
+            frequency=data.get("frequency", ""),
+            notes=data.get("notes"),
+            reminder_time=data.get("reminder_time"),
+            evening_reminder_time=data.get("evening_reminder_time"),
+            streak=data.get("streak", 0),
             created_at=created_at_dt,
             last_completed=last_completed_dt,
-            is_active=data.get('is_active', True),
+            is_active=data.get("is_active", True),
             reactivated_at=reactivated_at_dt,
-            category_id=data.get('category_id')
+            category_id=data.get("category_id"),
         )
-
-    
-        
-        
-
-

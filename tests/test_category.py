@@ -1,5 +1,7 @@
-import pytest
 import datetime
+
+import pytest
+
 from category import Category
 
 
@@ -23,29 +25,31 @@ class TestCategory:
     def test_category_from_dict(self):
         """Test creating Category from dictionary."""
         data = {
-            'id': 1,
-            'name': 'Productivity',
-            'description': 'Work and study habits',
-            'color': '#FF5733',
-            'is_active': True,
-            'created_at': '2023-01-01T00:00:00'
+            "id": 1,
+            "name": "Productivity",
+            "description": "Work and study habits",
+            "color": "#FF5733",
+            "is_active": True,
+            "created_at": "2023-01-01T00:00:00",
         }
         category = Category.from_dict(data)
         assert category.id == 1
-        assert category.name == 'Productivity'
-        assert category.description == 'Work and study habits'
-        assert category.color == '#FF5733'
+        assert category.name == "Productivity"
+        assert category.description == "Work and study habits"
+        assert category.color == "#FF5733"
         assert category.is_active is True
 
     def test_category_to_dict(self):
         """Test converting Category to dictionary."""
-        category = Category(name="Learning", description="Learning habits", color="#3498DB")
+        category = Category(
+            name="Learning", description="Learning habits", color="#3498DB"
+        )
         data = category.to_dict()
-        assert data['name'] == "Learning"
-        assert data['description'] == "Learning habits"
-        assert data['color'] == "#3498DB"
-        assert data['is_active'] is True
-        assert 'created_at' in data
+        assert data["name"] == "Learning"
+        assert data["description"] == "Learning habits"
+        assert data["color"] == "#3498DB"
+        assert data["is_active"] is True
+        assert "created_at" in data
 
     def test_category_repr(self):
         """Test string representation of Category."""

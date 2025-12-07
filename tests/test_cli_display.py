@@ -1,8 +1,10 @@
+import datetime
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
 import momentum_db as db
 from habit import Habit
-import datetime
 
 
 @pytest.fixture
@@ -22,9 +24,9 @@ def sample_habit(tmp_db_path):
 
 
 class TestStartupMessage:
-    @patch('cli_display.shutil.get_terminal_size')
-    @patch('cli_display.Figlet')
-    @patch('builtins.print')
+    @patch("cli_display.shutil.get_terminal_size")
+    @patch("cli_display.Figlet")
+    @patch("builtins.print")
     def test_startup_message(self, mock_print, mock_figlet, mock_get_terminal_size):
         mock_get_terminal_size.return_value = MagicMock(columns=80)
         mock_figlet_instance = MagicMock()
@@ -32,6 +34,7 @@ class TestStartupMessage:
         mock_figlet.return_value = mock_figlet_instance
 
         from cli_display import startup_message
+
         startup_message()
 
         mock_print.assert_called()
@@ -39,18 +42,26 @@ class TestStartupMessage:
 
 class TestViewHabits:
     def test_view_habits_with_data(self, tmp_db_path, sample_habit):
-        with patch('cli_display.show_colored_message'), \
-             patch('cli_display.press_enter_to_continue'), \
-             patch('builtins.print'):
+        with (
+            patch("cli_display.show_colored_message"),
+            patch("cli_display.press_enter_to_continue"),
+            patch("builtins.print"),
+        ):
 
             from cli_display import view_habits
+
             view_habits(tmp_db_path)
 
     def test_view_habits_no_data(self, tmp_db_path):
-        with patch('cli_display.show_colored_message') as mock_show, \
-             patch('cli_display.press_enter_to_continue'):
+        with (
+            patch("cli_display.show_colored_message") as mock_show,
+            patch("cli_display.press_enter_to_continue"),
+        ):
 
             from cli_display import view_habits
+
             view_habits(tmp_db_path)
 
-            mock_show.assert_called_with("No active habits found. Let's create one!", color='\x1b[31m')
+            mock_show.assert_called_with(
+                "No active habits found. Let's create one!", color="\x1b[31m"
+            )
