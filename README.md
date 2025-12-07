@@ -561,6 +561,8 @@ As a CLI-based habit tracker developed for a school assignment, Momentum Hub has
 These limitations are acknowledged as part of the assignment constraints and design choices. The app successfully demonstrates comprehensive CLI application development while maintaining excellent code quality and user experience within its scope.
 
 ## 14. License
+This project is licensed under the MIT License
+
 ## 15. Links
 
 - [Homepage](https://github.com/aaronmalunga/momentum-hub)
