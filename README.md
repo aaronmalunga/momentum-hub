@@ -222,7 +222,7 @@ python momentum_main.py --demo
 python momentum_main.py --help
 ```
 
-### 📚 Documentation
+### Documentation
 - **[API Documentation](docs/api.md)**: Comprehensive API reference for developers
 - **[Usage Guide](USAGE.md)**: Advanced usage patterns and reviewer workflows
 - **[Presentation Guide](PRESENTATION_GUIDE_20_5.md)**: Complete rubric-aligned presentation breakdown
@@ -296,7 +296,7 @@ Momentum Hub follows a clean, modular architecture designed for maintainability 
 - **`cli_utils.py`**: Shared CLI utilities and helpers
 - **`error_manager.py`**: Centralized error handling
 
-### 🔍 Key Design Patterns
+### Key Design Patterns
 
 #### **Data Flow:**
 ```
@@ -313,14 +313,14 @@ CLI Input → Validation → Business Logic → Database → Response
 - ACID compliance for data integrity
 - Migration-safe schema design
 
-### 📊 Performance Characteristics
+### Performance Characteristics
 
 - **Startup Time**: < 2 seconds (typical)
 - **Database Operations**: Optimized queries with proper indexing
 - **Memory Usage**: Minimal footprint suitable for CLI applications
 - **Concurrent Access**: SQLite locking handles single-user scenarios
 
-### 🛠️ Customization & Extensibility
+### Customization & Extensibility
 
 #### **Adding New Habit Types:**
 1. Extend the `Habit` class in `habit.py`
@@ -373,7 +373,7 @@ What would you like to do?
 
 
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Here's how to get started:
 
@@ -415,20 +415,20 @@ We welcome contributions! Here's how to get started:
 - Use type hints where appropriate
 - Keep the CLI user-friendly and intuitive
 
-### 📋 Pull Request Process
+### Pull Request Process
 1. Ensure all tests pass and coverage remains above 80%
 2. Update documentation for any new features
 3. Add appropriate type hints
 4. Follow commit message conventions
 5. Request review from maintainers
 
-### 🐛 Issue Reporting
+### Issue Reporting
 - Use the issue templates provided
 - Include steps to reproduce
 - Provide system information (OS, Python version)
 - Attach relevant screenshots if applicable
 
-### 💡 Feature Requests
+### Feature Requests
 - Check existing issues first
 - Provide detailed use cases
 - Consider backward compatibility
