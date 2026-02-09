@@ -14,7 +14,7 @@ A powerful, modern CLI habit tracker designed for building and maintaining daily
 [![Build Status](https://img.shields.io/github/actions/workflow/status/aaronmalunga/momentum-hub/tests.yml)](https://github.com/aaronmalunga/momentum-hub/actions/workflows/tests.yml)
 
 
-![Momentum Hub Banner](diagrams/Screenshots/Momentum_Hub_cover.png)
+![Momentum Hub Banner](diagrams/Screenshots/Momentum_hub_cover.png)
 
 
 
@@ -584,6 +584,7 @@ As a CLI-based habit tracker developed for a school assignment, Momentum Hub has
 These limitations are acknowledged as part of the assignment constraints and design choices. The app successfully demonstrates comprehensive CLI application development while maintaining excellent code quality and user experience within its scope.
 
 ## 14. License
+This project is licensed under the MIT License. See `LICENSE` for details.
 ## 15. Links
 
 - [Homepage](https://github.com/aaronmalunga/momentum-hub)
