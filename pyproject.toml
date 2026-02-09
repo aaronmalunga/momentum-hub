@@ -3,7 +3,7 @@ requires = ["setuptools>=65.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "momentum-hub"
+name = "momentum_hub"
 version = "1.0.0"
 description = "A CLI habit tracker for building and maintaining daily/weekly habits."
 readme = "README.md"
@@ -60,35 +60,17 @@ momentum = "momentum_main:main"
 minversion = "8.0"
 testpaths = ["tests"]
 python_files = "test_*.py"
-addopts = "-v --strict-markers --cov=. --cov-report=term"
+addopts = "-v --strict-markers --cov=. --cov-report=term -p no:warnings"
 markers = [
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
 ]
 
 [tool.coverage.run]
-source = [
-    "momentum_main",
-    "momentum_cli",
-    "momentum_db",
-    "momentum_utils",
-    "habit",
-    "goal",
-    "category",
-    "cli_analysis",
-    "cli_habit_management",
-    "cli_goal_management",
-    "cli_category_management",
-    "cli_export",
-    "habit_analysis",
-    "seed_data",
-    "completion",
-    "cli_utils",
-    "cli_display",
-    "encouragements",
-    "error_manager"
-]
+source = ["."]
 omit = [
+    "tests/*",
+    "scripts/*",
     "tests/test_data.py",
     "tests/__pycache__/*",
     ".venv/*",

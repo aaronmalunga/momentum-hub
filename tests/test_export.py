@@ -9,15 +9,15 @@ from unittest.mock import MagicMock, patch
 import pytest
 from colorama import Fore
 
-import momentum_db as db
-from cli_export import (
+import momentum_hub.momentum_db as db
+from momentum_hub.cli_export import (
     analyze_export_csv,
     export_all_completions_to_csv,
     export_all_habits_to_csv,
     export_habit_completions_to_csv,
 )
-from completion import export_completions_to_csv
-from habit import Habit
+from momentum_hub.completion import export_completions_to_csv
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture(autouse=True)
@@ -81,6 +81,39 @@ def test_export_completions_to_csv_from_momentum_db_module(sample_data, tmp_path
         assert "completion_id" in rows[0]
 
 
+def test_export_completions_to_csv_empty_path_raises_error(sample_data):
+    """Test that export_completions_to_csv raises OSError for empty path."""
+    db_name, hid1, hid2 = sample_data
+
+    with pytest.raises(OSError, match="Output path cannot be empty"):
+        export_completions_to_csv("", db_name)
+
+    with pytest.raises(OSError, match="Output path cannot be empty"):
+        export_completions_to_csv("   ", db_name)
+
+
+def test_export_completions_to_csv_write_test_fails(sample_data, tmp_path, monkeypatch):
+    """Test that export fails when write test fails."""
+    db_name, hid1, hid2 = sample_data
+
+    output_file = tmp_path / "completions.csv"
+
+    # Mock Path.open to raise OSError when creating the test file
+    from pathlib import Path
+
+    original_open = Path.open
+
+    def mock_open(self, *args, **kwargs):
+        if ".export_test_write" in str(self):
+            raise OSError("Write test failed")
+        return original_open(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", mock_open)
+
+    with pytest.raises(OSError, match="Cannot write to directory"):
+        export_completions_to_csv(str(output_file), db_name)
+
+
 def test_export_all_habits_logic(sample_data):
     db_name, hid1, hid2 = sample_data
     habits = db.get_all_habits(active_only=False, db_name=db_name)
@@ -108,12 +141,12 @@ def test_export_habit_completions_logic(sample_data):
     assert selected_habit.name == "Daily Habit"
 
 
-# New tests for cli_export.py functions to improve coverage
+# New tests for momentum_hub.cli_export.py functions to improve coverage
 
 
 def test_export_all_habits_to_csv_success(sample_data, tmp_path):
     db_name, hid1, hid2 = sample_data
-    with patch("cli_export.press_enter_to_continue"):
+    with patch("momentum_hub.cli_export.press_enter_to_continue"):
         export_all_habits_to_csv(db_name, base_dir=str(tmp_path))
     # Check if file was created in the temporary directory
     import os
@@ -128,7 +161,7 @@ def test_export_all_habits_to_csv_success(sample_data, tmp_path):
 
 def test_export_all_habits_to_csv_empty_db(tmp_db_path, tmp_path):
     # Test with empty database
-    with patch("cli_export.press_enter_to_continue"):
+    with patch("momentum_hub.cli_export.press_enter_to_continue"):
         export_all_habits_to_csv(tmp_db_path)
     import os
 
@@ -143,7 +176,7 @@ def test_export_all_habits_to_csv_empty_db(tmp_db_path, tmp_path):
 
 def test_export_all_completions_to_csv_success(sample_data, tmp_path):
     db_name, hid1, hid2 = sample_data
-    with patch("cli_export.press_enter_to_continue"):
+    with patch("momentum_hub.cli_export.press_enter_to_continue"):
         export_all_completions_to_csv(db_name)
     import os
 
@@ -161,8 +194,11 @@ def test_export_habit_completions_to_csv_success(sample_data, tmp_path):
     habits = db.get_all_habits(active_only=False, db_name=db_name)
     selected_habit = habits[1]  # Weekly habit
     with (
-        patch("cli_export.press_enter_to_continue"),
-        patch("cli_export._handle_habit_selection", return_value=selected_habit),
+        patch("momentum_hub.cli_export.press_enter_to_continue"),
+        patch(
+            "momentum_hub.cli_export._handle_habit_selection",
+            return_value=selected_habit,
+        ),
     ):
         export_habit_completions_to_csv(db_name, base_dir=str(tmp_path))
     import os
@@ -189,8 +225,8 @@ def test_export_habit_completions_to_csv_no_completions(tmp_db_path, tmp_path):
     hid = db.add_habit(h, db_name=tmp_db_path)
     habit = db.get_habit(hid, db_name=tmp_db_path)
     with (
-        patch("cli_export.press_enter_to_continue"),
-        patch("cli_export._handle_habit_selection", return_value=habit),
+        patch("momentum_hub.cli_export.press_enter_to_continue"),
+        patch("momentum_hub.cli_export._handle_habit_selection", return_value=habit),
     ):
         export_habit_completions_to_csv(tmp_db_path, base_dir=str(tmp_path))
     # Should not create file or handle gracefully
@@ -210,8 +246,8 @@ def test_export_all_habits_to_csv_error_handling(tmp_db_path, tmp_path):
     db.add_habit(h, db_name=tmp_db_path)
     # Simulate file write error
     with patch("builtins.open", side_effect=OSError("Permission denied")):
-        with patch("cli_export.show_colored_message") as mock_show:
-            with patch("cli_export.press_enter_to_continue"):
+        with patch("momentum_hub.cli_export.show_colored_message") as mock_show:
+            with patch("momentum_hub.cli_export.press_enter_to_continue"):
                 export_all_habits_to_csv(tmp_db_path)
                 mock_show.assert_called_with(
                     "Error exporting habits: Permission denied", color=Fore.RED
@@ -224,8 +260,8 @@ def test_export_all_completions_to_csv_error_handling(tmp_db_path, tmp_path):
     db.add_habit(h, db_name=tmp_db_path)
     # Simulate file write error
     with patch("builtins.open", side_effect=OSError("Permission denied")):
-        with patch("cli_export.show_colored_message") as mock_show:
-            with patch("cli_export.press_enter_to_continue"):
+        with patch("momentum_hub.cli_export.show_colored_message") as mock_show:
+            with patch("momentum_hub.cli_export.press_enter_to_continue"):
                 export_all_completions_to_csv(tmp_db_path)
                 mock_show.assert_called_with(
                     "Error exporting completions: Permission denied", color=Fore.RED
@@ -235,9 +271,9 @@ def test_export_all_completions_to_csv_error_handling(tmp_db_path, tmp_path):
 def test_analyze_export_csv_all_habits(sample_data):
     db_name, hid1, hid2 = sample_data
     with (
-        patch("cli_export.questionary.select") as mock_select,
-        patch("cli_export.export_all_habits_to_csv") as mock_export,
-        patch("cli_export.press_enter_to_continue"),
+        patch("momentum_hub.cli_export.questionary.select") as mock_select,
+        patch("momentum_hub.cli_export.export_all_habits_to_csv") as mock_export,
+        patch("momentum_hub.cli_export.press_enter_to_continue"),
     ):
         mock_select.return_value.ask.return_value = (
             "Export all habits and their details"
@@ -249,9 +285,9 @@ def test_analyze_export_csv_all_habits(sample_data):
 def test_analyze_export_csv_all_completions(sample_data):
     db_name, hid1, hid2 = sample_data
     with (
-        patch("cli_export.questionary.select") as mock_select,
-        patch("cli_export.export_all_completions_to_csv") as mock_export,
-        patch("cli_export.press_enter_to_continue"),
+        patch("momentum_hub.cli_export.questionary.select") as mock_select,
+        patch("momentum_hub.cli_export.export_all_completions_to_csv") as mock_export,
+        patch("momentum_hub.cli_export.press_enter_to_continue"),
     ):
         mock_select.return_value.ask.return_value = "Export completions for all habits"
         analyze_export_csv(db_name)
@@ -261,9 +297,9 @@ def test_analyze_export_csv_all_completions(sample_data):
 def test_analyze_export_csv_specific_habit(sample_data):
     db_name, hid1, hid2 = sample_data
     with (
-        patch("cli_export.questionary.select") as mock_select,
-        patch("cli_export.export_habit_completions_to_csv") as mock_export,
-        patch("cli_export.press_enter_to_continue"),
+        patch("momentum_hub.cli_export.questionary.select") as mock_select,
+        patch("momentum_hub.cli_export.export_habit_completions_to_csv") as mock_export,
+        patch("momentum_hub.cli_export.press_enter_to_continue"),
     ):
         mock_select.return_value.ask.return_value = (
             "Export completions for a specific habit"
@@ -274,7 +310,7 @@ def test_analyze_export_csv_specific_habit(sample_data):
 
 def test_analyze_export_csv_back_to_menu(sample_data):
     db_name, hid1, hid2 = sample_data
-    with patch("cli_export.questionary.select") as mock_select:
+    with patch("momentum_hub.cli_export.questionary.select") as mock_select:
         mock_select.return_value.ask.return_value = "Back to Main Menu"
         analyze_export_csv(db_name)
         # Should not raise any exceptions
@@ -282,8 +318,8 @@ def test_analyze_export_csv_back_to_menu(sample_data):
 
 def test_export_all_completions_to_csv_no_habits(tmp_db_path):
     with (
-        patch("cli_export.show_colored_message") as mock_show,
-        patch("cli_export.press_enter_to_continue"),
+        patch("momentum_hub.cli_export.show_colored_message") as mock_show,
+        patch("momentum_hub.cli_export.press_enter_to_continue"),
     ):
         export_all_completions_to_csv(tmp_db_path)
         mock_show.assert_called_with(
@@ -293,8 +329,8 @@ def test_export_all_completions_to_csv_no_habits(tmp_db_path):
 
 def test_export_habit_completions_to_csv_no_habits(tmp_db_path):
     with (
-        patch("cli_export.show_colored_message") as mock_show,
-        patch("cli_export.press_enter_to_continue"),
+        patch("momentum_hub.cli_export.show_colored_message") as mock_show,
+        patch("momentum_hub.cli_export.press_enter_to_continue"),
     ):
         export_habit_completions_to_csv(tmp_db_path)
         mock_show.assert_called_with(
@@ -306,14 +342,14 @@ def test_export_habit_completions_to_csv_cancel_selection(tmp_db_path):
     # Add habit
     h = Habit(name="Test Habit", frequency="daily")
     hid = db.add_habit(h, db_name=tmp_db_path)
-    with patch("cli_export._handle_habit_selection", return_value=None):
+    with patch("momentum_hub.cli_export._handle_habit_selection", return_value=None):
         export_habit_completions_to_csv(tmp_db_path)
         # Should return without doing anything
 
 
 def test_export_all_habits_to_csv_with_category_and_goal(tmp_db_path, tmp_path):
     # Add category
-    from category import Category
+    from momentum_hub.category import Category
 
     cat = Category(name="Test Category", description="Test", color="blue")
     cat_id = db.add_category(cat, db_name=tmp_db_path)
@@ -323,12 +359,12 @@ def test_export_all_habits_to_csv_with_category_and_goal(tmp_db_path, tmp_path):
     hid = db.add_habit(h, db_name=tmp_db_path)
 
     # Add goal
-    from goal import Goal
+    from momentum_hub.goal import Goal
 
     g = Goal(habit_id=hid, target_completions=10, target_period_days=30)
     db.add_goal(g, db_name=tmp_db_path)
 
-    with patch("cli_export.press_enter_to_continue"):
+    with patch("momentum_hub.cli_export.press_enter_to_continue"):
         export_all_habits_to_csv(tmp_db_path, base_dir=str(tmp_path))
 
     # Check the csv has category and goal progress
@@ -357,10 +393,10 @@ def test_export_habit_completions_to_csv_error_handling(tmp_db_path, tmp_path):
     db.add_completion(hid, now, db_name=tmp_db_path)
     habit = db.get_habit(hid, db_name=tmp_db_path)
     with (
-        patch("cli_export._handle_habit_selection", return_value=habit),
+        patch("momentum_hub.cli_export._handle_habit_selection", return_value=habit),
         patch("builtins.open", side_effect=OSError("Permission denied")),
-        patch("cli_export.show_colored_message") as mock_show,
-        patch("cli_export.press_enter_to_continue"),
+        patch("momentum_hub.cli_export.show_colored_message") as mock_show,
+        patch("momentum_hub.cli_export.press_enter_to_continue"),
     ):
         export_habit_completions_to_csv(tmp_db_path, base_dir=str(tmp_path))
         mock_show.assert_called_with(

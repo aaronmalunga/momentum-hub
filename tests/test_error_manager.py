@@ -7,8 +7,9 @@ import pytest
 from colorama import Fore
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import error_manager
-from momentum_utils import show_colored_message
+import momentum_hub
+from momentum_hub import error_manager
+from momentum_hub.momentum_utils import show_colored_message
 
 
 class TestErrorManager:
@@ -33,7 +34,7 @@ class TestErrorManager:
         assert "invalid_habit_id" in em.error_messages
         assert "invalid_menu_option" in em.error_messages
 
-    @patch("error_manager.show_colored_message")
+    @patch("momentum_hub.error_manager.show_colored_message")
     def test_display_error_known_key(self, mock_show):
         """Test displaying error with known key."""
         em = error_manager.ErrorManager(db_path=self.db_path)
@@ -43,7 +44,7 @@ class TestErrorManager:
             color=Fore.RED,
         )
 
-    @patch("error_manager.show_colored_message")
+    @patch("momentum_hub.error_manager.show_colored_message")
     def test_display_error_unknown_key(self, mock_show):
         """Test displaying error with unknown key."""
         em = error_manager.ErrorManager(db_path=self.db_path)
@@ -52,7 +53,7 @@ class TestErrorManager:
             "An unexpected error occurred. Please try again.", color=Fore.RED
         )
 
-    @patch("error_manager.show_colored_message")
+    @patch("momentum_hub.error_manager.show_colored_message")
     def test_display_error_with_formatting(self, mock_show):
         """Test displaying error with string formatting."""
         em = error_manager.ErrorManager(db_path=self.db_path)
@@ -76,7 +77,7 @@ class TestGlobalErrorManager:
         ):
             error_manager.error_manager.conn.close()
 
-    @patch("error_manager.show_colored_message")
+    @patch("momentum_hub.error_manager.show_colored_message")
     def test_global_instance_display_error(self, mock_show):
         """Test that the global error_manager instance works."""
         error_manager.error_manager.display_error("invalid_number")

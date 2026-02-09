@@ -7,8 +7,8 @@ import sys
 import pytest
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import momentum_db as db
-from habit import Habit
+import momentum_hub.momentum_db as db
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture
@@ -126,6 +126,6 @@ def test_soft_delete_and_reactivate(tmp_db_path):
     db.reactivate_habit(hid, db_name=tmp_db_path)
     h_re = db.get_habit(hid, db_name=tmp_db_path)
     assert h_re.is_active is True
-    # reactivated streak expected to be reset in your DB logic
+    # Reactivated streak is expected to be reset by DB logic
     assert h_re.streak == 0
     assert h_re.reactivated_at is not None

@@ -6,10 +6,10 @@ import sys
 import pytest
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import habit_analysis as analysis
-import momentum_db as db
-from completion import export_completions_to_csv
-from habit import Habit
+import momentum_hub.momentum_db as db
+from momentum_hub import habit_analysis as analysis
+from momentum_hub.completion import export_completions_to_csv
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture

@@ -1,13 +1,15 @@
 import datetime
 import os
 import sys
+import tempfile
+from pathlib import Path
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pytest
 
-import habit_analysis
-import momentum_db as db
-from habit import Habit
+from momentum_hub import habit_analysis
+from momentum_hub import momentum_db as db
+from momentum_hub.habit import Habit
 
 from . import test_data
 
@@ -15,28 +17,30 @@ from . import test_data
 class TestAnalysisFeatures:
     def setup_method(self):
         """Set up a clean test database and populate it with sample data before each test."""
-        self.test_db_name = (
-            "tests/test_dbs/test_momentum.db"  # Use the persistent test database
-        )
+        # Create a temporary database file
+        self.temp_db_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
+        self.temp_db_file.close()
+        self.test_db_name = self.temp_db_file.name
 
-        # No need to initialize or populate since it's already set up
+        # Populate with additional test data
+        test_data.populate_test_db(self.test_db_name)
 
     def teardown_method(self):
         """Clean up after each test."""
         # Close all tracked connections
         db.close_all_connections()
-        # Don't remove the persistent database
+        # Remove the temporary database file
+        if os.path.exists(self.test_db_name):
+            os.unlink(self.test_db_name)
 
     def test_initial_habits_exist(self):
-        """Verify the 5 habits are created in the test databse."""
+        """Verify the 5 habits are created in the test database."""
         habits = db.get_all_habits(active_only=False, db_name=self.test_db_name)
         assert (
-            len(habits) == 7
-        ), "There should be 7 initial habits in the test database."
+            len(habits) == 5
+        ), "There should be 5 initial habits in the test database."
         habit_names = [h.name for h in habits]
         expected_names = [
-            "Read 20 pages",
-            "Stretch 10 min",
             "Change beddings",
             "Code",
             "Study",
@@ -146,7 +150,7 @@ class TestAnalysisFeatures:
         missed_days = habit_analysis.get_missed_days_for_habit(
             study_habit.id, self.test_db_name
         )
-        # For Study habit, we only care about the count of missed days
+        # For the Study habit, only the count of missed days is asserted
         assert missed_days == 3
 
     def test_calculate_longest_streak_meditate(self):

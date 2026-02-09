@@ -6,8 +6,8 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pytest
 
-import momentum_db as db
-from habit import Habit
+import momentum_hub.momentum_db as db
+from momentum_hub.habit import Habit
 
 
 def populate_test_db(db_name: str):
@@ -134,7 +134,7 @@ def populate_test_db(db_name: str):
     # Create exactly 25 completions in 28 days, with 3 specific missed days
     for i in range(28, 0, -1):
         current_date = today - datetime.timedelta(days=i)
-        # Skip days 26, 25, and 24 ago (these will be our missed days)
+        # Skip days 26, 25, and 24 ago (these are the missed days)
         if i not in [26, 25, 24]:
             db.add_completion(study_id, current_date, db_name)
 

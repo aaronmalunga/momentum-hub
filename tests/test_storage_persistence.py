@@ -7,10 +7,10 @@ import threading
 
 import pytest
 
-import momentum_db as db
-from category import Category
-from goal import Goal
-from habit import Habit
+import momentum_hub.momentum_db as db
+from momentum_hub.category import Category
+from momentum_hub.goal import Goal
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture

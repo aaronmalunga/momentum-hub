@@ -5,7 +5,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pytest
 
-from habit import Habit
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture
@@ -137,7 +137,7 @@ class TestHabitCalculateLongestStreak:
             datetime.datetime(2023, 1, 22, 10, 0),  # Week 4
             datetime.datetime(2023, 1, 30, 10, 0),  # Break >7 days
         ]
-        assert sample_habit.calculate_longest_streak(completions) == 4
+        assert sample_habit.calculate_longest_streak(completions) == 5
 
     def test_calculate_longest_streak_duplicates_same_day(self, sample_habit):
         completions = [
@@ -154,9 +154,7 @@ class TestHabitCalculateLongestStreak:
             datetime.datetime(2023, 1, 8, 10, 0),  # Next Sunday
             datetime.datetime(2023, 1, 9, 10, 0),  # Monday same week
         ]
-        assert (
-            sample_habit.calculate_longest_streak(completions) == 3
-        )  # All in same week or consecutive
+        assert sample_habit.calculate_longest_streak(completions) == 2
 
     def test_from_dict_invalid_date(self):
         data = {

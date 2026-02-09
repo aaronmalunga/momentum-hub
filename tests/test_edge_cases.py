@@ -6,8 +6,8 @@ import sys
 import pytest
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import momentum_db as db
-from habit import Habit
+import momentum_hub.momentum_db as db
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture

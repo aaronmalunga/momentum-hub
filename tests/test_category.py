@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from category import Category
+from momentum_hub.category import Category
 
 
 class TestCategory:

@@ -25,11 +25,20 @@ repos:
     rev: 7.1.1
     hooks:
       - id: flake8
-        args: ["--max-line-length=88", "--extend-ignore=E203,W503"]
+        args: ["--max-line-length=120", "--extend-ignore=E203,W503", "--exclude=tests"]
+        exclude: ^tests/
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.13.0
     hooks:
       - id: mypy
-        #additional_dependencies: ["types-all"]
-        args: ["--strict, --ignore-missing-imports"]
+        additional_dependencies: ["types-tabulate"]
+        files: ^momentum_hub/
+        args:
+          [
+            "--ignore-missing-imports",
+            "--check-untyped-defs",
+            "--warn-unused-ignores",
+            "--exclude",
+            "tests",
+          ]

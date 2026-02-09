@@ -17,7 +17,7 @@ import os
 import sqlite3
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Default: use the real momentum.db in CI so tests find it, otherwise use
@@ -61,7 +61,7 @@ def create_schema(conn):
 
 
 def seed_data(conn):
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     cur = conn.cursor()
 
     habits = [
@@ -107,7 +107,7 @@ def seed_data(conn):
 
 def show_preview(conn, db_path: Path):
     cur = conn.cursor()
-    print("\ DEMO DATABASE SEEDED SUCCESSFULLY!\n")
+    print(" DEMO DATABASE SEEDED SUCCESSFULLY!\n")
 
     print(" Habits:")
     print("-" * 70)
@@ -147,7 +147,8 @@ def main():
             f"Target {db_path} already exists. Use --overwrite to replace it or choose a different --db path."
         )
         print(
-            f"Tip: run with --db momentum_demo.db (the default) to keep your primary momentum.db safe."
+            "Tip: run with --db momentum_demo.db (the default) to keep the primary "
+            "momentum.db safe."
         )
         return
 

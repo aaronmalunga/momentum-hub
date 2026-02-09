@@ -3,16 +3,16 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import momentum_db as db
-from cli_goal_management import (
+import momentum_hub.momentum_db as db
+from momentum_hub.cli_goal_management import (
     create_goal,
     delete_goal,
     manage_goals,
     update_goal,
     view_goals,
 )
-from goal import Goal
-from habit import Habit
+from momentum_hub.goal import Goal
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture
@@ -43,10 +43,12 @@ class TestCreateGoal:
         hid = db.add_habit(h, tmp_db_path)
 
         with (
-            patch("cli_goal_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_goal_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid, tmp_db_path)
@@ -72,10 +74,12 @@ class TestCreateGoal:
         hid = db.add_habit(h, tmp_db_path)
 
         with (
-            patch("cli_goal_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_goal_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid, tmp_db_path)
@@ -101,10 +105,12 @@ class TestCreateGoal:
         hid = db.add_habit(h, tmp_db_path)
 
         with (
-            patch("cli_goal_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_goal_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid, tmp_db_path)
@@ -127,8 +133,8 @@ class TestCreateGoal:
 
     def test_create_goal_no_habits(self, tmp_db_path):
         with (
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             create_goal(tmp_db_path)
@@ -143,10 +149,12 @@ class TestCreateGoal:
         hid = db.add_habit(h, tmp_db_path)
 
         with (
-            patch("cli_goal_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_goal_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid, tmp_db_path)
@@ -171,10 +179,12 @@ class TestCreateGoal:
         hid = db.add_habit(h, tmp_db_path)
 
         with (
-            patch("cli_goal_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_goal_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid, tmp_db_path)
@@ -198,10 +208,12 @@ class TestCreateGoal:
         hid = db.add_habit(h, tmp_db_path)
 
         with (
-            patch("cli_goal_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_goal_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid, tmp_db_path)
@@ -227,10 +239,12 @@ class TestCreateGoal:
         hid = db.add_habit(h, tmp_db_path)
 
         with (
-            patch("cli_goal_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_goal_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid, tmp_db_path)
@@ -257,10 +271,12 @@ class TestCreateGoal:
         hid = db.add_habit(h, tmp_db_path)
 
         with (
-            patch("cli_goal_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_goal_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid, tmp_db_path)
@@ -283,8 +299,8 @@ class TestViewGoals:
         tmp_db_path, hid, goal_id = sample_data
 
         with (
-            patch("cli_goal_management.show_colored_message"),
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message"),
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
             patch("builtins.print"),
         ):
 
@@ -292,8 +308,8 @@ class TestViewGoals:
 
     def test_view_goals_empty(self, tmp_db_path):
         with (
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             view_goals(tmp_db_path)
@@ -308,8 +324,8 @@ class TestUpdateGoal:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             goal = db.get_goal(goal_id, tmp_db_path)
@@ -342,8 +358,8 @@ class TestUpdateGoal:
 
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(ask=MagicMock(return_value="Cancel"))
@@ -354,8 +370,8 @@ class TestUpdateGoal:
 
     def test_update_goal_no_goals(self, tmp_db_path):
         with (
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             update_goal(tmp_db_path)
@@ -372,8 +388,8 @@ class TestDeleteGoal:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.confirm") as mock_confirm,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             goal = db.get_goal(goal_id, tmp_db_path)
@@ -401,8 +417,8 @@ class TestDeleteGoal:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.confirm") as mock_confirm,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             goal = db.get_goal(goal_id, tmp_db_path)
@@ -424,8 +440,8 @@ class TestDeleteGoal:
 
     def test_delete_goal_no_goals(self, tmp_db_path):
         with (
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             delete_goal(tmp_db_path)
@@ -440,8 +456,8 @@ class TestDeleteGoal:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             goal = db.get_goal(goal_id, tmp_db_path)
@@ -471,8 +487,8 @@ class TestDeleteGoal:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             goal = db.get_goal(goal_id, tmp_db_path)
@@ -505,8 +521,8 @@ class TestDeleteGoal:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             goal = db.get_goal(goal_id, tmp_db_path)
@@ -540,8 +556,8 @@ class TestDeleteGoal:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             goal = db.get_goal(goal_id, tmp_db_path)
@@ -576,8 +592,8 @@ class TestDeleteGoal:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.confirm") as mock_confirm,
-            patch("cli_goal_management.show_colored_message") as mock_show,
-            patch("cli_goal_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_goal_management.show_colored_message") as mock_show,
+            patch("momentum_hub.cli_goal_management.press_enter_to_continue"),
         ):
 
             goal = db.get_goal(goal_id, tmp_db_path)
@@ -603,8 +619,8 @@ class TestDeleteGoal:
 class TestManageGoals:
     def test_manage_goals_create(self, tmp_db_path):
         with (
-            patch("cli_goal_management.questionary.select") as mock_select,
-            patch("cli_goal_management.create_goal") as mock_create,
+            patch("momentum_hub.cli_goal_management.questionary.select") as mock_select,
+            patch("momentum_hub.cli_goal_management.create_goal") as mock_create,
         ):
 
             mock_select_prompt = MagicMock(
@@ -618,8 +634,8 @@ class TestManageGoals:
 
     def test_manage_goals_view(self, tmp_db_path):
         with (
-            patch("cli_goal_management.questionary.select") as mock_select,
-            patch("cli_goal_management.view_goals") as mock_view,
+            patch("momentum_hub.cli_goal_management.questionary.select") as mock_select,
+            patch("momentum_hub.cli_goal_management.view_goals") as mock_view,
         ):
 
             mock_select_prompt = MagicMock(ask=MagicMock(return_value="View all goals"))
@@ -630,7 +646,9 @@ class TestManageGoals:
             mock_view.assert_called_once_with(tmp_db_path)
 
     def test_manage_goals_back(self, tmp_db_path):
-        with patch("cli_goal_management.questionary.select") as mock_select:
+        with patch(
+            "momentum_hub.cli_goal_management.questionary.select"
+        ) as mock_select:
             mock_select_prompt = MagicMock(
                 ask=MagicMock(return_value="Back to Main Menu")
             )
@@ -642,8 +660,8 @@ class TestManageGoals:
 
     def test_manage_goals_update(self, tmp_db_path):
         with (
-            patch("cli_goal_management.questionary.select") as mock_select,
-            patch("cli_goal_management.update_goal") as mock_update,
+            patch("momentum_hub.cli_goal_management.questionary.select") as mock_select,
+            patch("momentum_hub.cli_goal_management.update_goal") as mock_update,
         ):
 
             mock_select_prompt = MagicMock(ask=MagicMock(return_value="Update a goal"))
@@ -655,8 +673,8 @@ class TestManageGoals:
 
     def test_manage_goals_delete(self, tmp_db_path):
         with (
-            patch("cli_goal_management.questionary.select") as mock_select,
-            patch("cli_goal_management.delete_goal") as mock_delete,
+            patch("momentum_hub.cli_goal_management.questionary.select") as mock_select,
+            patch("momentum_hub.cli_goal_management.delete_goal") as mock_delete,
         ):
 
             mock_select_prompt = MagicMock(ask=MagicMock(return_value="Delete a goal"))

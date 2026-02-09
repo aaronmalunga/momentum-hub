@@ -1,6 +1,6 @@
 import datetime
 
-from habit_analysis import (
+from momentum_hub.habit_analysis import (
     calculate_completion_rate_from_dates,
     calculate_longest_streak_from_dates,
 )

@@ -7,9 +7,9 @@ import tempfile
 import pytest
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import momentum_db as db
-from completion import export_completions_to_csv
-from habit import Habit
+import momentum_hub.momentum_db as db
+from momentum_hub.completion import export_completions_to_csv
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture
@@ -113,7 +113,7 @@ class TestDBConnectionFailures:
 
     def test_db_locked_simulation(self, tmp_db_path):
         """Simulate DB lock by opening connection and not closing."""
-        # This is hard to test reliably, but we can try concurrent access
+        # This is hard to test reliably, but concurrent access can be attempted
         # For now, just ensure operations work normally
         habits = db.get_all_habits(db_name=tmp_db_path)
         assert isinstance(habits, list)
@@ -124,7 +124,12 @@ class TestFileWriteErrors:
 
     def test_export_to_invalid_path(self, tmp_db_path, tmp_path):
         """Test exporting to an invalid path."""
-        invalid_path = "/invalid/path/file.csv"
+        # Use a path that will definitely fail on any OS
+        invalid_path = (
+            "/dev/null/invalid/path/file.csv"
+            if os.name != "nt"
+            else "Z:\\invalid\\path\\file.csv"
+        )
         with pytest.raises(OSError):  # Should raise due to invalid path
             export_completions_to_csv(invalid_path, db_name=tmp_db_path)
 

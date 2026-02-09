@@ -8,8 +8,12 @@ from unittest.mock import MagicMock, patch
 import pytest
 from colorama import Fore
 
-from cli_utils import _handle_habit_selection, _to_date, _validate_time_format
-from habit import Habit
+from momentum_hub.cli_utils import (
+    _handle_habit_selection,
+    _to_date,
+    _validate_time_format,
+)
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture
@@ -51,13 +55,13 @@ class TestHandleHabitSelection:
         habits = [sample_habit]
         with patch("questionary.select") as mock_select:
             mock_select.return_value.ask.return_value = "Cancel"
-            with patch("cli_utils.press_enter_to_continue"):
+            with patch("momentum_hub.cli_utils.press_enter_to_continue"):
                 result = _handle_habit_selection(habits, "Select habit:")
                 assert result is None
 
     def test_handle_habit_selection_no_habits(self):
-        with patch("cli_utils.show_colored_message") as mock_show:
-            with patch("cli_utils.press_enter_to_continue"):
+        with patch("momentum_hub.cli_utils.show_colored_message") as mock_show:
+            with patch("momentum_hub.cli_utils.press_enter_to_continue"):
                 result = _handle_habit_selection([], "Select habit:", "No habits")
                 assert result is None
                 # The function prints directly, so mock_show is not called
@@ -67,7 +71,7 @@ class TestHandleHabitSelection:
         habits = [sample_habit]
         with patch("questionary.select") as mock_select:
             mock_select.return_value.ask.return_value = "invalid"
-            with patch("cli_utils.press_enter_to_continue"):
+            with patch("momentum_hub.cli_utils.press_enter_to_continue"):
                 result = _handle_habit_selection(habits, "Select habit:")
                 assert result is None
 
@@ -80,3 +84,14 @@ class TestToDate:
     def test_to_date_with_date(self):
         date_obj = datetime.date(2023, 1, 1)
         assert _to_date(date_obj) == date_obj
+
+
+class TestPressEnterToContinue:
+    def test_press_enter_to_continue(self):
+        """Test that press_enter_to_continue calls input."""
+        with patch("builtins.input") as mock_input:
+            mock_input.return_value = ""
+            from momentum_hub.cli_utils import press_enter_to_continue
+
+            press_enter_to_continue()
+            mock_input.assert_called_once_with("Press Enter to continue...")

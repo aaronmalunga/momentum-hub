@@ -1,16 +1,18 @@
 import datetime
+from pathlib import Path
 
 import pytest
 
-import momentum_db as db
-from goal import Goal
-from habit import Habit
+from momentum_hub import momentum_db as db
+from momentum_hub.goal import Goal
+from momentum_hub.habit import Habit
 
 
 class TestGoal:
     def setup_method(self):
         """Set up test database."""
         self.test_db_name = "tests/test_dbs/test_goal.db"
+        Path(self.test_db_name).parent.mkdir(parents=True, exist_ok=True)
         db.init_db(self.test_db_name)
         # Create a test habit
         test_habit = Habit(name="Test Habit", frequency="daily")
@@ -104,6 +106,35 @@ class TestGoal:
         goal = Goal(habit_id=self.habit_id, target_period_days=28, target_completions=5)
         progress = goal.calculate_progress(self.test_db_name)
         assert progress["total"] == 5  # uses target_completions instead of calculated
+
+    def test_calculate_progress_with_date_filters(self):
+        """Test progress calculation with start and end date filters."""
+        # Create goal with date range
+        start_date = datetime.datetime.now() - datetime.timedelta(days=10)
+        end_date = datetime.datetime.now() + datetime.timedelta(days=10)
+        goal = Goal(
+            habit_id=self.habit_id,
+            target_period_days=30,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+        # Add completions: some before start, some within range, some after end
+        now = datetime.datetime.now()
+        completions_dates = [
+            now - datetime.timedelta(days=15),  # before start
+            now - datetime.timedelta(days=5),  # within range
+            now + datetime.timedelta(days=5),  # within range
+            now + datetime.timedelta(days=15),  # after end
+        ]
+        for completion_date in completions_dates:
+            db.add_completion(self.habit_id, completion_date, self.test_db_name)
+
+        progress = goal.calculate_progress(self.test_db_name)
+        assert progress["count"] == 2  # only the 2 within range
+        assert progress["total"] == 30
+        assert progress["percent"] == pytest.approx(6.67, rel=1e-2)
+        assert progress["achieved"] is False
 
     def test_is_expired_no_end_date(self):
         """Test expiration check when no end date is set."""

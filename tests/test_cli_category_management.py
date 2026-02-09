@@ -2,9 +2,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import momentum_db as db
-from category import Category
-from cli_category_management import (
+import momentum_hub.momentum_db as db
+from momentum_hub.category import Category
+from momentum_hub.cli_category_management import (
     assign_habit_to_category,
     create_category,
     delete_category,
@@ -12,7 +12,7 @@ from cli_category_management import (
     update_category,
     view_categories,
 )
-from habit import Habit
+from momentum_hub.habit import Habit
 
 
 @pytest.fixture
@@ -44,8 +44,8 @@ class TestCreateCategory:
     def test_create_category_success(self, tmp_db_path):
         with (
             patch("questionary.text") as mock_text,
-            patch("cli_category_management.show_colored_message"),
-            patch("cli_category_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_category_management.show_colored_message"),
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_text.side_effect = lambda *args, **kwargs: MagicMock(
@@ -67,8 +67,10 @@ class TestCreateCategory:
     def test_create_category_cancel_name(self, tmp_db_path):
         with (
             patch("questionary.text") as mock_text,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_text.return_value = MagicMock(ask=MagicMock(return_value=None))
@@ -82,8 +84,10 @@ class TestCreateCategory:
     def test_create_category_empty_name(self, tmp_db_path):
         with (
             patch("questionary.text") as mock_text,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             call_count = 0
@@ -125,8 +129,8 @@ class TestViewCategories:
         tmp_db_path, cat_id1, cat_id2, hid1, hid2 = sample_data
 
         with (
-            patch("cli_category_management.show_colored_message"),
-            patch("cli_category_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_category_management.show_colored_message"),
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
             patch("builtins.print"),
         ):
 
@@ -134,8 +138,10 @@ class TestViewCategories:
 
     def test_view_categories_empty(self, tmp_db_path):
         with (
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             view_categories(tmp_db_path)
@@ -152,8 +158,8 @@ class TestUpdateCategory:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_category_management.show_colored_message"),
-            patch("cli_category_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_category_management.show_colored_message"),
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -188,8 +194,10 @@ class TestUpdateCategory:
 
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(ask=MagicMock(return_value="Cancel"))
@@ -200,8 +208,10 @@ class TestUpdateCategory:
 
     def test_update_category_no_categories(self, tmp_db_path):
         with (
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             update_category(tmp_db_path)
@@ -215,8 +225,10 @@ class TestUpdateCategory:
 
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -233,8 +245,10 @@ class TestUpdateCategory:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -252,8 +266,10 @@ class TestUpdateCategory:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -281,8 +297,10 @@ class TestUpdateCategory:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.text") as mock_text,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -314,8 +332,8 @@ class TestDeleteCategory:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.confirm") as mock_confirm,
-            patch("cli_category_management.show_colored_message"),
-            patch("cli_category_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_category_management.show_colored_message"),
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -339,8 +357,8 @@ class TestDeleteCategory:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.confirm") as mock_confirm,
-            patch("cli_category_management.show_colored_message"),
-            patch("cli_category_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_category_management.show_colored_message"),
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -360,8 +378,10 @@ class TestDeleteCategory:
         with (
             patch("questionary.select") as mock_select,
             patch("questionary.confirm") as mock_confirm,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -378,8 +398,10 @@ class TestDeleteCategory:
 
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(ask=MagicMock(return_value="Cancel"))
@@ -393,8 +415,10 @@ class TestDeleteCategory:
 
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_select.return_value = MagicMock(
@@ -411,10 +435,12 @@ class TestAssignHabitToCategory:
         tmp_db_path, cat_id1, cat_id2, hid1, hid2 = sample_data
 
         with (
-            patch("cli_category_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_category_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.show_colored_message"),
-            patch("cli_category_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_category_management.show_colored_message"),
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid1, tmp_db_path)
@@ -437,10 +463,12 @@ class TestAssignHabitToCategory:
         db.update_habit(habit, tmp_db_path)
 
         with (
-            patch("cli_category_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_category_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.show_colored_message"),
-            patch("cli_category_management.press_enter_to_continue"),
+            patch("momentum_hub.cli_category_management.show_colored_message"),
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_handle.return_value = habit
@@ -455,8 +483,10 @@ class TestAssignHabitToCategory:
 
     def test_assign_habit_no_habits(self, tmp_db_path):
         with (
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             assign_habit_to_category(tmp_db_path)
@@ -470,9 +500,13 @@ class TestAssignHabitToCategory:
         habit = db.get_habit(hid, tmp_db_path)
 
         with (
-            patch("cli_category_management._handle_habit_selection") as mock_handle,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management._handle_habit_selection"
+            ) as mock_handle,
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             mock_handle.return_value = habit
@@ -487,10 +521,14 @@ class TestAssignHabitToCategory:
         tmp_db_path, cat_id1, cat_id2, hid1, hid2 = sample_data
 
         with (
-            patch("cli_category_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_category_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid1, tmp_db_path)
@@ -505,10 +543,14 @@ class TestAssignHabitToCategory:
         tmp_db_path, cat_id1, cat_id2, hid1, hid2 = sample_data
 
         with (
-            patch("cli_category_management._handle_habit_selection") as mock_handle,
+            patch(
+                "momentum_hub.cli_category_management._handle_habit_selection"
+            ) as mock_handle,
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.show_colored_message") as mock_show,
-            patch("cli_category_management.press_enter_to_continue"),
+            patch(
+                "momentum_hub.cli_category_management.show_colored_message"
+            ) as mock_show,
+            patch("momentum_hub.cli_category_management.press_enter_to_continue"),
         ):
 
             habit = db.get_habit(hid1, tmp_db_path)
@@ -526,7 +568,9 @@ class TestManageCategories:
     def test_manage_categories_create(self, tmp_db_path):
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.create_category") as mock_create,
+            patch(
+                "momentum_hub.cli_category_management.CategoryManager.create_category"
+            ) as mock_create,
         ):
 
             mock_select.return_value = MagicMock(
@@ -535,12 +579,14 @@ class TestManageCategories:
 
             manage_categories(tmp_db_path)
 
-            mock_create.assert_called_once_with(tmp_db_path)
+            mock_create.assert_called_once_with()
 
     def test_manage_categories_view(self, tmp_db_path):
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.view_categories") as mock_view,
+            patch(
+                "momentum_hub.cli_category_management.CategoryManager.view_categories"
+            ) as mock_view,
         ):
 
             mock_select.return_value = MagicMock(
@@ -549,12 +595,14 @@ class TestManageCategories:
 
             manage_categories(tmp_db_path)
 
-            mock_view.assert_called_once_with(tmp_db_path)
+            mock_view.assert_called_once_with()
 
     def test_manage_categories_update(self, tmp_db_path):
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.update_category") as mock_update,
+            patch(
+                "momentum_hub.cli_category_management.CategoryManager.update_category"
+            ) as mock_update,
         ):
 
             mock_select.return_value = MagicMock(
@@ -563,12 +611,14 @@ class TestManageCategories:
 
             manage_categories(tmp_db_path)
 
-            mock_update.assert_called_once_with(tmp_db_path)
+            mock_update.assert_called_once_with()
 
     def test_manage_categories_delete(self, tmp_db_path):
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.delete_category") as mock_delete,
+            patch(
+                "momentum_hub.cli_category_management.CategoryManager.delete_category"
+            ) as mock_delete,
         ):
 
             mock_select.return_value = MagicMock(
@@ -577,12 +627,14 @@ class TestManageCategories:
 
             manage_categories(tmp_db_path)
 
-            mock_delete.assert_called_once_with(tmp_db_path)
+            mock_delete.assert_called_once_with()
 
     def test_manage_categories_assign(self, tmp_db_path):
         with (
             patch("questionary.select") as mock_select,
-            patch("cli_category_management.assign_habit_to_category") as mock_assign,
+            patch(
+                "momentum_hub.cli_category_management.CategoryManager.assign_habit_to_category"
+            ) as mock_assign,
         ):
 
             mock_select.return_value = MagicMock(
@@ -591,7 +643,7 @@ class TestManageCategories:
 
             manage_categories(tmp_db_path)
 
-            mock_assign.assert_called_once_with(tmp_db_path)
+            mock_assign.assert_called_once_with()
 
     def test_manage_categories_back(self, tmp_db_path):
         with patch("questionary.select") as mock_select:
