@@ -11,6 +11,14 @@ pytest-cov>=7.0.0
 coverage>=7.0.0
 freezegun
 
+# Development tools
+pre-commit>=3.7.0
+black>=24.10.0
+isort>=5.13.2
+flake8>=7.1.1
+mypy>=1.13.0
+types-tabulate
+
 # Presentation generation dependencies
 reportlab>=4.0.0
 python-pptx>=1.0.0
