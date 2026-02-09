@@ -73,10 +73,7 @@ CSV Export/
 plantuml.jar
 
 # Generated diagrams
-diagrams/
+# (Keep tracked diagrams in repo for portfolio submission.)
 
 # Generated documentation (e.g., API docs)
-docs/
-
-# summary files
-USAGE.md
+# (Keep tracked docs in repo for portfolio submission.)

@@ -18,7 +18,7 @@ python check_completion_times.py
 
 **When to use:**
 - After data migration
-- If you suspect timestamp format issues
+- If timestamp format issues are suspected
 - During database audits
 
 ---
@@ -85,16 +85,41 @@ python list_habit_completions.py
 
 ---
 
+### 5. `import_refactor_tools.py`
+**Purpose:** Consolidated utilities for normalizing Python import statements
+
+**Usage:**
+```bash
+# Fix accidental relative imports of stdlib/third-party modules
+python import_refactor_tools.py --fix-stdlib-relative
+
+# Convert absolute local imports to relative within the package
+python import_refactor_tools.py --make-relative
+
+# Convert `import module` for local modules to `from . import module`
+python import_refactor_tools.py --convert-imports
+
+# Update tests to use the momentum_hub.* namespace
+python import_refactor_tools.py --update-tests
+```
+
+**When to use:**
+- After refactors that move files across modules
+- When standardizing imports for packaging
+- When tests need to align to package namespace
+
+---
+
 ## Important Notes
 
-⚠️ **Always backup your database before running these scripts:**
+⚠️ **Always back up the database before running these scripts:**
 ```bash
 cp momentum.db momentum.db.backup
 ```
 
 ⚠️ **Run from the project root directory** (parent of `scripts/`)
 
-⚠️ **These scripts modify your database directly** - use with caution
+⚠️ **These scripts modify the database directly** - use with caution
 
 ## Cross-Platform Support
 

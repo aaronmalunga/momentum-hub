@@ -12,12 +12,12 @@
   - Launch the CLI explicitly using the demo DB:
     - ``python momentum_main.py --db momentum_demo.db``
 
-- **If you want to demo using the primary DB (not recommended):**
-  - Use the seeder with an explicit target and overwrite (this may replace your current `momentum.db`):
-    - ``python scripts/seed_demo_db.py --db momentum.db --overwrite``
-  - Warning: the seeder attempts a backup when possible — but only run this if you intend to replace the primary DB.
+- **Demo using the primary DB (not recommended):**
+  - Use the seeder with an explicit target and overwrite (this may replace the current `momentum.db`):
+  - ``python scripts/seed_demo_db.py --db momentum.db --overwrite``
+  - Warning: the seeder attempts a backup when possible — run only when intentionally replacing the primary DB.
 
-- **CI behavior:** The seeder used in CI defaults to `momentum.db` so automated tests find seeded data. This change does not affect your local environment.
+- **CI behavior:** The seeder used in CI defaults to `momentum.db` so automated tests find seeded data. This does not affect local environments.
 
 - **Notes for maintainers / reviewers:**
   - `--demo` is a convenience for reviewers — it keeps demo data separate and auto-creates demo habits without prompting.
@@ -30,7 +30,7 @@
 3. Launch the app in demo mode: ``python momentum_main.py --demo``
 4. Explore the UI/CLI; create, modify, and complete habits — demo DB stays isolated.
 
-**Commands to commit & push changes (if you want to watch CI, run these):**
+**Commands to commit & push changes (optional, for observing CI):**
 
 ```powershell
 git add momentum_main.py USAGE.md scripts/seed_demo_db.py
