@@ -3,6 +3,7 @@
 ## Overview
 
 This codebase implements storage and persistence primarily using SQLite as the reliable and robust backend for data management. The persistent data is stored in the `momentum.db` SQLite database file.
+Demo mode uses a separate database (`momentum_demo.db`) to keep sample data isolated from user data.
 
 While JSON was initially embraced for its simplicity, readability, and alignment with a CLI-first development approach in early stages or configuration, the current implementation uses SQLite for full persistence and data integrity.
 

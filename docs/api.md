@@ -9,7 +9,6 @@ This document provides comprehensive API documentation for the Momentum Hub habi
   - [Habit](#habit)
   - [Goal](#goal)
   - [Category](#category)
-  - [Completion](#completion)
 - [Database Operations](#database-operations)
 - [Analysis Functions](#analysis-functions)
 - [CLI Modules](#cli-modules)
@@ -50,22 +49,13 @@ habit = Habit(name="Exercise", frequency="daily")
 habit.mark_completed()  # Mark as completed now
 ```
 
-##### `calculate_longest_streak(db_name)`
-Calculate the longest streak for this habit.
+##### `calculate_longest_streak(completions)`
+Calculate the longest streak for this habit from a completion history list.
 
 **Parameters:**
-- `db_name` (str): Database file path
+- `completions` (list[datetime]): Completion history
 
 **Returns:** int - Longest streak length
-
-##### `calculate_completion_rate(db_name, days=30)`
-Calculate completion rate over the specified period.
-
-**Parameters:**
-- `db_name` (str): Database file path
-- `days` (int): Number of days to analyze (default: 30)
-
-**Returns:** float - Completion rate (0.0 to 1.0)
 
 ### Goal
 
@@ -246,13 +236,13 @@ Calculate longest streak for a specific habit.
 
 **Returns:** int - Longest streak length
 
-### `calculate_completion_rate_for_habit(habit_id, db_name, days=30)`
-Calculate completion rate for a habit over a period.
+### `calculate_completion_rate_for_habit(habit_id, db_name, reference_date=None)`
+Calculate completion rate for a habit over a rolling window.
 
 **Parameters:**
 - `habit_id` (int): Habit ID
 - `db_name` (str): Database file path
-- `days` (int): Analysis period in days (default: 30)
+- `reference_date` (date, optional): Fixed date for deterministic tests
 
 **Returns:** float - Completion rate (0.0 to 1.0)
 
@@ -365,15 +355,16 @@ The application uses SQLite with the following main tables:
 - `completions`: Completion records
 - `goals`: Goal definitions
 - `categories`: Category definitions
-- `habit_categories`: Many-to-many relationship between habits and categories
+
+Note: Demo mode uses a separate database (`momentum_demo.db`) to keep sample data isolated from user data.
 
 ## Examples
 
 ### Basic Usage
 
 ```python
-import momentum_db as db
-from habit import Habit
+import momentum_hub.momentum_db as db
+from momentum_hub.habit import Habit
 
 # Initialize database
 db.init_db("my_habits.db")
@@ -387,14 +378,15 @@ habit.mark_completed()
 db.update_habit(habit, "my_habits.db")
 
 # Get statistics
-streak = habit.calculate_longest_streak("my_habits.db")
-rate = habit.calculate_completion_rate("my_habits.db")
+completions = db.get_completions(habit_id, "my_habits.db")
+streak = habit.calculate_longest_streak(completions)
+rate = analysis.calculate_completion_rate_for_habit(habit_id, "my_habits.db")
 ```
 
 ### Advanced Analytics
 
 ```python
-import habit_analysis as analysis
+from momentum_hub import habit_analysis as analysis
 
 # Get overall statistics
 habit_name, longest_streak = analysis.calculate_overall_longest_streak("my_habits.db")

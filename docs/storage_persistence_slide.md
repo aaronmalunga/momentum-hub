@@ -1,6 +1,7 @@
 # Storage & Persistence Design
 
 - SQLite database (`momentum.db`) is the primary persistent storage for habit tracking.
+- Demo mode uses a separate database (`momentum_demo.db`) to keep sample data isolated from user data.
 - Storage layer serializes/deserializes Habit, Completion, Category, and Goal data.
 - Ensures data persists reliably between sessions with schema validation and migrations.
 - Supports soft deletes via `is_active` flags to preserve historical data across Habits, Categories, and Goals.
