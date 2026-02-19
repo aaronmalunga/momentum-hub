@@ -3,9 +3,9 @@
 This checklist tracks rubric compliance and lecturer feedback. Mark items done when verified in the repo or in the final PebblePad submission.
 
 **Portfolio Phases (PebblePad)**
-1. [ ] Phase 1 (Conception): 1–3 page concept PDF with at least one diagram.
-2. [ ] Phase 2 (Development/Reflection): 5–10 slide PDF with visuals and implementation explanation.
-3. [ ] Phase 3 (Finalization): 1–2 page abstract PDF with GitHub link + final code + zip + resubmitted Phase 1 & 2.
+1. [ ] Phase 1 (Conception): 1-3 page concept PDF with at least one diagram.
+2. [ ] Phase 2 (Development/Reflection): 5-10 slide PDF with visuals and implementation explanation.
+3. [ ] Phase 3 (Finalization): 1-2 page abstract PDF with GitHub link + final code + zip + resubmitted Phase 1 & 2.
 
 **Evaluation Criteria (Rubric)**
 1. [ ] Problem Solving Techniques (10%): clear problem definition + understandable concept.

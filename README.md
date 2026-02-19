@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # Momentum Hub
 
@@ -65,7 +65,7 @@ What appears:
 
 ## 3. Installation
 
-### Prerequisites (Development)
+### Prerequisites
 - Python 3.10 or higher
 - pip (Python package installer)
 Note: `requirements.txt` includes runtime, test, and dev tools for convenience.
@@ -263,25 +263,25 @@ Momentum Hub follows a clean, modular architecture designed for maintainability 
 ### ASCII Architecture Diagram
 ```
 CLI Layer
-  └─ momentum_hub/cli_*  -> User input and menus
+  |- momentum_hub/cli_*  -> User input and menus
 Core Models
-  └─ Habit, Goal, Category
+  |- Habit, Goal, Category
 Persistence
-  └─ momentum_hub/momentum_db.py (SQLite)
+  |- momentum_hub/momentum_db.py (SQLite)
 Analytics
-  └─ momentum_hub/habit_analysis.py (pure functions)
+  |- momentum_hub/habit_analysis.py (pure functions)
 Utilities
-  └─ momentum_hub/cli_utils.py, momentum_hub/momentum_utils.py
+  |- momentum_hub/cli_utils.py, momentum_hub/momentum_utils.py
 ```
 
 ### Design Decisions
 - **Separation of concerns**: CLI flows live in `momentum_hub/cli_*`, persistence in `momentum_hub/momentum_db.py`, and analytics in `momentum_hub/habit_analysis.py` to keep UI, storage, and logic decoupled.
 - **Pure analytics functions**: Streak and completion-rate calculations are implemented as pure functions so they are deterministic and easy to unit-test.
-- **Periodicity‑correct streaks**: Weekly streaks are computed by week boundaries (Sunday-start weeks) to prevent multiple completions in one week from inflating streaks.
+- **Periodicity-correct streaks**: Weekly streaks are computed by week boundaries (Sunday-start weeks) to prevent multiple completions in one week from inflating streaks.
 
 ### Tradeoffs
 - **Centralized DB module**: Persistence is kept in a single module for clarity and testability. Splitting into multiple DB files was avoided to reduce refactor risk close to submission.
-- **Static typing in CI**: `mypy` is configured for local checks, but strict CI enforcement was not added to avoid failures caused by third‑party stubs under limited time.
+- **Static typing in CI**: `mypy` is configured for local checks, but strict CI enforcement was not added to avoid failures caused by third-party stubs under limited time.
 
 #### **System Architecture Diagram**
 ![System Architecture](diagrams/uml/system_architecture_code.png)
@@ -428,7 +428,7 @@ What would you like to do->
   Exit
 ```
 
-### Example Workflow (Create → Complete → Analyze)
+### Example Workflow (Create -> Complete -> Analyze)
 ```
 Welcome to Momentum Hub!
 Your personal habit tracker.
@@ -539,7 +539,7 @@ Static type checking is supported via `mypy`. The configuration lives in `pyproj
 ### Requirements Mapping
 - **CRUD operations**: Implemented in `momentum_hub/cli_habit_management.py` and `momentum_hub/momentum_db.py`, covered by tests in `tests/test_db.py` and `tests/test_cli_habit_management.py`.
 - **Analytics**: Implemented in `momentum_hub/habit_analysis.py` and `momentum_hub/cli_analysis.py`, covered by `tests/test_habit_analysis.py` and `tests/test_streaks.py`.
-- **Periodicity‑correct streaks**: Enforced in `momentum_hub/habit.py` and `momentum_hub/momentum_db.py`, validated in `tests/test_habit.py` and `tests/test_edge_cases.py`.
+- **Periodicity-correct streaks**: Enforced in `momentum_hub/habit.py` and `momentum_hub/momentum_db.py`, validated in `tests/test_habit.py` and `tests/test_edge_cases.py`.
 
 ### Test Coverage
 The project maintains high test coverage (90%+) across all core modules including:
