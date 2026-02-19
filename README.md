@@ -54,17 +54,29 @@ What appears:
 > 6. [Demo Mode](#6-demo-mode)
 > 7. [Screenshots](#7-screenshots)
 > 8. [Usage](#8-usage)
+> 8.1. [Documentation](#documentation)
 > 9. [Architecture](#9-architecture)
+> 9.1. [Design Decisions](#design-decisions)
+> 9.1.1. [Tradeoffs](#tradeoffs)
+> 9.2. [Performance Characteristics](#performance-characteristics)
+> 9.3. [Glossary](#glossary)
+> 9.4. [Example Workflow](#example-workflow-create--complete--analyze)
 > 10. [Contributing](#10-contributing)
 > 11. [Testing & Quality Assurance](#11-testing--quality-assurance)
+> 11.1. [Testing Strategy](#testing-strategy)
+> 11.2. [Static Type Checking](#static-type-checking)
+> 11.3. [Requirements Mapping](#requirements-mapping)
 > 12. [Development Setup](#12-development-setup)
 > 13. [Limitations and Future Improvements](#13-limitations-and-future-improvements)
 > 14. [License](#14-license)
 > 15. [Links](#15-links)
+> 16. [Academic Integrity & AI Usage](#academic-integrity--ai-usage)
+> 16.1. [Authorship](#authorship)
+> 16.2. [External Resources](#external-resources)
 
 ## 3. Installation
 
-### Prerequisites
+### Prerequisites (Development)
 - Python 3.10 or higher
 - pip (Python package installer)
 
@@ -180,41 +192,47 @@ Both demo paths provide:
 - **Sample completions** to show analytics in action
 - **Safe exploration** without affecting real data
 
+**Safety note:** The demo seeder only targets `momentum.db` when explicitly provided via `--db` and `--overwrite`. By default, demo data is isolated in `momentum_demo.db`.
+
 ## 7. Screenshots
 
 
-### Main Menu Interface
+### CLI Interaction
 ![Main Menu Interface](diagrams/Screenshots/Main_py_menu.png)
 *The main menu showing all available options for habit management, analytics, and data operations.*
 
-### Habit Creation Form
+![Live App Menu](diagrams/Screenshots/app_menu.png)
+*Live run of the CLI showing the main menu and available actions.*
+
 ![Habit Creation Form](diagrams/Screenshots/Habit_creation_form.png)
 *Interactive form for creating new habits with frequency selection, reminders, and category assignment.*
 
-### Analytics Dashboard
+![Habit Completion](diagrams/Screenshots/habit_completion_marking.png)
+*Marking a habit as completed with confirmation and streak update.*
+
+### Analytics Output
 ![Analytics Dashboard 1](diagrams/Screenshots/Analytics_dash_1.png)
-*Comprehensive analytics view showing habit statistics, completion rates, and progress tracking.*
+*Analytics options menu showing available insights and reports.*
 
 ![Analytics Dashboard 2](diagrams/Screenshots/Analytics_dash_2.png)
-*Detailed analytics including streak tracking and performance metrics.*
+*Calendar view showing streak history and completion rate.*
 
-### List All Habits View
+![Analytics Streaks](diagrams/Screenshots/Analytics_streaks.png)
+*Analytics table showing current and longest streaks across habits.*
+
+![Completion Rate](diagrams/Screenshots/completion_rate.png)
+*Calendar view showing completion rate for the selected habit.*
+
+### Data Views
 ![List All Habits](diagrams/Screenshots/list_all_habits.png)
 *Overview of all habits with their current status, streaks, and completion information.*
 
-### CSV Export Functionality
 ![CSV Export](diagrams/Screenshots/csv_export.png)
 *Data export interface allowing users to download habits, completions, and analytics data.*
 
-## 7.1 Test Evidence
-
-### Pytest Run (Coverage Summary)
+### Test Evidence
 ![Pytest Run Coverage](diagrams/Screenshots/tests_pytest.png)
 *Latest test run showing coverage summary output.*
-
-### Live App Menu (Functional Run)
-![Live App Menu](diagrams/Screenshots/app_menu.png)
-*Live run of the CLI showing the main menu and available actions.*
 
 ## 8. Usage
 
@@ -237,10 +255,12 @@ python momentum_main.py --help
 ```
 
 The demo database (`momentum_demo.db`) is separate from the primary data.
+The primary database file (`momentum.db`) is created locally on first run and is not included in the repository, so new users start with an empty database unless they explicitly use demo mode or seed data.
 
 ### Documentation
 - **[API Documentation](docs/api.md)**: Comprehensive API reference for developers
 - **[Usage Guide](USAGE.md)**: Advanced usage patterns and reviewer workflows
+- **[Design Notes](DESIGN.md)**: Architecture rationale, streak logic, and demo isolation details
 - **[Presentation Guide](PRESENTATION_GUIDE_20_5.md)**: Complete rubric-aligned presentation breakdown
 - **[Submission Guide](QUICK_START_SUBMISSION.md)**: Quick steps for evaluation submission
 - **[Final Submission Package](FINAL_SUBMISSION_PACKAGE.md)**: Complete deliverables summary
@@ -249,6 +269,29 @@ The demo database (`momentum_demo.db`) is separate from the primary data.
 ## 9. Architecture
 
 Momentum Hub follows a clean, modular architecture designed for maintainability and extensibility. The following diagrams provide visual representations of the system's structure, automatically generated from the actual codebase.
+
+### ASCII Architecture Diagram
+```
+CLI Layer
+  └─ momentum_hub/cli_*  -> User input and menus
+Core Models
+  └─ Habit, Goal, Category
+Persistence
+  └─ momentum_hub/momentum_db.py (SQLite)
+Analytics
+  └─ momentum_hub/habit_analysis.py (pure functions)
+Utilities
+  └─ momentum_hub/cli_utils.py, momentum_hub/momentum_utils.py
+```
+
+### Design Decisions
+- **Separation of concerns**: CLI flows live in `momentum_hub/cli_*`, persistence in `momentum_hub/momentum_db.py`, and analytics in `momentum_hub/habit_analysis.py` to keep UI, storage, and logic decoupled.
+- **Pure analytics functions**: Streak and completion-rate calculations are implemented as pure functions so they are deterministic and easy to unit-test.
+- **Periodicity‑correct streaks**: Weekly streaks are computed by week boundaries (Sunday-start weeks) to prevent multiple completions in one week from inflating streaks.
+
+### Tradeoffs
+- **Centralized DB module**: Persistence is kept in a single module for clarity and testability. Splitting into multiple DB files was avoided to reduce refactor risk close to submission.
+- **Static typing in CI**: `mypy` is configured for local checks, but strict CI enforcement was not added to avoid failures caused by third‑party stubs under limited time.
 
 #### **System Architecture Diagram**
 ![System Architecture](diagrams/uml/system_architecture_code.png)
@@ -337,6 +380,13 @@ CLI Input -> Validation -> Business Logic -> Database -> Response
 - **Memory Usage**: Minimal footprint suitable for CLI applications
 - **Concurrent Access**: SQLite locking handles single-user scenarios
 
+**Complexity Note:** Analytics functions (streaks, completion rates) run in linear time relative to the number of completion records processed (O(n)). Database reads are dominated by SQLite query costs and benefit from indexing on primary keys and foreign keys.
+
+### Glossary
+- **Current streak**: Consecutive completions up to the most recent completion date.
+- **Longest streak**: Maximum number of consecutive completions across the habit history.
+- **Periodicity**: The habit interval (daily or weekly) that defines streak boundaries.
+
 ###  Customization & Extensibility
 
 #### **Adding New Habit Types:**
@@ -386,6 +436,21 @@ What would you like to do->
   Analyze habits
   Create goal
   Exit
+```
+
+### Example Workflow (Create → Complete → Analyze)
+```
+Welcome to Momentum Hub!
+Your personal habit tracker.
+
+What would you like to do-> Create a new habit
+Habit created successfully.
+
+What would you like to do-> Mark a habit as completed
+'Read 20 pages' marked as completed! Current streak: 1
+
+What would you like to do-> Analyze habits
+Habits by Periodicity -> all
 ```
 
 
@@ -461,12 +526,30 @@ pytest
 # Run with coverage report
 pytest --cov --cov-report=term-missing
 
+# Run analytics tests with deterministic fixture data
+pytest tests/test_habit_analysis.py tests/test_streaks.py
+
 # Run specific test file
 pytest tests/test_habit.py
 
 # Run tests in verbose mode
 pytest -v
 ```
+
+Note: The analytics test fixture uses a fixed base date to generate deterministic 4-week time-series data (see `tests/test_data.py`), ensuring reproducible streak and completion-rate results across runs.
+
+### Testing Strategy
+- **Unit tests** validate core models and pure analytics logic (streaks, completion rates, and goal progress).
+- **Integration tests** exercise database persistence and CLI workflows with isolated temporary databases.
+- **Deterministic fixtures** provide reproducible time-series data for 4-week analytics verification.
+
+### Static Type Checking
+Static type checking is supported via `mypy`. The configuration lives in `pyproject.toml` under `[tool.mypy]` and is intentionally conservative to avoid false positives while still enforcing basic consistency.
+
+### Requirements Mapping
+- **CRUD operations**: Implemented in `momentum_hub/cli_habit_management.py` and `momentum_hub/momentum_db.py`, covered by tests in `tests/test_db.py` and `tests/test_cli_habit_management.py`.
+- **Analytics**: Implemented in `momentum_hub/habit_analysis.py` and `momentum_hub/cli_analysis.py`, covered by `tests/test_habit_analysis.py` and `tests/test_streaks.py`.
+- **Periodicity‑correct streaks**: Enforced in `momentum_hub/habit.py` and `momentum_hub/momentum_db.py`, validated in `tests/test_habit.py` and `tests/test_edge_cases.py`.
 
 ### Test Coverage
 The project maintains high test coverage (90%+) across all core modules including:
@@ -601,3 +684,19 @@ Built with modern Python libraries including:
 ---
 
 **Start building better habits today with Momentum Hub!**
+
+## Academic Integrity & AI Usage
+AI tools were used in this project as supplementary learning and review aids, primarily for conceptual clarification, debugging support, and improving documentation clarity. All design decisions, implementation logic, and unit tests were independently developed and fully understood before inclusion. AI suggestions were critically evaluated and adapted where necessary. The final submission reflects my own work and understanding of the course concepts.
+
+### Authorship
+This project was designed and implemented as part of the OOFPP portfolio course. All core design decisions, algorithms, and implementation details were developed independently by the author unless otherwise referenced.
+
+### External Resources
+The following resources were consulted during the development of this project for reference and conceptual clarification:
+
+- Python 3 Official Documentation - `https://docs.python.org/3/` (Reference for language features, standard library modules such as `datetime`, `sqlite3`, and testing utilities.)
+- SQLite Documentation - `https://www.sqlite.org/docs.html` (Guidance on database structure, queries, and file-based persistence design.)
+- Pytest Documentation - `https://docs.pytest.org/` (Reference for structuring unit tests, fixtures, and deterministic test design.)
+- General tutorials and technical discussions on Python project structure, modular design, and CLI application development.
+
+All code was written independently and adapted to the specific requirements of the OOFPP portfolio project.
