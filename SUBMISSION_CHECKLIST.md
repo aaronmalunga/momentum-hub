@@ -39,13 +39,3 @@ This checklist tracks rubric compliance and lecturer feedback. Mark items done w
 9. [x] Streak respects periodicity (daily vs weekly). `momentum_hub/momentum_db.py`, `momentum_hub/habit_analysis.py`
 10. [x] 4-week fixture data for streak tests. `tests/test_data.py`
 11. [x] Unit tests cover habit CRUD + analytics. `tests/test_habit.py`, `tests/test_habit_analysis.py`, `tests/test_pure_analysis.py`
-
-**Evidence To Add (Screenshots)**
-1. [ ] App screenshots from live run (menu, habit creation, analytics, exports).
-2. [ ] Test run screenshot(s) showing `pytest` output and optional coverage summary.
-
-**Recommended Screenshot Targets**
-1. `diagrams/Screenshots/app_menu.png`
-2. `diagrams/Screenshots/app_analytics.png`
-3. `diagrams/Screenshots/tests_pytest.png`
-4. `diagrams/Screenshots/tests_coverage.png`
