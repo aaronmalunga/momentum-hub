@@ -68,6 +68,7 @@ What appears:
 ### Prerequisites (Development)
 - Python 3.10 or higher
 - pip (Python package installer)
+Note: `requirements.txt` includes runtime, test, and dev tools for convenience.
 
 ### Install from Source
 ```bash
