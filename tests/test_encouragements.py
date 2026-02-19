@@ -9,6 +9,8 @@ from momentum_hub import encouragements
 
 
 class TestGetCompletionEncouragement:
+    """Tests encouragement messages for completions."""
+
     """Test cases for get_completion_encouragement function."""
 
     def test_returns_string(self):
@@ -27,6 +29,8 @@ class TestGetCompletionEncouragement:
 
 
 class TestGetStreakEncouragement:
+    """Tests encouragement messages for streak milestones."""
+
     """Test cases for get_streak_encouragement function."""
 
     def test_daily_streak_low(self):
@@ -84,6 +88,8 @@ class TestGetStreakEncouragement:
 
 
 class TestGetCompletionRateEncouragement:
+    """Tests encouragement messages for completion rates."""
+
     """Test cases for get_completion_rate_encouragement function."""
 
     def test_high_rate(self):

@@ -24,6 +24,8 @@ def sample_habit(tmp_db_path):
 
 
 class TestStartupMessage:
+    """Tests CLI display: startup banner rendering."""
+
     @patch("momentum_hub.cli_display.shutil.get_terminal_size")
     @patch("momentum_hub.cli_display.Figlet")
     @patch("builtins.print")
@@ -41,6 +43,8 @@ class TestStartupMessage:
 
 
 class TestViewHabits:
+    """Tests CLI display: view habits table."""
+
     def test_view_habits_with_data(self, tmp_db_path, sample_habit):
         with (
             patch("momentum_hub.cli_display.show_colored_message"),

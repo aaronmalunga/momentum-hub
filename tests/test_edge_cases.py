@@ -20,7 +20,7 @@ def tmp_db_path(tmp_path):
 
 
 class TestEmptyDB:
-    """Test cases for empty database scenarios."""
+    """Test cases for empty database scenarios (defensive behavior for new users)."""
 
     def test_get_habit_nonexistent(self, tmp_db_path):
         """Test getting a habit that doesn't exist."""
@@ -49,7 +49,7 @@ class TestEmptyDB:
 
 
 class TestInvalidData:
-    """Test cases for invalid data handling."""
+    """Test cases for invalid data handling (guards against malformed input)."""
 
     def test_invalid_frequency_habit_creation(self):
         """Test creating habit with invalid frequency."""
@@ -103,7 +103,7 @@ class TestInvalidData:
 
 
 class TestReactivationsWithExistingCompletions:
-    """Test cases for reactivations with existing completions."""
+    """Test cases for reactivations with existing completions (history integrity)."""
 
     def test_reactivate_habit_with_completions(self, tmp_db_path):
         """Test reactivating a habit that has existing completions."""
@@ -190,7 +190,7 @@ class TestReactivationsWithExistingCompletions:
 
 
 class TestStreakCalculationsWithGaps:
-    """Test cases for streak calculations with gaps in completions."""
+    """Test cases for streak calculations with gaps (correct reset behavior)."""
 
     def test_daily_streak_with_gaps(self, tmp_db_path):
         """Test daily streak calculation with gaps."""

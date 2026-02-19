@@ -22,6 +22,8 @@ def sample_habit():
 
 
 class TestValidateTimeFormat:
+    """Tests CLI utils: time format validation."""
+
     def test_valid_time_format_24_hour(self):
         assert _validate_time_format("14:30") is True
 
@@ -42,6 +44,8 @@ class TestValidateTimeFormat:
 
 
 class TestHandleHabitSelection:
+    """Tests CLI utils: habit selection prompts."""
+
     def test_handle_habit_selection_success(self, sample_habit):
         habits = [sample_habit]
         with patch("questionary.select") as mock_select:
@@ -77,6 +81,8 @@ class TestHandleHabitSelection:
 
 
 class TestToDate:
+    """Tests CLI utils: datetime to date conversion."""
+
     def test_to_date_with_datetime(self):
         dt = datetime.datetime(2023, 1, 1, 10, 0)
         assert _to_date(dt) == dt.date()
@@ -87,6 +93,8 @@ class TestToDate:
 
 
 class TestPressEnterToContinue:
+    """Tests CLI utils: pause prompt."""
+
     def test_press_enter_to_continue(self):
         """Test that press_enter_to_continue calls input."""
         with patch("builtins.input") as mock_input:

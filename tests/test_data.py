@@ -1,6 +1,5 @@
 import datetime
 import os
-import random
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,10 +8,13 @@ import pytest
 import momentum_hub.momentum_db as db
 from momentum_hub.habit import Habit
 
+BASE_DATE = datetime.date(2026, 1, 28)
+
 
 def populate_test_db(db_name: str):
     """
-    Populates the specified database with 5 predefined habits and 4 weeks of synthetic completion dates.
+    Populates the specified database with 5 predefined habits and deterministic
+    4-week time-series data for streak and completion-rate tests.
     """
     db.init_db(db_name)  # Ensures that tables exist before populating
 
@@ -70,8 +72,8 @@ def populate_test_db(db_name: str):
     created_habits = []
 
     for data in habits_data:
-        # Create habits a month ago to have 4 weeks of data
-        created_at_dt = datetime.datetime.now() - datetime.timedelta(days=328)
+        # Fixed created_at so tests are deterministic
+        created_at_dt = datetime.datetime(2025, 3, 6, 9, 0)
 
         # For weekly habits, make sure they are created on the same day weekly, in this instance, Sunday
         if data["frequency"] == "weekly":
@@ -97,10 +99,16 @@ def populate_test_db(db_name: str):
         habit_ids[data["name"]] = habit_id
         created_habits.append(new_habit)
 
-    # Generate synthetic completion dates for the habits( 4 Weeks of data)
-    today = (
-        datetime.datetime.now()
-    )  ### --> Making "Change beddings" with both streak and completion rate tests
+    # Generate deterministic completion dates (4-week window anchored to BASE_DATE)
+    today = datetime.datetime.combine(BASE_DATE, datetime.time(10, 0))
+
+    # Helper: find Sunday for a given date
+    def sunday_of_week(d: datetime.date) -> datetime.date:
+        while d.weekday() != 6:
+            d -= datetime.timedelta(days=1)
+        return d
+
+    ### --> Making "Change beddings" with both streak and completion rate tests
     change_beddings_id = habit_ids["Change beddings"]
     change_beddings_habit_obj = next(
         h for h in created_habits if h.name == "Change beddings"
@@ -108,21 +116,25 @@ def populate_test_db(db_name: str):
 
     # Create exactly 7 consecutive weeks for the streak test, starting from 11 weeks ago
     for i in range(7):
-        completion_date = today - datetime.timedelta(weeks=11 - i)  # Start 11 weeks ago
-        # Find the Sunday of that week
-        while completion_date.weekday() != 6:
-            completion_date -= datetime.timedelta(days=1)
-        db.add_completion(change_beddings_id, completion_date, db_name)
+        completion_date = today.date() - datetime.timedelta(weeks=11 - i)
+        completion_date = sunday_of_week(completion_date)
+        db.add_completion(
+            change_beddings_id,
+            datetime.datetime.combine(completion_date, datetime.time(10, 0)),
+            db_name,
+        )
 
     # For the last 4 weeks (completion rate test), complete exactly 2 weeks
     for i in range(4):
-        current_date = today - datetime.timedelta(weeks=i)
-        # Find the Sunday of this week
-        while current_date.weekday() != 6:
-            current_date -= datetime.timedelta(days=1)
+        current_date = today.date() - datetime.timedelta(weeks=i)
+        current_date = sunday_of_week(current_date)
         # Only complete weeks 1 and 3 (second and fourth weeks)
         if i in [1, 3]:
-            db.add_completion(change_beddings_id, current_date, db_name)
+            db.add_completion(
+                change_beddings_id,
+                datetime.datetime.combine(current_date, datetime.time(10, 0)),
+                db_name,
+            )
 
     ### --> Make "Code" have a perfect 28 day streak
     code_daily_id = habit_ids["Code"]
@@ -148,11 +160,13 @@ def populate_test_db(db_name: str):
     blog_habit_obj = next(h for h in created_habits if h.name == "Blog")
     # Create exactly 7 weekly completions
     for i in range(7):
-        completion_date = today - datetime.timedelta(weeks=i)
-        # Adjust to the nearest Sunday
-        while completion_date.weekday() != 6:  # 6 is Sunday
-            completion_date -= datetime.timedelta(days=1)
-        db.add_completion(blog_id, completion_date, db_name)
+        completion_date = today.date() - datetime.timedelta(weeks=i)
+        completion_date = sunday_of_week(completion_date)
+        db.add_completion(
+            blog_id,
+            datetime.datetime.combine(completion_date, datetime.time(10, 0)),
+            db_name,
+        )
 
     print(f"Test database '{db_name}' populated with sample data.")
 

@@ -58,6 +58,8 @@ def sample_habits(sample_habit):
 
 
 class TestMainMenu:
+    """Tests CLI main menu behavior."""
+
     @patch("momentum_hub.momentum_cli.questionary.select")
     @patch("momentum_hub.momentum_cli.create_new_habit")
     def test_main_menu_create_habit(self, mock_create, mock_select, mock_db):
@@ -116,6 +118,8 @@ class TestMainMenu:
 
 
 class TestCreateNewHabit:
+    """Tests CLI habit creation flow."""
+
     @patch("momentum_hub.cli_habit_management.questionary.text")
     @patch("momentum_hub.cli_habit_management.questionary.select")
     @patch("momentum_hub.cli_habit_management.db.add_habit")
@@ -147,6 +151,8 @@ class TestCreateNewHabit:
 
 
 class TestViewHabits:
+    """Tests CLI habit viewing flow."""
+
     @patch("momentum_hub.cli_display.db.get_all_habits")
     @patch("momentum_hub.cli_display.press_enter_to_continue")
     def test_view_habits_with_data(
@@ -165,6 +171,8 @@ class TestViewHabits:
 
 
 class TestMarkHabitCompleted:
+    """Tests CLI habit completion flow."""
+
     @patch("momentum_hub.cli_habit_management.questionary.select")
     @patch("momentum_hub.cli_habit_management.db.get_all_habits")
     @patch("momentum_hub.cli_habit_management.db.add_completion")
@@ -203,6 +211,8 @@ class TestMarkHabitCompleted:
 
 
 class TestDeleteHabit:
+    """Tests CLI habit deletion flow."""
+
     @patch("momentum_hub.cli_habit_management.questionary.select")
     @patch("momentum_hub.cli_habit_management.questionary.confirm")
     @patch("momentum_hub.cli_habit_management.db.get_all_habits")
@@ -245,6 +255,8 @@ class TestDeleteHabit:
 
 
 class TestReactivateHabit:
+    """Tests CLI habit reactivation flow."""
+
     @patch("momentum_hub.cli_habit_management.questionary.select")
     @patch("momentum_hub.cli_habit_management.db.get_all_habits")
     @patch("momentum_hub.cli_habit_management.db.reactivate_habit")
@@ -266,6 +278,8 @@ class TestReactivateHabit:
 
 
 class TestUpdateHabit:
+    """Tests CLI habit update flow."""
+
     @patch("momentum_hub.cli_habit_management.questionary.text")
     @patch("momentum_hub.cli_habit_management.questionary.select")
     @patch("momentum_hub.cli_habit_management.db.get_all_habits")
@@ -300,6 +314,8 @@ class TestUpdateHabit:
 
 
 class TestAnalyzeHabits:
+    """Tests CLI analyze menu behavior."""
+
     @patch("momentum_hub.cli_analysis.questionary.select")
     @patch("momentum_hub.cli_analysis.analyze_list_all_habits")
     @patch("momentum_hub.cli_analysis.db.get_all_habits")
@@ -330,6 +346,8 @@ class TestAnalyzeHabits:
 
 
 class TestAnalyzeListAllHabits:
+    """Tests CLI analyze: list all habits."""
+
     @patch("momentum_hub.cli_analysis.db.get_all_habits")
     @patch("momentum_hub.cli_analysis.press_enter_to_continue")
     def test_analyze_list_all_habits(
@@ -341,6 +359,8 @@ class TestAnalyzeListAllHabits:
 
 
 class TestAnalyzeByPeriodicity:
+    """Tests CLI analyze: periodicity filter."""
+
     @patch(
         "momentum_hub.cli_analysis.analysis.calculate_completion_rate_for_habit",
         return_value=0.8,
@@ -368,6 +388,8 @@ class TestAnalyzeByPeriodicity:
 
 
 class TestAnalyzeLongestStreakAll:
+    """Tests CLI analyze: longest streak across all."""
+
     @patch(
         "momentum_hub.cli_analysis.analysis.calculate_longest_streak_for_habit",
         return_value=5,
@@ -383,6 +405,8 @@ class TestAnalyzeLongestStreakAll:
 
 
 class TestAnalyzeLongestStreakOne:
+    """Tests CLI analyze: longest streak for one habit."""
+
     @patch(
         "momentum_hub.cli_analysis.analysis.calculate_longest_streak_for_habit",
         return_value=5,
@@ -405,6 +429,8 @@ class TestAnalyzeLongestStreakOne:
 
 
 class TestAnalyzeStreakHistoryGrid:
+    """Tests CLI analyze: streak history calendar view."""
+
     @patch("momentum_hub.cli_analysis.questionary.select")
     @patch("momentum_hub.cli_analysis.db.get_all_habits")
     @patch("momentum_hub.cli_analysis.db.get_completions")
@@ -425,6 +451,8 @@ class TestAnalyzeStreakHistoryGrid:
 
 
 class TestAnalyzeExportCsv:
+    """Tests CLI analyze: export to CSV."""
+
     @patch("momentum_hub.cli_export.questionary.select")
     @patch("momentum_hub.cli_export.export_all_habits_to_csv")
     def test_analyze_export_csv_all_habits(self, mock_export, mock_select):
@@ -436,6 +464,8 @@ class TestAnalyzeExportCsv:
 
 
 class TestAnalyzeBestWorstHabit:
+    """Tests CLI analyze: best/worst habit."""
+
     @patch("momentum_hub.cli_analysis.press_enter_to_continue")
     def test_analyze_best_worst_habit(self, mock_continue):
         with patch(
@@ -446,6 +476,8 @@ class TestAnalyzeBestWorstHabit:
 
 
 class TestAnalyzeGoalProgress:
+    """Tests CLI analyze: goal progress."""
+
     @patch("momentum_hub.cli_analysis.questionary.select")
     @patch("momentum_hub.cli_analysis.db.get_all_habits")
     @patch("momentum_hub.cli_analysis.press_enter_to_continue")
@@ -462,6 +494,8 @@ class TestAnalyzeGoalProgress:
 
 
 class TestAnalyzeCompletionHistory:
+    """Tests CLI analyze: completion history."""
+
     @patch("momentum_hub.cli_analysis.questionary.select")
     @patch("momentum_hub.cli_analysis.db.get_all_habits")
     @patch("momentum_hub.cli_analysis.press_enter_to_continue")
@@ -478,6 +512,8 @@ class TestAnalyzeCompletionHistory:
 
 
 class TestHandleHabitSelection:
+    """Tests CLI: shared habit selection helper."""
+
     @patch("momentum_hub.cli_utils.press_enter_to_continue")
     def test_handle_habit_selection_success(self, mock_continue, sample_habit):
         import questionary
@@ -511,6 +547,8 @@ class TestHandleHabitSelection:
 
 
 class TestStartCli:
+    """Tests CLI startup and main loop behavior."""
+
     @patch("momentum_hub.momentum_cli.db.init_db")
     @patch("momentum_hub.momentum_cli.startup_message")
     @patch("momentum_hub.momentum_cli.main_menu")

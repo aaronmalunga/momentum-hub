@@ -19,20 +19,24 @@ class Habit:
         - reactivated_at: When the habit was last reactivated (optional)
     """
 
+    # Edge cases handled:
+    # - Weekly streaks only increment across week boundaries (Sunday-start weeks).
+    # - Multiple completions in the same week do not inflate the streak.
+
     def __init__(
         self,
-        id=None,
-        name=None,
-        frequency=None,
-        notes=None,
-        reminder_time=None,
-        evening_reminder_time=None,
-        streak=0,
-        created_at=None,
-        last_completed=None,
-        is_active=True,
-        reactivated_at=None,
-        category_id=None,
+        id: Optional[int] = None,
+        name: Optional[str] = None,
+        frequency: Optional[str] = None,
+        notes: Optional[str] = None,
+        reminder_time: Optional[str] = None,
+        evening_reminder_time: Optional[str] = None,
+        streak: int = 0,
+        created_at: Optional[datetime.datetime] = None,
+        last_completed: Optional[datetime.datetime] = None,
+        is_active: bool = True,
+        reactivated_at: Optional[datetime.datetime] = None,
+        category_id: Optional[int] = None,
     ):
         self.id = id
         self.name = name
@@ -83,12 +87,28 @@ class Habit:
         now = dt or datetime.datetime.now()
         if self.last_completed is not None:
             delta_days = (now.date() - self.last_completed.date()).days
-            if self.frequency == "daily" and delta_days == 1:
-                self.streak += 1
-            elif self.frequency == "weekly" and delta_days > 0:
-                self.streak += 1
+            if self.frequency == "daily":
+                if delta_days == 1:
+                    self.streak += 1
+                else:
+                    self.streak = 1  # reset if a day is missed or same-day repeat
+            elif self.frequency == "weekly":
+                # Compare week starts (Sunday) to enforce weekly periodicity
+                current_week_start = now.date() - datetime.timedelta(
+                    days=(now.date().weekday() + 1) % 7
+                )
+                last_week_start = self.last_completed.date() - datetime.timedelta(
+                    days=(self.last_completed.date().weekday() + 1) % 7
+                )
+                if current_week_start == last_week_start:
+                    # Same week -> streak does not increment
+                    pass
+                elif (current_week_start - last_week_start).days == 7:
+                    self.streak += 1
+                else:
+                    self.streak = 1  # reset if a full week is missed
             else:
-                self.streak = 1  # where streak is reset if missed
+                self.streak = 1
         else:
             self.streak = 1  # first completion
         self.last_completed = now

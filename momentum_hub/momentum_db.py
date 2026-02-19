@@ -15,6 +15,9 @@ _open_connections = []
 class TrackedConnection:
     """A wrapper for SQLite connections that tracks them for proper cleanup."""
 
+    # Design rationale: tests open many connections; tracking ensures teardown
+    # closes everything deterministically to avoid file locks on Windows.
+
     def __init__(self, conn):
         self._conn = conn
         self._closed = False

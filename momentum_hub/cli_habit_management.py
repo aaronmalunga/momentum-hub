@@ -146,16 +146,16 @@ def mark_habit_completed(db_name: str):
         style=Style.BRIGHT,
     )
     if habit.frequency == "daily":
-        if habit.streak in [7, 30, 100]:
+        if current_streak in [7, 30, 100]:
             show_colored_message(
-                get_streak_encouragement(habit.streak, is_weekly=False),
+                get_streak_encouragement(current_streak, is_weekly=False),
                 color=Fore.MAGENTA,
                 style=Style.BRIGHT,
             )
     else:  # weekly habit
-        if habit.streak in [4, 12, 52]:
+        if current_streak in [4, 12, 52]:
             show_colored_message(
-                get_streak_encouragement(habit.streak, is_weekly=True),
+                get_streak_encouragement(current_streak, is_weekly=True),
                 color=Fore.MAGENTA,
                 style=Style.BRIGHT,
             )

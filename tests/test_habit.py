@@ -26,6 +26,8 @@ def sample_habit():
 
 
 class TestHabitEdit:
+    """Tests Habit edit operations."""
+
     def test_edit_habit_name(self, sample_habit):
         sample_habit.edit_habit(name="New Name")
         assert sample_habit.name == "New Name"
@@ -50,6 +52,8 @@ class TestHabitEdit:
 
 
 class TestHabitMarkCompleted:
+    """Tests Habit completion and streak updates."""
+
     def test_mark_completed_first_time(self, sample_habit):
         dt = datetime.datetime(2023, 1, 2, 10, 0)
         sample_habit.mark_completed(dt)
@@ -88,7 +92,7 @@ class TestHabitMarkCompleted:
         # Within same week (Thursday)
         dt2 = datetime.datetime(2023, 1, 5, 10, 0)
         sample_habit.mark_completed(dt2)
-        assert sample_habit.streak == 2
+        assert sample_habit.streak == 1  # Same week should not increment
 
     def test_mark_completed_weekly_non_consecutive(self, sample_habit):
         sample_habit.frequency = "weekly"
@@ -111,6 +115,8 @@ class TestHabitMarkCompleted:
 
 
 class TestHabitCalculateLongestStreak:
+    """Tests Habit longest streak calculation."""
+
     def test_calculate_longest_streak_empty(self, sample_habit):
         assert sample_habit.calculate_longest_streak([]) == 0
 

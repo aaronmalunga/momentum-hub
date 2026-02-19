@@ -41,6 +41,8 @@ def sample_data(tmp_db_path):
 
 
 class TestCreateCategory:
+    """Tests CLI: create category flow."""
+
     def test_create_category_success(self, tmp_db_path):
         with (
             patch("questionary.text") as mock_text,
@@ -125,6 +127,8 @@ class TestCreateCategory:
 
 
 class TestViewCategories:
+    """Tests CLI: view categories."""
+
     def test_view_categories_with_data(self, sample_data):
         tmp_db_path, cat_id1, cat_id2, hid1, hid2 = sample_data
 
@@ -152,6 +156,8 @@ class TestViewCategories:
 
 
 class TestUpdateCategory:
+    """Tests CLI: update category flow."""
+
     def test_update_category_success(self, sample_data):
         tmp_db_path, cat_id1, cat_id2, hid1, hid2 = sample_data
 
@@ -326,6 +332,8 @@ class TestUpdateCategory:
 
 
 class TestDeleteCategory:
+    """Tests CLI: delete category flow."""
+
     def test_delete_category_success(self, sample_data):
         tmp_db_path, cat_id1, cat_id2, hid1, hid2 = sample_data
 
@@ -431,6 +439,8 @@ class TestDeleteCategory:
 
 
 class TestAssignHabitToCategory:
+    """Tests CLI: assign and remove habit-category links."""
+
     def test_assign_habit_to_category_success(self, sample_data):
         tmp_db_path, cat_id1, cat_id2, hid1, hid2 = sample_data
 
@@ -565,6 +575,8 @@ class TestAssignHabitToCategory:
 
 
 class TestManageCategories:
+    """Tests CLI: category menu routing."""
+
     def test_manage_categories_create(self, tmp_db_path):
         with (
             patch("questionary.select") as mock_select,

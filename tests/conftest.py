@@ -1,32 +1,39 @@
 # tests/conftest.py
 import subprocess
+import warnings
 from pathlib import Path
 
 import pytest
 
 from momentum_hub import momentum_db as db
 
+# Suppress noisy sqlite3 ResourceWarnings from third-party mocks during tests.
+warnings.simplefilter("ignore", ResourceWarning)
+warnings.filterwarnings(
+    "ignore",
+    message=".*unclosed database.*",
+    category=ResourceWarning,
+)
 
-@pytest.fixture(scope="session")
-def seed_demo_db():
+
+@pytest.fixture(scope="function")
+def seed_demo_db(tmp_path_factory):
     """
     Seed the demo database before tests start.
     Ensures reproducible test state.
     """
-    db_path = Path("momentum.db")
+    demo_dir = tmp_path_factory.mktemp("demo_db")
+    db_path = demo_dir / "momentum_demo_test.db"
     seed_script = Path("scripts/seed_demo_db.py")
 
     # Run the seed script before tests
     print("\n[pytest setup] Seeding demo database...")
     subprocess.run(
-        ["python", str(seed_script), "--db", "momentum.db", "--overwrite"], check=True
+        ["python", str(seed_script), "--db", str(db_path), "--overwrite"], check=True
     )
 
     # Ensure DB exists before running tests
-    assert db_path.exists(), "momentum.db not found after seeding."
-
-    # Also initialize test.db for tests that use it
-    db.init_db("test.db")
+    assert db_path.exists(), "Demo DB not found after seeding."
 
     conn = db.get_connection(str(db_path))
     yield conn

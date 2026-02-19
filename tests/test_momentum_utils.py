@@ -11,6 +11,8 @@ from momentum_hub import momentum_utils
 
 
 class TestGetIntInput:
+    """Tests momentum utils: integer input handling."""
+
     """Test cases for get_int_input function."""
 
     @patch("builtins.input", return_value="5")
@@ -40,6 +42,8 @@ class TestGetIntInput:
 
 
 class TestShowColoredMessage:
+    """Tests momentum utils: colored output."""
+
     """Test cases for show_colored_message function."""
 
     @patch("builtins.print")
@@ -66,6 +70,8 @@ class TestShowColoredMessage:
 
 
 class TestPressEnterToContinue:
+    """Tests momentum utils: pause prompt."""
+
     """Test cases for press_enter_to_continue function."""
 
     @patch("builtins.input", return_value="")

@@ -40,6 +40,8 @@ def sample_habits(tmp_db_path):
 
 
 class TestAnalyzeListAllHabits:
+    """Tests CLI analysis: list all habits."""
+
     def test_analyze_list_all_habits_with_data(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         with patch("momentum_hub.cli_analysis.press_enter_to_continue"):
@@ -56,6 +58,8 @@ class TestAnalyzeListAllHabits:
 
 
 class TestAnalyzeByPeriodicity:
+    """Tests CLI analysis: filter by periodicity."""
+
     def test_analyze_by_periodicity_daily(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         with patch("questionary.select") as mock_select:
@@ -82,6 +86,8 @@ class TestAnalyzeByPeriodicity:
 
 
 class TestAnalyzeLongestStreakAll:
+    """Tests CLI analysis: longest streak across all habits."""
+
     def test_analyze_longest_streak_all(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         with patch("momentum_hub.cli_analysis.press_enter_to_continue"):
@@ -92,6 +98,8 @@ class TestAnalyzeLongestStreakAll:
 
 
 class TestAnalyzeLongestStreakOne:
+    """Tests CLI analysis: longest streak for a single habit."""
+
     def test_analyze_longest_streak_one_success(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         habits = db.get_all_habits(active_only=True, db_name=db_name)
@@ -105,6 +113,8 @@ class TestAnalyzeLongestStreakOne:
 
 
 class TestAnalyzeStreakHistoryGrid:
+    """Tests CLI analysis: streak history calendar view."""
+
     def test_analyze_streak_history_grid_daily(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         habits = db.get_all_habits(active_only=True, db_name=db_name)
@@ -132,6 +142,8 @@ class TestAnalyzeStreakHistoryGrid:
 
 
 class TestAnalyzeBestWorstHabit:
+    """Tests CLI analysis: best and worst habit selection."""
+
     def test_analyze_best_worst_habit_success(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         # Add streaks
@@ -157,6 +169,8 @@ class TestAnalyzeBestWorstHabit:
 
 
 class TestAnalyzeGoalProgress:
+    """Tests CLI analysis: goal progress reporting."""
+
     def test_analyze_goal_progress_success(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         # Create a goal for the habit
@@ -175,6 +189,8 @@ class TestAnalyzeGoalProgress:
 
 
 class TestAnalyzeCompletionHistory:
+    """Tests CLI analysis: completion history view."""
+
     def test_analyze_completion_history_with_data(self, sample_habits, capsys):
         db_name, hid1, hid2 = sample_habits
         # Add completion

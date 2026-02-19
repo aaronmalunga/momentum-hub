@@ -19,6 +19,9 @@ venv/
 env/
 ENV/
 
+# Type checker cache
+.mypy_cache/
+
 # Database files
 momentum.db
 database.db
@@ -53,6 +56,11 @@ Thumbs.db
 
 # SQLite journal files (generated during transactions)
 *.db-journal
+*.db-wal
+*.db-shm
+
+# Env files
+.env
 
 # Specific test and debug databases not covered by existing patterns
 debug_goal.db
@@ -77,3 +85,6 @@ plantuml.jar
 
 # Generated documentation (e.g., API docs)
 # (Keep tracked docs in repo for portfolio submission.)
+
+# Submission artifacts (local)
+Malunga-Aaron_9212599_OOFPP_Habits_Submission_Abstract.md

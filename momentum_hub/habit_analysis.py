@@ -2,6 +2,10 @@ import datetime
 from typing import List, Optional, Set, Tuple, Union
 
 from . import momentum_db as db
+from .habit import Habit
+
+# Design rationale: analytics functions are pure where possible to keep
+# calculations deterministic and easy to unit-test.
 
 
 def calculate_completion_rate_for_habit(
@@ -101,7 +105,12 @@ def calculate_longest_streak_for_habit(habit_id: int, db_name: str) -> int:
 def calculate_longest_streak_from_dates(
     dates: List[datetime.date], frequency: str
 ) -> int:
-    """Pure function: compute longest streak from list of dates based on frequency."""
+    """Pure function: compute longest streak from list of dates based on frequency.
+
+    Example:
+        dates = [date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 4)]
+        calculate_longest_streak_from_dates(dates, "daily") -> 2
+    """
     if not dates:
         return 0
     if frequency == "daily":
@@ -143,7 +152,12 @@ def calculate_completion_rate_from_dates(
     frequency: str,
     reference_date: Optional[datetime.date] = None,
 ) -> float:
-    """Pure function: calculate completion rate from a set of dates."""
+    """Pure function: calculate completion rate from a set of dates.
+
+    Example:
+        completion_dates = {date(2026, 1, 1), date(2026, 1, 2)}
+        calculate_completion_rate_from_dates(completion_dates, "daily", date(2026, 1, 28)) -> 0.07
+    """
     if reference_date is None:
         today = datetime.datetime.now().date()
     else:
@@ -174,6 +188,9 @@ def calculate_overall_longest_streak(db_name: str) -> Tuple[str, int]:
 
     Returns:
         Tuple[str, int]: A tuple of (habit_name, streak_length)
+
+    Example:
+        calculate_overall_longest_streak("momentum_demo.db") -> ("Code", 28)
     """
     habits = db.get_all_habits(active_only=True, db_name=db_name)
     longest_streak = 0
@@ -188,10 +205,19 @@ def calculate_overall_longest_streak(db_name: str) -> Tuple[str, int]:
     return habit_name, longest_streak
 
 
-def calculate_best_worst_habit(db_name: str):
+def calculate_best_worst_habit(db_name: str) -> Tuple[Optional[Habit], Optional[Habit]]:
     """
     Returns the best and worst active habits based on current streak.
     Returns (best_habit, worst_habit) as Habit objects, or (None, None) if not found.
+
+    Args:
+        db_name: The name of the database.
+
+    Returns:
+        Tuple[Optional[Habit], Optional[Habit]]: Best and worst habits by streak.
+
+    Example:
+        best, worst = calculate_best_worst_habit("momentum_demo.db")
     """
     habits = db.get_all_habits(active_only=True, db_name=db_name)
     if not habits:
@@ -206,9 +232,16 @@ def calculate_best_worst_habit(db_name: str):
     return best_habit, worst_habit
 
 
-def get_completion_history(habit_id: int, db_name: str):
+def get_completion_history(habit_id: int, db_name: str) -> List[datetime.datetime]:
     """
     Returns a list of completion datetimes for the given habit_id, sorted ascending.
+
+    Args:
+        habit_id: The ID of the habit to inspect.
+        db_name: The name of the database.
+
+    Returns:
+        List[datetime.datetime]: Completion history sorted by time.
     """
     completions = db.get_completions(habit_id, db_name)
     return sorted(completions, key=lambda x: x)
@@ -216,12 +249,20 @@ def get_completion_history(habit_id: int, db_name: str):
 
 def calculate_goal_progress(
     habit_id: int, db_name: str, reference_date: Optional[datetime.date] = None
-):
+) -> dict:
     """
     Returns a dictionary with progress info for a given habit.
     For daily: completions in last 28 days and percent.
     For weekly: completions in last 4 weeks and percent.
     Returns: {'count': int, 'total': int, 'percent': float}
+
+    Args:
+        habit_id: The habit ID to analyze.
+        db_name: The name of the database.
+        reference_date: Optional reference date for deterministic tests.
+
+    Returns:
+        dict: Progress summary for the habit.
     """
     habit = db.get_habit(habit_id, db_name)
     if not habit:
@@ -250,11 +291,18 @@ def calculate_goal_progress(
     return {"count": count, "total": total, "percent": percent}
 
 
-def calculate_goal_based_progress(habit_id: int, db_name: str):
+def calculate_goal_based_progress(habit_id: int, db_name: str) -> dict:
     """
     Calculate progress for a habit using its active goals.
     If no goals exist, falls back to default periods.
     Returns: {'count': int, 'total': int, 'percent': float, 'goal_name': str or None}
+
+    Args:
+        habit_id: The habit ID to analyze.
+        db_name: The name of the database.
+
+    Returns:
+        dict: Goal-based progress summary.
     """
     goals = db.get_all_goals(active_only=True, db_name=db_name)
     habit_goals = [g for g in goals if g.habit_id == habit_id]
@@ -292,6 +340,13 @@ def get_habit_analysis_with_goals(habit_id: int, db_name: str) -> dict:
         'goal_progress': dict,
         'total_completions': int
     }
+
+    Args:
+        habit_id: The habit ID to analyze.
+        db_name: The name of the database.
+
+    Returns:
+        dict: Aggregated analytics for the habit.
     """
     habit = db.get_habit(habit_id, db_name)
     if not habit:
@@ -312,6 +367,12 @@ def analyze_habits_by_category(db_name: str) -> dict:
     """
     Analyze habits grouped by categories.
     Returns: {category_name: [habit_analysis_dicts]}
+
+    Args:
+        db_name: The name of the database.
+
+    Returns:
+        dict: Mapping of category name to analytics entries.
     """
     categories = db.get_all_categories(active_only=True, db_name=db_name)
     analysis = {}

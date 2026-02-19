@@ -21,6 +21,8 @@ def tmp_db_path(tmp_path):
 
 
 class TestCreateDemoHabits:
+    """Tests demo habit seeding."""
+
     def test_create_demo_habits_creates_expected_data(self, tmp_db_path):
         """Test that create_demo_habits creates the expected categories and habits."""
         create_demo_habits(tmp_db_path)
@@ -76,6 +78,8 @@ class TestCreateDemoHabits:
 
 
 class TestPromptForDemoHabits:
+    """Tests demo habit prompt behavior."""
+
     def test_prompt_for_demo_habits_accepts_yes(self):
         """Test that prompt_for_demo_habits returns True when user says yes."""
         with (
@@ -123,6 +127,8 @@ class TestPromptForDemoHabits:
 
 
 class TestCreateDefaultCategories:
+    """Tests default category seeding."""
+
     def test_create_default_categories_creates_expected_data(self, tmp_db_path):
         """Test that create_default_categories creates the expected categories."""
         create_default_categories(tmp_db_path)
@@ -204,6 +210,8 @@ class TestCreateDefaultCategories:
 
 
 class TestCreateDemoWithHistory:
+    """Tests demo seeding with history."""
+
     def test_create_demo_with_history_creates_expected_data(self, tmp_db_path):
         """Test that create_demo_with_history creates demo data with history."""
         create_demo_with_history(tmp_db_path)
@@ -287,6 +295,8 @@ class TestCreateDemoWithHistory:
 
 
 class TestMainBlock:
+    """Tests seed script main entry behavior."""
+
     def test_main_block_creates_test_database(self, tmp_path):
         """Test the main block creates and populates a test database."""
         test_db = tmp_path / "test_main.db"

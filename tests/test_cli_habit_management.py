@@ -15,6 +15,8 @@ from momentum_hub.habit import Habit
 
 
 class TestCreateNewHabit:
+    """Tests CLI: create habit flow."""
+
     @patch("momentum_hub.cli_habit_management.questionary.text")
     @patch("momentum_hub.cli_habit_management.questionary.select")
     @patch("momentum_hub.cli_habit_management.db.add_habit")
@@ -270,6 +272,8 @@ class TestCreateNewHabit:
 
 
 class TestMarkHabitCompleted:
+    """Tests CLI: mark habit as completed."""
+
     @patch("momentum_hub.cli_habit_management.db.get_all_habits")
     @patch("momentum_hub.cli_habit_management._handle_habit_selection")
     @patch("momentum_hub.cli_habit_management.db.add_completion")
@@ -412,6 +416,8 @@ class TestMarkHabitCompleted:
 
 
 class TestDeleteHabit:
+    """Tests CLI: delete habit flow."""
+
     @patch("momentum_hub.cli_habit_management.db.get_all_habits")
     @patch("momentum_hub.cli_habit_management._handle_habit_selection")
     @patch("momentum_hub.cli_habit_management.questionary.confirm")
@@ -491,6 +497,8 @@ class TestDeleteHabit:
 
 
 class TestReactivateHabit:
+    """Tests CLI: reactivate habit flow."""
+
     @patch("momentum_hub.cli_habit_management.db.get_all_habits")
     @patch("momentum_hub.cli_habit_management.questionary.select")
     @patch("momentum_hub.cli_habit_management.db.reactivate_habit")
@@ -547,6 +555,8 @@ class TestReactivateHabit:
 
 
 class TestUpdateHabit:
+    """Tests CLI: update habit flow."""
+
     @patch("momentum_hub.cli_habit_management.db.get_all_habits")
     @patch("momentum_hub.cli_habit_management._handle_habit_selection")
     @patch("momentum_hub.cli_habit_management.questionary.text")

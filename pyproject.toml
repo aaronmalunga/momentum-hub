@@ -60,11 +60,23 @@ momentum = "momentum_main:main"
 minversion = "8.0"
 testpaths = ["tests"]
 python_files = "test_*.py"
-addopts = "-v --strict-markers --cov=. --cov-report=term -p no:warnings"
+addopts = "-v --strict-markers --cov=. --cov-report=term --cov-fail-under=90 -p no:warnings -W ignore::ResourceWarning"
+filterwarnings = [
+    "ignore:.*unclosed database.*:ResourceWarning",
+]
 markers = [
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
 ]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unreachable = true
+no_implicit_optional = true
+check_untyped_defs = false
 
 [tool.coverage.run]
 source = ["."]

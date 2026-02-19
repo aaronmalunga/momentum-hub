@@ -37,6 +37,8 @@ def sample_data(tmp_db_path):
 
 
 class TestCreateGoal:
+    """Tests CLI: create goal flow."""
+
     def test_create_goal_success(self, tmp_db_path):
         # Create a habit first
         h = Habit(name="Test Habit", frequency="daily")
@@ -295,6 +297,8 @@ class TestCreateGoal:
 
 
 class TestViewGoals:
+    """Tests CLI: view goals."""
+
     def test_view_goals_with_data(self, sample_data):
         tmp_db_path, hid, goal_id = sample_data
 
@@ -318,6 +322,8 @@ class TestViewGoals:
 
 
 class TestUpdateGoal:
+    """Tests CLI: update goal flow."""
+
     def test_update_goal_success(self, sample_data):
         tmp_db_path, hid, goal_id = sample_data
 
@@ -382,6 +388,8 @@ class TestUpdateGoal:
 
 
 class TestDeleteGoal:
+    """Tests CLI: delete goal flow."""
+
     def test_delete_goal_success(self, sample_data):
         tmp_db_path, hid, goal_id = sample_data
 
@@ -617,6 +625,8 @@ class TestDeleteGoal:
 
 
 class TestManageGoals:
+    """Tests CLI: goal menu routing."""
+
     def test_manage_goals_create(self, tmp_db_path):
         with (
             patch("momentum_hub.cli_goal_management.questionary.select") as mock_select,

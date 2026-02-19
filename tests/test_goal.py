@@ -9,6 +9,8 @@ from momentum_hub.habit import Habit
 
 
 class TestGoal:
+    """Tests Goal model behavior."""
+
     def setup_method(self):
         """Set up test database."""
         self.test_db_name = "tests/test_dbs/test_goal.db"

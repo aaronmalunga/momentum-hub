@@ -6,6 +6,8 @@ from momentum_hub.category import Category
 
 
 class TestCategory:
+    """Tests for Category model behavior."""
+
     def test_category_creation(self):
         """Test creating a new Category instance."""
         category = Category(name="Health", description="Health-related habits")

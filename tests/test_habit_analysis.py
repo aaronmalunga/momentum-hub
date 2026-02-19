@@ -15,6 +15,8 @@ from . import test_data
 
 
 class TestAnalysisFeatures:
+    """Tests core analytics features on seeded data."""
+
     def setup_method(self):
         """Set up a clean test database and populate it with sample data before each test."""
         # Create a temporary database file
